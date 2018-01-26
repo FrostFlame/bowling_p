@@ -11,22 +11,6 @@ class RegisterUserForm(forms.ModelForm):
         widget=forms.TextInput(
             attrs={'placeholder': 'Email'}),
     )
-    first_name = forms.CharField(
-        label='Имя',
-        widget=forms.TextInput(
-            attrs={'placeholder': 'Имя'}),
-    )
-    last_name = forms.CharField(
-        label='Фамилия',
-        widget=forms.TextInput(
-            attrs={'placeholder': 'Фамилия'}),
-    )
-    patronymic = forms.CharField(
-        label='Отчество',
-        required=False,
-        widget=forms.TextInput(
-            attrs={'placeholder': 'Фамилия'}),
-    )
     password = forms.CharField(
         label='Пароль',
         widget=forms.PasswordInput(
@@ -37,22 +21,10 @@ class RegisterUserForm(forms.ModelForm):
         widget=forms.PasswordInput(
             attrs={'placeholder': 'Повторите пароль'}),
     )
-    sex = forms.ChoiceField(
-        choices=SEX_CHOICES,
-        required=False
-    )
-    date_of_birth = forms.DateField(
-        label='Дата рождения',
-        required=False,
-        widget=forms.SelectDateWidget(
-            years=range(1930, 2018),
-            attrs={'placeholder': 'Дата рождения'}),
-    )
 
     class Meta:
         model = get_user_model()
-        fields = ('email', 'first_name', 'last_name', 'patronymic',
-                  'date_of_birth', 'password')
+        fields = ('email', 'password')
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
@@ -81,9 +53,51 @@ class RegisterUserForm(forms.ModelForm):
 
 
 class PlayerRegistrationForm(forms.ModelForm):
+    first_name = forms.CharField(
+        label='Имя',
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Имя'}),
+    )
+    last_name = forms.CharField(
+        label='Фамилия',
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Фамилия'}),
+    )
+    patronymic = forms.CharField(
+        label='Отчество',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Фамилия'}),
+    )
+    sex = forms.ChoiceField(
+        choices=SEX_CHOICES,
+        required=False
+    )
+    phone = forms.CharField(
+        label='Номер телефона',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Номер телефона'}),
+    )
+    date_of_birth = forms.DateField(
+        label='Дата рождения',
+        required=False,
+        widget=forms.SelectDateWidget(
+            years=range(1930, 2018),
+            attrs={'placeholder': 'Дата рождения'}),
+    )
+    category = forms.CharField(
+        label='Спортивный разряд',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Разряд'}),
+    )
+
     class Meta:
         model = PlayerInfo
-        fields = ['license', 'passport']
+        fields = ('first_name', 'last_name', 'patronymic',
+                  'sex', 'passport', 'phone',
+                  'date_of_birth', 'license', 'category')
 
     def __init__(self, *args, **kwargs):
         if 'user' in kwargs:

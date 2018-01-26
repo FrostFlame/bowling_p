@@ -2,8 +2,10 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
+from django.views.generic import CreateView
 
-from Auth.models import RegistrationRequest
+from Auth.forms import PlayerRegistrationForm
+from Auth.models import RegistrationRequest, PlayerInfo
 
 
 class RegistrationRequestsView(View):
@@ -35,3 +37,10 @@ class RequestHandlingView(View):
                 return redirect(reverse('bowling_manage_registration'))
         else:
             return HttpResponse("Access Denied", status=403)
+
+
+class PlayerCreate(CreateView):
+    model = PlayerInfo
+    template_name = "bowling_app/player_form.html"
+    success_url = '/'
+    form_class = PlayerRegistrationForm

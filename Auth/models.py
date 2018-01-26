@@ -1,9 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, AbstractUser, PermissionsMixin
+from django.contrib.auth.models import BaseUserManager, AbstractUser
 
 SEX_CHOICES = (
-    (0, 'Мужской'),
-    (1, 'Женский')
+    ('0', 'Мужской'),
+    ('1', 'Женский')
 )
 
 
@@ -39,21 +39,12 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    def get_short_name(self):
-        return self.first_name
-
-    def get_full_name(self):
-        return f'{self.first_name} {self.last_name}'
-
+    # Remove unused fields
     username = None
+    first_name = None
+    last_name = None
+    # Using email as username
     email = models.EmailField(unique=True, blank=False)  # changes email to unique and blank to false
-    first_name = models.CharField(max_length=50, blank=False)
-    last_name = models.CharField(max_length=50, blank=False)
-    patronymic = models.CharField(max_length=50, blank=False, null=True)
-    date_of_birth = models.DateField(null=True)
-    sex = models.CharField(max_length=1, choices=SEX_CHOICES, null=True)
-    phone = models.CharField(max_length=15, null=True)
-
     USERNAME_FIELD = 'email'
 
     objects = UserManager()
@@ -66,6 +57,12 @@ class PlayerInfo(models.Model):
     category = models.CharField(max_length=2, null=True, blank=True)
     passport = models.CharField(max_length=16, null=True, blank=True)
     city = models.CharField(max_length=30, null=True, blank=True)
+    first_name = models.CharField(max_length=50, blank=False)
+    last_name = models.CharField(max_length=50, blank=False)
+    patronymic = models.CharField(max_length=50, blank=False, null=True)
+    date_of_birth = models.DateField(null=True)
+    sex = models.CharField(max_length=1, choices=SEX_CHOICES, null=True)
+    phone = models.CharField(max_length=15, null=True)
 
 
 class RegistrationRequestManager(models.Manager):
