@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Заявки на регистрацию</title>
+</head>
+<body>
+{% for request in requests %}
+    <div class="userInfo" style="border: 2px solid black">
+        Имя: {{ request.user.first_name }}<br>
+        Фамилия: {{ request.user.last_name }}<br>
+        Email: {{ request.user.email }}<br>
+        Лицензия: {{ request.user.profile.license }}<br>
+
+        <a href="{% url 'handling_registration' request.id %}?status=accepted">Принять</a>
+        <a href="{% url 'handling_registration' request.id %}?status=declined">Отклонить</a>
+    </div>
+{% endfor %}
+</body>
+</html>

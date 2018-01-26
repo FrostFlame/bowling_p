@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+</head>
+<body>
+<form action="" method="post">
+    {% if reg_form.subject.errors %}
+        <ol>
+            {% for error in reg_form.subject.errors %}
+                <li><strong>{{ error|escape }}</strong></li>
+            {% endfor %}
+        </ol>
+    {% endif %}
+
+    {% if player_form.subject.errors %}
+        <ol>
+            {% for error in player_form.subject.errors %}
+                <li><strong>{{ error|escape }}</strong></li>
+            {% endfor %}
+        </ol>
+    {% endif %}
+
+    {% csrf_token %}
+    {{ reg_form.as_p }}
+    {{ player_form.as_p }}
+    <input type="submit" value="Отправить">
+</form>
+</body>
+</html>
