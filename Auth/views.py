@@ -3,7 +3,8 @@ from django.shortcuts import render
 from django.views import View
 
 from Auth import forms
-from Auth.models import RegistrationRequest
+from Auth.forms import PlayerRegistrationForm
+from Auth.models import RegistrationRequest, PlayerInfo
 
 
 class RegisterUserView(View):
@@ -19,12 +20,11 @@ class RegisterUserView(View):
 
     def post(self, request):
         user_form = forms.RegisterUserForm(request.POST)
-        profile_form = forms.PlayerRegistrationForm(request.POST)
-
-        if all([user_form.is_valid(), profile_form.is_valid]):
+        profile_form = forms.PlayerRegistrationForm(request.POST, request.FILES)
+        if all([user_form.is_valid(), profile_form.is_valid()]):
             user = user_form.save()
-            player = profile_form.save()
-            player.user = user
+            player = PlayerInfo(user=user)
+            player = PlayerRegistrationForm(request.POST, request.FILES, instance=player)
             player.save()
             RegistrationRequest.objects.create_request(user=user)
             return HttpResponse("You've been registered!")

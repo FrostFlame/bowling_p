@@ -73,6 +73,9 @@ class PlayerRegistrationForm(forms.ModelForm):
         choices=SEX_CHOICES,
         required=False
     )
+    passport = forms.ImageField(
+        label='Фото паспорта',
+    )
     phone = forms.CharField(
         label='Номер телефона',
         required=False,

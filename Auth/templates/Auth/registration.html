@@ -5,7 +5,7 @@
     <title>Registration</title>
 </head>
 <body>
-<form action="" method="post">
+<form action="" method="post" enctype="multipart/form-data">
     {% if reg_form.subject.errors %}
         <ol>
             {% for error in reg_form.subject.errors %}
