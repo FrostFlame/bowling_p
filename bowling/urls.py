@@ -16,8 +16,12 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
+from Auth import views
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^account/', include('Auth.urls')),
-    url(r'^', include('bowling_app.urls'))
+    url(r'^', include('bowling_app.urls')),
+    url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        views.activate, name='activate'),
 ]

@@ -143,3 +143,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'Auth.User'
+
+# email settings
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'tatar.bowling@gmail.com'
+EMAIL_HOST_PASSWORD = 'fsbRTBars2k18'
+EMAIL_PORT = 587

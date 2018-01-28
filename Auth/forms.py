@@ -1,8 +1,15 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 
 from Auth.models import User, PlayerInfo, SEX_CHOICES
+
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.template.loader import render_to_string
+from .tokens import account_activation_token
+from django.core.mail import EmailMessage
 
 
 class RegisterUserForm(forms.ModelForm):
@@ -47,12 +54,18 @@ class RegisterUserForm(forms.ModelForm):
 
         if commit:
             user.save()
-            # user.profile.send_activation_email()
-            # create a new user hash for activating email.
+
         return user
 
 
 class PlayerRegistrationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        if 'user' in kwargs:
+            self.user = kwargs.pop('user')
+
+        self.request = kwargs.pop('request', None)
+        super(PlayerRegistrationForm, self).__init__(*args, **kwargs)
+
     first_name = forms.CharField(
         label='Имя',
         widget=forms.TextInput(
@@ -102,7 +115,23 @@ class PlayerRegistrationForm(forms.ModelForm):
                   'sex', 'passport', 'phone',
                   'date_of_birth', 'license', 'category')
 
-    def __init__(self, *args, **kwargs):
-        if 'user' in kwargs:
-            self.user = kwargs.pop('user')
-        super(PlayerRegistrationForm, self).__init__(*args, **kwargs)
+    def save(self, commit=True):
+        player = super(PlayerRegistrationForm, self).save(commit=False)
+        if commit:
+            # sending email
+            current_site = get_current_site(self.request)
+            mail_subject = 'Пожалуйста, подтвердите Ваш адрес электронной почты.'
+            message = render_to_string('Auth/account_activate_email.html', {
+                'user': player,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(player.user.pk)),
+                'token': account_activation_token.make_token(player.user),
+            })
+            to_email = player.user.email
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
+
+            player.save()
+        return player
