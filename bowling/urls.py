@@ -18,6 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^account/', include('Auth.urls')),
-    url(r'^', include('bowling_app.urls'))
+    url(r'^account/', include('Auth.urls',namespace='auth')),
+    url(r'^', include('bowling_app.urls', namespace="bowlingApp"))
 ]
