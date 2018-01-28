@@ -3,6 +3,7 @@ import os
 from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser
+from django.utils.crypto import get_random_string
 
 SEX_CHOICES = (
     ('0', 'Мужской'),
@@ -54,14 +55,14 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []  # removes email from REQUIRED_FIELDS
 
 
-def user_folder(instance, filename):
-    return os.path.join('passports', instance.user.email + filename)
+def filename(instance, filename):
+    return os.path.join('passports', get_random_string(length=32) + '.' + filename.split('.')[-1])
 
 class PlayerInfo(models.Model):
     user = models.OneToOneField(User, null=True, unique=True, related_name="profile")
     license = models.CharField(max_length=20, null=True, blank=True)
     category = models.CharField(max_length=2, null=True, blank=True)
-    passport = models.ImageField(upload_to=user_folder, blank=True)
+    passport = models.ImageField(upload_to=filename, blank=True)
     city = models.CharField(max_length=30, null=True, blank=True)
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
