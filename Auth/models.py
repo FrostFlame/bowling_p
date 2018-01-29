@@ -10,6 +10,18 @@ SEX_CHOICES = (
     ('1', 'Женский')
 )
 
+CATEGORY_CHOICES = (
+    ('3JUN', '3 юношеский'),
+    ('2JUN', '2 юношеский'),
+    ('1JUN', '1 юношеский'),
+    ('3ADU', '3 взрослый'),
+    ('2ADU', '2 взрослый'),
+    ('1ADU', '1 взрослый'),
+    ('KMS', 'Кандидат в мастера спорта'),
+    ('MS', 'Мастер спорта'),
+    ('MSI', 'Мастер спорта международного класса')
+)
+
 
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
@@ -62,7 +74,7 @@ def filename(instance, filename):
 class PlayerInfo(models.Model):
     user = models.OneToOneField(User, null=True, unique=True, related_name="profile")
     license = models.CharField(max_length=20, null=True, blank=True)
-    category = models.CharField(max_length=2, null=True, blank=True)
+    category = models.CharField(max_length=4,choices=CATEGORY_CHOICES, null=True, blank=True)
     passport = models.ImageField(upload_to=filename, blank=True)
     city = models.CharField(max_length=30, null=True, blank=True)
     first_name = models.CharField(max_length=50, blank=False)

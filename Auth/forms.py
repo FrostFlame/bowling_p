@@ -4,7 +4,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from file_resubmit.admin import AdminResubmitImageWidget
 
-from Auth.models import User, PlayerInfo, SEX_CHOICES
+from Auth.models import User, PlayerInfo, SEX_CHOICES, CATEGORY_CHOICES
 
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -101,11 +101,9 @@ class PlayerRegistrationForm(forms.ModelForm):
             years=range(1930, 2018),
             attrs={'placeholder': 'Дата рождения'}),
     )
-    category = forms.CharField(
-        label='Спортивный разряд',
-        required=False,
-        widget=forms.TextInput(
-            attrs={'placeholder': 'Разряд'}),
+    category = forms.ChoiceField(
+        choices=CATEGORY_CHOICES,
+        required=False
     )
 
     class Meta:
