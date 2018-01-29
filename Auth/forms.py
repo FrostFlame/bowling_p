@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
+from file_resubmit.admin import AdminResubmitImageWidget
 
 from Auth.models import User, PlayerInfo, SEX_CHOICES
 
@@ -86,9 +87,6 @@ class PlayerRegistrationForm(forms.ModelForm):
         choices=SEX_CHOICES,
         required=False
     )
-    passport = forms.ImageField(
-        label='Фото паспорта',
-    )
     phone = forms.CharField(
         label='Номер телефона',
         required=False,
@@ -114,6 +112,7 @@ class PlayerRegistrationForm(forms.ModelForm):
         fields = ('first_name', 'last_name', 'patronymic',
                   'sex', 'passport', 'phone',
                   'date_of_birth', 'license', 'category')
+        widgets = {'passport': AdminResubmitImageWidget}
 
     def save(self, commit=True):
         player = super(PlayerRegistrationForm, self).save(commit=False)

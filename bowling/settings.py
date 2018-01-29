@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Auth',
     'bowling_app',
+    'file_resubmit',
 ]
 
 MIDDLEWARE = [
@@ -155,3 +156,14 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'tatar.bowling@gmail.com'
 EMAIL_HOST_PASSWORD = 'fsbRTBars2k18'
 EMAIL_PORT = 587
+
+# caches
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    "file_resubmit": {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        "LOCATION": '/tmp/file_resubmit/'
+    },
+}
