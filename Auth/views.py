@@ -4,7 +4,12 @@ from django.views import View
 
 from Auth import forms
 from Auth.forms import PlayerRegistrationForm
-from Auth.models import RegistrationRequest, PlayerInfo
+from Auth.models import RegistrationRequest, PlayerInfo, User
+
+from django.contrib.auth import login
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
+from .tokens import account_activation_token
 
 
 class RegisterUserView(View):
@@ -20,14 +25,32 @@ class RegisterUserView(View):
 
     def post(self, request):
         user_form = forms.RegisterUserForm(request.POST)
-        profile_form = forms.PlayerRegistrationForm(request.POST, request.FILES)
+        profile_form = forms.PlayerRegistrationForm(request.POST, request.FILES, request=request)
         if all([user_form.is_valid(), profile_form.is_valid()]):
-            user = user_form.save()
+            user = user_form.save(request)
             player = PlayerInfo(user=user)
-            player = PlayerRegistrationForm(request.POST, request.FILES, instance=player)
+            player = PlayerRegistrationForm(request.POST, request.FILES, instance=player, request=request)
+            player.is_active = False
             player.save()
             RegistrationRequest.objects.create_request(user=user)
             return HttpResponse("You've been registered!")
         else:
             return render(request, 'Auth/registration.html',
                           {'reg_form': user_form, 'player_form': profile_form})
+
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        # todo send sign up request to moderator
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+    else:
+        return HttpResponse('Activation link is invalid!')
