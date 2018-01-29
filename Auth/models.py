@@ -4,7 +4,6 @@ from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.utils.crypto import get_random_string
-
 SEX_CHOICES = (
     ('0', 'Мужской'),
     ('1', 'Женский')
