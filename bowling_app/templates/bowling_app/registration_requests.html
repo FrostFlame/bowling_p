@@ -7,8 +7,8 @@
 <body>
 {% for request in requests %}
     <div class="userInfo" style="border: 2px solid black">
-        Имя: {{ request.user.first_name }}<br>
-        Фамилия: {{ request.user.last_name }}<br>
+        Имя: {{ request.user.profile.first_name }}<br>
+        Фамилия: {{ request.user.profile.last_name }}<br>
         Email: {{ request.user.email }}<br>
         Лицензия: {{ request.user.profile.license }}<br>
         Паспорт: <img src="{{ MEDIA_URL }}{{ request.user.profile.passport }}" class="img-responsive img-rounded"/>
