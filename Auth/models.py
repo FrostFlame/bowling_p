@@ -47,6 +47,7 @@ class User(AbstractUser):
     username = None
     first_name = None
     last_name = None
+    email_confirmed = models.BooleanField(null=False, default=False)
     # Using email as username
     email = models.EmailField(unique=True, blank=False)  # changes email to unique and blank to false
     USERNAME_FIELD = 'email'

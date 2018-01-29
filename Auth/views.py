@@ -32,8 +32,9 @@ class RegisterUserView(View):
             player = PlayerRegistrationForm(request.POST, request.FILES, instance=player, request=request)
             player.is_active = False
             player.save()
-            RegistrationRequest.objects.create_request(user=user)
-            return HttpResponse("You've been registered!")
+            email = user.email
+            return render(request, 'Auth/confirm_email.html',
+                          {'email': email})
         else:
             return render(request, 'Auth/registration.html',
                           {'reg_form': user_form, 'player_form': profile_form})
@@ -47,10 +48,10 @@ def activate(request, uidb64, token):
         user = None
 
     if user is not None and account_activation_token.check_token(user, token):
-        # todo send sign up request to moderator
-        user.is_active = True
+        user.email_confirmed = True
         user.save()
-        login(request, user)
-        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+        RegistrationRequest.objects.create_request(user=user)
+        return HttpResponse('Ваш почтовый адрес подтвержден. Заявка на регистрацию отправлена на рассмотрение. '
+                            'Вам будет отправлено письмо, как только ее подтвердят.')
     else:
-        return HttpResponse('Activation link is invalid!')
+        return HttpResponse('Ссылка на подтверждение почтового адреса недействительна!')
