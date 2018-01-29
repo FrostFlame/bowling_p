@@ -25,5 +25,5 @@ class Tournament(models.Model):
     description = models.TextField(max_length=500, null=True)
     type = models.CharField(max_length=1, choices=TYPE)
     team_type = models.CharField(max_length=1, choices=TEAM_TYPE)
-    games = models.IntegerField(default=0)
+    games = models.IntegerField(default=1)
     photo = models.ImageField(upload_to=filename, blank=True)

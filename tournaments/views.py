@@ -3,6 +3,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.generic import CreateView
 
 from tournaments.forms import TournamentCreationForm
@@ -14,3 +15,10 @@ class TournamentCreate(CreateView):
     template_name = 'tournaments/tournament_form.html'
     success_url = '/'
     form_class = TournamentCreationForm
+
+
+class TournamentsListView(View):
+    def get(self, request):
+        requests = Tournament.objects.all()
+        return render(request, 'tournaments/tournaments_list.html',
+                      {'requests': requests})

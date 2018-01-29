@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% for request in requests %}
+    <div style="border: 2px solid black">
+        Название: {{ request.name }}
+        Начало: {{ request.start }}
+        Конец: {{ request.end }}
+        Описание: {{ request.description }}
+        Тип турнира: {{ request.type }}
+        Тип команд: {{ request.team_type }}
+        Количество игр: {{ request.games }}
+        Фотография: <img src="{{ MEDIA_URL }}{{ request.photo }}"/>
+    </div>
+{% endfor %}
+
+</body>
+</html>
