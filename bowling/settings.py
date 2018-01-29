@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'Auth',
     'bowling_app',
     'file_resubmit',
+    'tournaments',
 ]
 
 MIDDLEWARE = [
