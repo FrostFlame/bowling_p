@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -44,3 +45,10 @@ class PlayerCreate(CreateView):
     template_name = "bowling_app/player_form.html"
     success_url = '/'
     form_class = PlayerRegistrationForm
+
+class HomePage(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return render(request, 'bowling_app/home.html')
+        else:
+            return redirect(reverse('auth:login'))
