@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Заявка № {{ request.id }}</title>
+</head>
+<body>
+<form method="post" class="userInfo" style="border: 2px solid black">
+    {% csrf_token %}
+    <a href="">Заявка № {{ request.id }}</a>
+    <br>
+    Имя: {{ reg_request.user.profile.first_name }}<br>
+    Фамилия: {{ reg_request.user.profile.last_name }}<br>
+    Отчество: {{ reg_request.user.profile.patronymic }}<br>
+    Дата рождения: {{ reg_request.user.profile.date_of_birth }}<br>
+    Пол: {{ reg_request.user.profile.get_sex_display }}<br>
+    Город: {{ reg_request.user.profile.city }}<br>
+    Номер телефона: {{ reg_request.user.profile.phone}}<br>
+    Email: {{ reg_request.user.email }}<br>
+    Разряд: {{ reg_request.user.profile.category }}<br>
+    Лицензия: {{ reg_request.user.profile.license }}<br>
+    Паспорт: <img src="{{ MEDIA_URL }}{{ reg_request.user.profile.passport }}" class="img-responsive img-rounded"/> <br>
+
+    <input type="hidden" name="request_id" value="{{ reg_request.id }}">
+    <input type="submit" value="Accept" name="status">
+    <input type="submit" value="Decline" name="status">
+</form>
+</body>
+</html>

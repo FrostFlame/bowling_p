@@ -9,6 +9,8 @@ from Auth.models import RegistrationRequest, PlayerInfo, User
 from django.contrib.auth import login
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
+
+from Auth.utils import send_activation_mail
 from .tokens import account_activation_token
 
 
@@ -31,7 +33,8 @@ class RegisterUserView(View):
             player = PlayerInfo(user=user)
             player = PlayerRegistrationForm(request.POST, request.FILES, instance=player, request=request)
             player.is_active = False
-            player.save()
+            player_instance = player.save()
+            send_activation_mail(request, player_instance)
             email = user.email
             return render(request, 'Auth/confirm_email.html',
                           {'email': email})
