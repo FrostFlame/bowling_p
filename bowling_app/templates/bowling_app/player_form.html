@@ -7,7 +7,14 @@
 <body>
 <form action="" method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.first_name.label }} {{ form.first_name }} <br>
+    {{ form.last_name.label }} {{ form.last_name }}<br>
+    {{ form.patronymic.label }} {{ form.patronymic }} <br>
+    {{ form.sex.label }} {{ form.sex }} <br>
+    {{ form.phone.label }} {{ form.phone }}<br>
+    {{ form.date_of_birth.label }} {{ form.date_of_birth }}<br>
+    {{ form.license.label }} {{ form.license }}<br>
+    {{ form.category.label }} {{ form.category }}<br>
     <input type="submit" value="Сохранить"/>
 </form>
 </body>
