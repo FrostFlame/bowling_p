@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.utils.crypto import get_random_string
+
 SEX_CHOICES = (
     ('0', 'Мужской'),
     ('1', 'Женский')
@@ -24,7 +25,6 @@ CATEGORY_CHOICES = (
 
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
-
     use_in_migrations = True
 
     def create_user(self, email, password, **extra_fields):
@@ -70,10 +70,21 @@ class User(AbstractUser):
 def filename(instance, filename):
     return os.path.join('passports', get_random_string(length=32) + '.' + filename.split('.')[-1])
 
+
+class PlayerManager(models.Manager):
+    def get_similar_players(self, primary_player):
+        similar_players = PlayerInfo.objects.filter(first_name__icontains=primary_player.first_name) \
+            .filter(last_name__icontains=primary_player.last_name) \
+            .filter(patronymic__icontains=primary_player.patronymic) \
+            .filter(date_of_birth__exact=primary_player.date_of_birth) \
+            .exclude(pk=primary_player.pk).filter(user=None)
+        return similar_players
+
+
 class PlayerInfo(models.Model):
     user = models.OneToOneField(User, null=True, unique=True, related_name="profile")
     license = models.CharField(max_length=20, null=True, blank=True)
-    category = models.CharField(max_length=4,choices=CATEGORY_CHOICES, null=True, blank=True)
+    category = models.CharField(max_length=4, choices=CATEGORY_CHOICES, null=True, blank=True)
     passport = models.ImageField(upload_to=filename, blank=True)
     city = models.CharField(max_length=30, null=True, blank=True)
     first_name = models.CharField(max_length=50, blank=False)
@@ -82,6 +93,21 @@ class PlayerInfo(models.Model):
     date_of_birth = models.DateField(null=True)
     sex = models.CharField(max_length=1, choices=SEX_CHOICES, null=True)
     phone = models.CharField(max_length=15, null=True)
+
+    objects = PlayerManager()
+
+    def update(self, obj):
+        user = obj.user
+        obj.user = None
+        obj.save()
+        self.user = user
+        self.license = obj.license
+        self.category = obj.category
+        self.passport = obj.passport
+        self.city = obj.city
+        self.sex = obj.sex
+        self.phone = obj.phone
+        self.save()
 
 
 class RegistrationRequestManager(models.Manager):

@@ -1,7 +1,9 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView
 
@@ -47,8 +49,10 @@ class RequestHandlingView(View):
     def get(self, request, id):
         if request.user.is_staff:
             reg_request = RegistrationRequest.objects.get(pk=id)
+            similar_players = PlayerInfo.objects.get_similar_players(primary_player=reg_request.user.profile)
             return render(request, 'bowling_app/reg_request.html',
-                          {"reg_request": reg_request})
+                          {"reg_request": reg_request,
+                           "similar_players": similar_players})
 
 
 class PlayerCreate(CreateView):
@@ -56,6 +60,26 @@ class PlayerCreate(CreateView):
     template_name = "bowling_app/player_form.html"
     success_url = '/'
     form_class = PlayerRegistrationForm
+
+    @method_decorator(staff_member_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(PlayerCreate, self).dispatch(request, *args, **kwargs)
+
+
+class PlayersUnionView(View):
+    @method_decorator(staff_member_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super(PlayersUnionView, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        primary = PlayerInfo.objects.get(pk=request.POST['by_moderator'])
+        similar = PlayerInfo.objects.get(pk=request.POST['by_user'])
+
+        primary.update(similar)
+        similar.delete()
+
+        primary.user.is_active = True
+        return redirect(reverse('bowlingApp:bowling_manage_registration'))
 
 
 class HomePage(View):

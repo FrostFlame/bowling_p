@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Заявка № {{ request.id }}</title>
+    <title>Заявка № {{ reg_request.id }}</title>
 </head>
 <body>
-<form method="post" class="userInfo" style="border: 2px solid black">
-    {% csrf_token %}
-    <a href="">Заявка № {{ request.id }}</a>
+<div style="border: #0f0f0f 1px solid; padding: 5px">
+    <a href="">Заявка № {{ reg_request.id }}</a>
     <br>
     Имя: {{ reg_request.user.profile.first_name }}<br>
     Фамилия: {{ reg_request.user.profile.last_name }}<br>
@@ -15,15 +14,43 @@
     Дата рождения: {{ reg_request.user.profile.date_of_birth }}<br>
     Пол: {{ reg_request.user.profile.get_sex_display }}<br>
     Город: {{ reg_request.user.profile.city }}<br>
-    Номер телефона: {{ reg_request.user.profile.phone}}<br>
+    Номер телефона: {{ reg_request.user.profile.phone }}<br>
     Email: {{ reg_request.user.email }}<br>
-    Разряд: {{ reg_request.user.profile.category }}<br>
+    Разряд: {{ reg_request.user.profile.get_category_display }}<br>
     Лицензия: {{ reg_request.user.profile.license }}<br>
-    Паспорт: <img src="{{ MEDIA_URL }}{{ reg_request.user.profile.passport }}" class="img-responsive img-rounded"/> <br>
+    Паспорт: <img src="{{ MEDIA_URL }}{{ reg_request.user.profile.passport }}" class="img-responsive img-rounded"/>
+    <br>
 
-    <input type="hidden" name="request_id" value="{{ reg_request.id }}">
-    <input type="submit" value="Accept" name="status">
-    <input type="submit" value="Decline" name="status">
-</form>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="request_id" value="{{ reg_request.id }}">
+        <button type="submit" value="Accept" name="status">Принять</button>
+        <button type="submit" value="Decline" name="status">Отклонить</button>
+    </form>
+</div>
+
+<h3>Похожие игроки:</h3>
+{% for sim_player in similar_players %}
+    <div style="border: 2px solid gainsboro">
+        Имя: {{ sim_player.first_name }}<br>
+        Фамилия: {{ sim_player.last_name }}<br>
+        Отчество: {{ sim_player.patronymic }}<br>
+        Дата рождения: {{ sim_player.date_of_birth }}<br>
+        Пол: {{ sim_player.get_sex_display }}<br>
+        Город: {{ sim_player.city }}<br>
+        Номер телефона: {{ sim_player.phone }}<br>
+        Разряд: {{ sim_player.get_category_display }}<br>
+        Лицензия: {{ sim_player.license }}<br>
+        Паспорт: <img src="{{ MEDIA_URL }}{{ sim_player.passport }}" class="img-responsive img-rounded"/> <br>
+    </div>
+    <form action="{% url 'bowlingApp:players_union' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="by_user" value="{{ reg_request.user.profile.id }}">
+        <input type="hidden" name="by_moderator" value="{{ sim_player.id }}">
+        <input type="submit" value="Объединить">
+    </form>
+
+    <br>
+{% endfor %}
 </body>
 </html>
