@@ -6,13 +6,14 @@ from django.utils.crypto import get_random_string
 
 
 TYPE = (
-    ('0', "Public"),
-    ('1', 'Club license'),
-    ('2', 'Private license')
+    ('0', "Публичный"),
+    ('1', 'Только для обладателей клубной лицензии'),
+    ('2', 'Только для обладателей членской лицензии'),
+    ('3', 'Для обладателей любой лицензии')
 )
 TEAM_TYPE = (
-    ('0', 'Solo'),
-    ('1', 'Dual')
+    ('0', 'Один игрок'),
+    ('1', 'Два игрока')
 )
 
 def filename(instance, filename):
