@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Список всех турниров</title>
+    <title>{{ request.name }}</title>
 </head>
 <body>
-{% for request in requests %}
-    <div style="border: 2px solid black">
+    <div>
         Название: {{ request.name }}
         Начало: {{ request.start }}
         Конец: {{ request.end }}
@@ -16,7 +15,5 @@
         Количество игр: {{ request.games }}
         Фотография: <img src="{{ MEDIA_URL }}{{ request.photo }}"/>
     </div>
-{% endfor %}
-
 </body>
 </html>
