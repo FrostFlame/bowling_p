@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление игроков</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet"/>
+    <script
+            src="http://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+</head>
+<body>
+<form action="" method="post">
+    {% csrf_token %}
+    <select name='select' class="js-example-basic-multiple" name="states[]" multiple="multiple" style="width: 500px; ">
+        {% for player in players %}
+            <option value={{ player.id }}>{{ player.last_name }} {{ player.first_name }} {{ player.patronymic }}</option>
+        {% endfor %}
+        {% for player in already_selected %}
+            <option selected value={{ player.id }}>{{ player.last_name }} {{ player.first_name }} {{ player.patronymic }}</option>
+        {% endfor %}
+    </select>
+    <script>$(document).ready(function () {
+        $('.js-example-basic-multiple').select2();
+    });
+    </script>
+    <input type="submit" value="Select">
+</form>
+</body>
+</html>
