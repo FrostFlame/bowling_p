@@ -1,7 +1,11 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage, send_mail, EmailMultiAlternatives
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.template import Context
+from django.template.loader import render_to_string, get_template
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -42,7 +46,25 @@ class RequestHandlingView(View):
                     user = reg_request.user
                     user.is_active = True
                     user.save()
+
+                user = reg_request.user
+                user.is_active = True
+                user.save()
+
+                domain = get_current_site(request).domain
+                mail_subject = 'Регистрация на %s' % (domain)
+                ctx = {'status': status,
+                       'domain': domain, }
+
+                message = get_template('bowling_app/register_result.html').render(ctx)
+                to_email = user.email
+                email = EmailMultiAlternatives(mail_subject, message, 'tatar.bowling@gmail.com', [to_email])
+                email.attach_alternative(message, "text/html")
+                email.send()
+
                 return redirect(reverse('bowlingApp:bowling_manage_registration'))
+
+            return redirect(reverse('bowlingApp:bowling_manage_registration'))
         else:
             return HttpResponse("Access Denied", status=403)
 
