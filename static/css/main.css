@@ -67,6 +67,10 @@ h6 {
   min-height: calc(100vh - 146px);
 }
 
+.errors {
+  color: #bd2c19;
+}
+
 .Light49{ font-family:'Roboto-thin'; font-size:49px;}
 a {
   color: #45aed6;

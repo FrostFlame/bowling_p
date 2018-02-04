@@ -1,19 +1,31 @@
 {% extends 'base.html' %}
 
+{% block title %}
+    Вход
+{% endblock %}
+
 {% block content %}
-    <div class="form">
-        <form method="POST">
-            {% if form.subject.errors %}
-                <ol>
-                    {% for error in form.subject.errors %}
-                        <li><strong>{{ error|escape }}</strong></li>
-                    {% endfor %}
-                </ol>
-            {% endif %}
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Login</button>
-        </form>
+    <div class="col-md-4 col-md-offset-4 panel panel-default">
+        <div class="panel-heading">
+            <h4 class="text-center">Вход</h4>
+        </div>
+        <div class="panel-body">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {% if form.subject.errors %}
+                    <div class="errors">
+                        <ol>
+                            {% for error in form.subject.errors %}
+                                <p>{{ error|escape }}</p>
+                            {% endfor %}
+                        </ol>
+                    </div>
+
+                {% endif %}
+                <button type="submit" class="btn btn-block btn-primary"> Войти</button>
+            </form>
+        </div>
     </div>
 
 {% endblock %}
