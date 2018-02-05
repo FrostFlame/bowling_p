@@ -4,7 +4,7 @@ from django.db import models
 # Create your models here.
 from django.utils.crypto import get_random_string
 
-from Auth.models import PlayerInfo
+from accounts.models import PlayerInfo
 
 TYPE = (
     ('0', "Публичный"),

@@ -3,10 +3,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 
 from django.core.exceptions import ValidationError
-from django.forms import SelectDateWidget
 from file_resubmit.admin import AdminResubmitImageWidget
 
-from Auth.models import User, PlayerInfo, SEX_CHOICES, CATEGORY_CHOICES
+from accounts.models import User, PlayerInfo, SEX_CHOICES, CATEGORY_CHOICES
 
 
 class RegisterUserForm(forms.ModelForm):

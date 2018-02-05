@@ -2,15 +2,14 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 
-from Auth import forms
-from Auth.forms import PlayerRegistrationForm
-from Auth.models import RegistrationRequest, PlayerInfo, User
+from accounts import forms
+from accounts.forms import PlayerRegistrationForm
+from accounts.models import RegistrationRequest, PlayerInfo, User
 
-from django.contrib.auth import login
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 
-from Auth.utils import send_activation_mail
+from accounts.utils import send_activation_mail
 from .tokens import account_activation_token
 
 
@@ -21,7 +20,7 @@ class RegisterUserView(View):
         else:
             user_form = forms.RegisterUserForm()
             player_form = forms.PlayerRegistrationForm()
-            return render(request, 'Auth/registration.html',
+            return render(request, 'accounts/registration.html',
                           {'reg_form': user_form,
                            'player_form': player_form})
 
@@ -36,10 +35,10 @@ class RegisterUserView(View):
             player_instance = player.save()
             send_activation_mail(request, player_instance)
             email = user.email
-            return render(request, 'Auth/confirm_email.html',
+            return render(request, 'accounts/confirm_email.html',
                           {'email': email})
         else:
-            return render(request, 'Auth/registration.html',
+            return render(request, 'accounts/registration.html',
                           {'reg_form': user_form, 'player_form': profile_form})
 
 

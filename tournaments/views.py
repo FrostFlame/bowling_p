@@ -7,9 +7,10 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView
 
-from Auth.models import PlayerInfo
+from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm
 from tournaments.models import Tournament
+
 
 @method_decorator(staff_member_required(), name='dispatch')
 class TournamentCreate(CreateView):
@@ -35,6 +36,7 @@ class TournamentView(View):
         return render(request, 'tournaments/tournament_page.html',
                       {'request': tournament})
 
+
 class AddPlayersView(View):
     def get(self, request, id):
         tournament = Tournament.objects.get(id=id)
@@ -47,7 +49,8 @@ class AddPlayersView(View):
         else:
             players = PlayerInfo.objects.all()
         already_selected = tournament.players.all()
-        return render(request, 'tournaments/add_players.html', {'tournament': tournament, 'players': players, 'already_selected': already_selected})
+        return render(request, 'tournaments/add_players.html',
+                      {'tournament': tournament, 'players': players, 'already_selected': already_selected})
 
     def post(self, request, id):
         tournament = Tournament.objects.get(id=id)

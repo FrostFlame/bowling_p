@@ -1,18 +1,16 @@
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMessage, send_mail, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.template import Context
-from django.template.loader import render_to_string, get_template
+from django.template.loader import get_template
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView
 
-from Auth.forms import PlayerRegistrationForm
-from Auth.models import RegistrationRequest, PlayerInfo
+from accounts.forms import PlayerRegistrationForm
+from accounts.models import RegistrationRequest, PlayerInfo
 
 
 class RegistrationRequestsView(View):

@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Auth',
+    'accounts',
     'bowling_app',
     'file_resubmit',
     'tournaments',
@@ -156,7 +156,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 MEDIA_URL = '/media/'
 
-AUTH_USER_MODEL = 'Auth.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 # email settings
 EMAIL_USE_TLS = True
