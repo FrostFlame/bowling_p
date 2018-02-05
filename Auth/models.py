@@ -14,6 +14,7 @@ SEX_CHOICES = (
 
 # todo export
 CATEGORY_CHOICES = (
+    ('NONE', 'Не выбрано'),
     ('3JUN', '3 юношеский'),
     ('2JUN', '2 юношеский'),
     ('1JUN', '1 юношеский'),
