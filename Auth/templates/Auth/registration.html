@@ -1,31 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Registration</title>
-</head>
-<body>
-<form action="" method="post" enctype="multipart/form-data">
-    {% if reg_form.subject.errors %}
-        <ol>
-            {% for error in reg_form.subject.errors %}
-                <li><strong>{{ error|escape }}</strong></li>
-            {% endfor %}
-        </ol>
-    {% endif %}
+{% extends 'base.html' %}
 
-    {% if player_form.subject.errors %}
-        <ol>
-            {% for error in player_form.subject.errors %}
-                <li><strong>{{ error|escape }}</strong></li>
-            {% endfor %}
-        </ol>
-    {% endif %}
+{% block content %}
 
-    {% csrf_token %}
-    {{ reg_form.as_p }}
-    {{ player_form.as_p }}
-    <input type="submit" value="Отправить">
-</form>
-</body>
-</html>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 panel panel-default">
+
+            <div class="panel-heading">
+                <h4 class="text-center">Регистрация</h4>
+
+            </div>
+
+            <div class="panel-content">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ reg_form.as_p }}
+                    {{ player_form.as_p }}
+
+                    {# todo Errors are not displaying #}
+                    {% if reg_form.subject.errors %}
+                        <ol>
+                            {% for error in reg_form.subject.errors %}
+                                <li><strong>{{ error|escape }}</strong></li>
+                            {% endfor %}
+                        </ol>
+                    {% endif %}
+
+                    {% if player_form.subject.errors %}
+                        <ol>
+                            {% for error in player_form.subject.errors %}
+                                <li><strong>{{ error|escape }}</strong></li>
+                            {% endfor %}
+                        </ol>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-block">Зарегистрироваться</button>
+                    </div>
+
+                    <div class="form-group">
+                        <p class="text-center">Уже зарегистрированы? <a href="{% url 'auth:login' %}">Войдите</a>
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        {# hide ugly django errors #}
+        .errorlist {
+            display: none;
+        }
+    </style>
+{% endblock %}
