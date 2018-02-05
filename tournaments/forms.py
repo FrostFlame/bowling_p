@@ -3,6 +3,7 @@ from file_resubmit.admin import AdminResubmitImageWidget
 
 from tournaments.models import Tournament, TYPE, TEAM_TYPE
 
+
 class TournamentCreationForm(forms.ModelForm):
     class Meta:
         model = Tournament
