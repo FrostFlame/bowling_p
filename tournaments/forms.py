@@ -12,28 +12,48 @@ class TournamentCreationForm(forms.ModelForm):
     name = forms.CharField(
         label='Название',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Название'}
+            attrs={'placeholder': 'Название', 'class': 'form-control'}
+        )
+    )
+
+    description = forms.CharField(
+        label="Описание",
+        widget=forms.Textarea(
+            attrs={'class': 'form-control'}
+        )
+    )
+
+    games = forms.CharField(
+        label='Количество игр',
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
         )
     )
 
     start = forms.DateTimeField(
         label='Начало',
-        widget=forms.SelectDateWidget
+        widget=forms.SelectDateWidget()
     )
 
     end = forms.DateTimeField(
         label='Конец',
-        widget=forms.SelectDateWidget
+        widget=forms.SelectDateWidget()
     )
 
     type = forms.ChoiceField(
         label='Тип турнира',
         choices=TYPE,
-        required=False
+        required=False,
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+        )
     )
 
     team_type = forms.ChoiceField(
         label='Тип команд',
         choices=TEAM_TYPE,
-        required=False
+        required=False,
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+        )
     )

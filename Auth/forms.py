@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 
 from django.core.exceptions import ValidationError
+from django.forms import SelectDateWidget
 from file_resubmit.admin import AdminResubmitImageWidget
 
 from Auth.models import User, PlayerInfo, SEX_CHOICES, CATEGORY_CHOICES
@@ -12,17 +13,17 @@ class RegisterUserForm(forms.ModelForm):
     email = forms.EmailField(
         label='Email',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Email'}),
+            attrs={'placeholder': 'Email', 'class': 'form-control'}),
     )
     password = forms.CharField(
         label='Пароль',
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'Пароль'}),
+            attrs={'placeholder': 'Пароль', 'class': 'form-control'}),
     )
     password2 = forms.CharField(
         label='Повторите пароль',
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'Повторите пароль'}),
+            attrs={'placeholder': 'Повторите пароль', 'class': 'form-control'}),
     )
 
     class Meta:
@@ -61,6 +62,8 @@ class LoginUserForm(AuthenticationForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
 
+        super().error_messages['invalid_login'] = "Неправильный email или пароль."
+
 
 class PlayerRegistrationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -73,28 +76,37 @@ class PlayerRegistrationForm(forms.ModelForm):
     first_name = forms.CharField(
         label='Имя',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Имя'}),
+            attrs={'placeholder': 'Имя', 'class': 'form-control'}),
     )
     last_name = forms.CharField(
         label='Фамилия',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Фамилия'}),
+            attrs={'placeholder': 'Фамилия', 'class': 'form-control'}),
+    )
+    passport = forms.ImageField(
+        label='Фотография паспорта',
+        widget=forms.FileInput(
+            attrs={'class': 'form-control'}
+        )
     )
     patronymic = forms.CharField(
         label='Отчество',
         required=False,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Фамилия'}),
+            attrs={'placeholder': 'Фамилия', 'class': 'form-control'}),
     )
     sex = forms.ChoiceField(
+        label='Пол',
         choices=SEX_CHOICES,
-        required=False
+        required=False,
+        widget=forms.Select(
+            attrs={'class': 'form-control'},)
     )
     phone = forms.CharField(
         label='Номер телефона',
         required=False,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Номер телефона'}),
+            attrs={'placeholder': 'Номер телефона', 'class': 'form-control'}),
     )
     date_of_birth = forms.DateField(
         label='Дата рождения',
@@ -104,8 +116,17 @@ class PlayerRegistrationForm(forms.ModelForm):
             attrs={'placeholder': 'Дата рождения'}),
     )
     category = forms.ChoiceField(
+        label='Разряд',
         choices=CATEGORY_CHOICES,
-        required=False
+        required=False,
+        widget=forms.Select(
+            attrs={'class': 'form-control'}, )
+    )
+    license = forms.CharField(
+        label='Номер лицензии',
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
     )
 
     class Meta:
