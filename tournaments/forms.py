@@ -10,6 +10,10 @@ class TournamentCreationForm(forms.ModelForm):
         fields = ('name', 'start', 'end', 'description', 'type', 'team_type', 'games', 'photo')
         widgets = {'photo': AdminResubmitImageWidget}
 
+    photo = forms.ImageField(
+        label='Фото паспорта'
+    )
+
     name = forms.CharField(
         label='Название',
         widget=forms.TextInput(
