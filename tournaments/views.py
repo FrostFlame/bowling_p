@@ -47,7 +47,7 @@ class AddPlayersView(View):
         else:
             players = PlayerInfo.objects.all()
         already_selected = tournament.players.all()
-        return render(request, 'tournaments/add_players.html', {'players': players, 'already_selected': already_selected})
+        return render(request, 'tournaments/add_players.html', {'tournament': tournament, 'players': players, 'already_selected': already_selected})
 
     def post(self, request, id):
         tournament = Tournament.objects.get(id=id)
