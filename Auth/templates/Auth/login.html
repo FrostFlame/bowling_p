@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="col-md-4 col-md-offset-4 panel panel-default">
+    <div class="col-md-6 col-md-offset-3 panel panel-default">
         <div class="panel-heading">
             <h4 class="text-center">Вход</h4>
         </div>
@@ -13,19 +13,66 @@
             <form method="POST">
                 {% csrf_token %}
                 {{ form.as_p }}
-                {% if form.subject.errors %}
-                    <div class="errors">
-                        <ol>
-                            {% for error in form.subject.errors %}
-                                <p>{{ error|escape }}</p>
-                            {% endfor %}
-                        </ol>
-                    </div>
 
+                <div class="form-group text-right">
+                    <a href="#" data-toggle="modal" data-target="#forgot-modal" tabindex="-1">Забыли пароль?</a>
+                </div>
+
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
                 {% endif %}
-                <button type="submit" class="btn btn-block btn-primary"> Войти</button>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-block btn-primary"> Войти</button>
+                </div>
+
+                <div class="form-group">
+                    <p class="text-center">Нет аккаунта? <a href="{% url 'auth:register' %}">Зарегистрируйтесь</a></p>
+                </div>
             </form>
         </div>
     </div>
+
+    <style>
+        .errorlist {
+            display: none;
+        }
+    </style>
+
+    <!-- FORGOT PASSWORD MODAL -->
+    <div class="modal fade" id="forgot-modal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-center custom-margin">Восстановление пароля</h4>
+                    <br>
+                    <form class="form">
+                        <div class="form-group">
+                            <h5>Укажите адрес электронной почты, на который вам будут высланы инструкции по
+                                восстановлению
+                                пароля.</h5>
+                            <label for="forgot_email_input" class="sr-only">email</label>
+                            <input type="email" class="form-control " id="forgot_email_input"
+                                   placeholder="example@mail.ru">
+                        </div>
+                        <div class="form-group error" id="forgot-error">
+                            <h5 class="text-center" style="display: none;">Пользователя с таким e-mail нет в нашей базе
+                                данных</h5>
+                        </div>
+                        <div class="form-group success" style="display: none;" id="forgot-success">
+                            <h5 class="text-center">На ваш e-mail отправлено письмо</h5>
+                        </div>
+                        <div class="btn btn-block btn-lg btn-danger" id="forgot-submit">Восстановить пароль</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FORGOT PASSWORD MODAL -->
 
 {% endblock %}
