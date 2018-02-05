@@ -1,22 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Список всех турниров</title>
-</head>
-<body>
-{% for request in requests %}
-    <div style="border: 2px solid black">
-        Название: {{ request.name }}
-        Начало: {{ request.start }}
-        Конец: {{ request.end }}
-        Описание: {{ request.description }}
-        Тип турнира: {{ request.type }}
-        Тип команд: {{ request.team_type }}
-        Количество игр: {{ request.games }}
-        Фотография: <img src="{{ MEDIA_URL }}{{ request.photo }}"/>
-    </div>
-{% endfor %}
+{% extends 'base.html' %}
+{% block content %}
+    <h3 class="text-center">Турниры</h3>
 
-</body>
-</html>
+    {% for request in requests %}
+        <div class="row">
+            <div class="col-md-3 col-md-offset-1 col-sm-4">
+                <img class="img-responsive" src="{{ MEDIA_URL }}{{ request.photo }}"/>
+            </div>
+
+            <div class="col-md-8 col-sm-8">
+                <a href="{% url 'tournaments:tournament_page' request.id %}">
+                    <p>Название: {{ request.name }}</p>
+                </a>
+
+                <p>Начало: {{ request.start }}</p>
+                <p>Конец: {{ request.end }}</p>
+
+
+            </div>
+        </div>
+
+    {% endfor %}
+{% endblock %}

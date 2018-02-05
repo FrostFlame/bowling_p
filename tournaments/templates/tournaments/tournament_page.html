@@ -1,19 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ request.name }}</title>
-</head>
-<body>
-    <div>
-        Название: {{ request.name }}
-        Начало: {{ request.start }}
-        Конец: {{ request.end }}
-        Описание: {{ request.description }}
-        Тип турнира: {{ request.type }}
-        Тип команд: {{ request.team_type }}
-        Количество игр: {{ request.games }}
-        Фотография: <img src="{{ MEDIA_URL }}{{ request.photo }}"/>
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-4">
+            <img class="img-responsive" src="{{ MEDIA_URL }}{{ request.photo }}"/>
+        </div>
+        <p>Название: {{ request.name }}</p>
+        <p>Начало: {{ request.start }}</p>
+        <p>Конец: {{ request.end }}</p>
+        <p>Описание: {{ request.description }}</p>
+        <p>Тип турнира: {{ request.type }}</p>
+        <p>Тип команд: {{ request.team_type }}</p>
+        <p>Количество игр: {{ request.games }}</p>
     </div>
-</body>
-</html>
+
+{% endblock %}
