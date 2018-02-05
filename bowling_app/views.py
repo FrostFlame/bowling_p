@@ -106,7 +106,4 @@ class PlayersUnionView(View):
 
 class HomePage(View):
     def get(self, request):
-        if request.user.is_authenticated:
-            return render(request, 'bowling_app/home.html')
-        else:
-            return redirect(reverse('auth:login'))
+        return render(request, 'bowling_app/home.html')
