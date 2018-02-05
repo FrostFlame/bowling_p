@@ -43,6 +43,7 @@ class RegisterUserView(View):
                           {'reg_form': user_form, 'player_form': profile_form})
 
 
+# email confirmation
 def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))

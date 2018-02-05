@@ -5,11 +5,14 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.utils.crypto import get_random_string
 
+# todo rename app (django name conventions)
+
 SEX_CHOICES = (
     ('0', 'Мужской'),
     ('1', 'Женский')
 )
 
+# todo export
 CATEGORY_CHOICES = (
     ('3JUN', '3 юношеский'),
     ('2JUN', '2 юношеский'),
@@ -24,6 +27,7 @@ CATEGORY_CHOICES = (
 
 
 class UserManager(BaseUserManager):
+    # todo write docs in russian
     """Define a model manager for User model with no username field."""
     use_in_migrations = True
 
@@ -60,36 +64,45 @@ class User(AbstractUser):
     last_name = None
     email_confirmed = models.BooleanField(null=False, default=False)
     # Using email as username
-    email = models.EmailField(unique=True, blank=False)  # changes email to unique and blank to false
+    email = models.EmailField(unique=True, blank=False)
     USERNAME_FIELD = 'email'
 
     objects = UserManager()
     REQUIRED_FIELDS = []  # removes email from REQUIRED_FIELDS
 
 
+# todo create own function
 def filename(instance, filename):
     return os.path.join('passports', get_random_string(length=32) + '.' + filename.split('.')[-1])
 
 
 class PlayerManager(models.Manager):
+    # todo rewrite filters
     def get_similar_players(self, primary_player):
         similar_players = PlayerInfo.objects.filter(first_name__icontains=primary_player.first_name) \
             .filter(last_name__icontains=primary_player.last_name) \
             .filter(patronymic__icontains=primary_player.patronymic) \
             .filter(date_of_birth__exact=primary_player.date_of_birth) \
             .exclude(pk=primary_player.pk).filter(user=None)
+
         return similar_players
 
 
 class PlayerInfo(models.Model):
     user = models.OneToOneField(User, null=True, unique=True, related_name="profile")
+    # todo add default, do not use null in charfields
     license = models.CharField(max_length=20, null=True, blank=True)
     category = models.CharField(max_length=4, choices=CATEGORY_CHOICES, null=True, blank=True)
     passport = models.ImageField(upload_to=filename, blank=True)
+
+    # todo add FIAS to database
     city = models.CharField(max_length=30, null=True, blank=True)
+
+    # todo f_name i_name o_name instead od this
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
     patronymic = models.CharField(max_length=50, blank=False, null=True)
+
     date_of_birth = models.DateField(null=True)
     sex = models.CharField(max_length=1, choices=SEX_CHOICES, null=True)
     phone = models.CharField(max_length=15, null=True)
@@ -98,7 +111,10 @@ class PlayerInfo(models.Model):
 
     def update(self, obj):
         user = obj.user
+
+        # todo add comment and explain
         obj.user = None
+
         obj.save()
         self.user = user
         self.license = obj.license

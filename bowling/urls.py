@@ -24,6 +24,7 @@ urlpatterns = [
                   url(r'^admin/', admin.site.urls),
                   url(r'^account/', include('Auth.urls', namespace='auth')),
                   url(r'^', include('bowling_app.urls', namespace="bowlingApp")),
+                  # todo move
                   url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
                       views.activate, name='activate'),
                   url(r'^tournaments/', include('tournaments.urls', namespace='tournaments')),
