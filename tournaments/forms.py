@@ -1,7 +1,7 @@
 from django import forms
 from file_resubmit.admin import AdminResubmitImageWidget
 
-from tournaments.models import Tournament, TYPE, TEAM_TYPE
+from tournaments.models import Tournament, TYPE, TeamType
 
 
 class TournamentCreationForm(forms.ModelForm):
@@ -54,10 +54,10 @@ class TournamentCreationForm(forms.ModelForm):
         )
     )
 
-    team_type = forms.ChoiceField(
+    team_type = forms.ModelChoiceField(
         label='Тип команд',
-        choices=TEAM_TYPE,
-        required=False,
+        queryset=TeamType.objects.all(),
+        empty_label=None,
         widget=forms.Select(
             attrs={'class': 'form-control'}
         )

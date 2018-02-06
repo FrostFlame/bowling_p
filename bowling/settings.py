@@ -175,3 +175,8 @@ CACHES = {
         "LOCATION": '/tmp/file_resubmit/'
     },
 }
+
+# fixtures
+FIXTURE_DIRS = (
+    '/tournaments/fixturex/tournaments',
+)
