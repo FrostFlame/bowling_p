@@ -12,7 +12,7 @@ def send_activation_mail(request, player):
     # sending email
     current_site = get_current_site(request)
     mail_subject = 'Пожалуйста, подтвердите Ваш адрес электронной почты.'
-    message = render_to_string('Auth/account_activate_email.html', {
+    message = render_to_string('accounts/account_activate_email.html', {
         'user': player,
         'domain': current_site.domain,
         'uid': urlsafe_base64_encode(force_bytes(player.user.pk)),
