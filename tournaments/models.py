@@ -13,12 +13,6 @@ TYPE = (
     ('4', "Публичный")
 )
 
-# todo make fixtures, export to db
-# TEAM_TYPE = (
-#     ('1', 'Один игрок'),
-#     ('2', 'Два игрока')
-# )
-
 
 def filename(instance, filename):
     return os.path.join('tournaments', get_random_string(length=32) + '.' + filename.split('.')[-1])

@@ -11,19 +11,19 @@ SEX_CHOICES = (
     ('1', 'Женский')
 )
 
-# todo export
-CATEGORY_CHOICES = (
-    ('NONE', 'Нет'),
-    ('3JUN', '3 юношеский'),
-    ('2JUN', '2 юношеский'),
-    ('1JUN', '1 юношеский'),
-    ('3ADU', '3 взрослый'),
-    ('2ADU', '2 взрослый'),
-    ('1ADU', '1 взрослый'),
-    ('KMS', 'Кандидат в мастера спорта'),
-    ('MS', 'Мастер спорта'),
-    ('MSI', 'Мастер спорта международного класса')
-)
+
+# CATEGORY_CHOICES = (
+#     ('NONE', 'Нет'),
+#     ('3JUN', '3 юношеский'),
+#     ('2JUN', '2 юношеский'),
+#     ('1JUN', '1 юношеский'),
+#     ('3ADU', '3 взрослый'),
+#     ('2ADU', '2 взрослый'),
+#     ('1ADU', '1 взрослый'),
+#     ('KMS', 'Кандидат в мастера спорта'),
+#     ('MS', 'Мастер спорта'),
+#     ('MSI', 'Мастер спорта международного класса')
+# )
 
 
 class UserManager(BaseUserManager):
@@ -92,7 +92,7 @@ class PlayerInfo(models.Model):
     user = models.OneToOneField(User, null=True, unique=True, related_name="profile")
     # todo add default, do not use null in charfields
     license = models.CharField(max_length=20, null=True, blank=True)
-    category = models.CharField(max_length=4, choices=CATEGORY_CHOICES, null=True, blank=True)
+    category = models.ForeignKey('SportCategory')
     passport = models.ImageField(upload_to=filename, blank=True)
 
     # todo add FIAS to database
@@ -150,3 +150,10 @@ class RegistrationRequest(models.Model):
     status = models.CharField(max_length=1, choices=REQUEST_STATUS, default=IN_PROGRESS)
 
     objects = RegistrationRequestManager()
+
+
+class SportCategory(models.Model):
+    name = models.CharField(max_length=40)
+
+    def __str__(self):
+        return self.name

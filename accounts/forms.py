@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 from file_resubmit.admin import AdminResubmitImageWidget
 
-from accounts.models import User, PlayerInfo, SEX_CHOICES, CATEGORY_CHOICES
+from accounts.models import User, PlayerInfo, SEX_CHOICES, SportCategory
 
 
 class RegisterUserForm(forms.ModelForm):
@@ -114,10 +114,10 @@ class PlayerRegistrationForm(forms.ModelForm):
             years=range(1930, 2018),
             attrs={'placeholder': 'Дата рождения'}),
     )
-    category = forms.ChoiceField(
+    category = forms.ModelChoiceField(
         label='Разряд',
-        choices=CATEGORY_CHOICES,
-        required=False,
+        queryset=SportCategory.objects.all(),
+        empty_label=None,
         widget=forms.Select(
             attrs={'class': 'form-control'}, )
     )
