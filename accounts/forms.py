@@ -72,12 +72,12 @@ class PlayerRegistrationForm(forms.ModelForm):
         self.request = kwargs.pop('request', None)
         super(PlayerRegistrationForm, self).__init__(*args, **kwargs)
 
-    first_name = forms.CharField(
+    i_name = forms.CharField(
         label='Имя',
         widget=forms.TextInput(
             attrs={'placeholder': 'Имя', 'class': 'form-control'}),
     )
-    last_name = forms.CharField(
+    f_name = forms.CharField(
         label='Фамилия',
         widget=forms.TextInput(
             attrs={'placeholder': 'Фамилия', 'class': 'form-control'}),
@@ -88,7 +88,7 @@ class PlayerRegistrationForm(forms.ModelForm):
             attrs={'class': 'form-control'}
         )
     )
-    patronymic = forms.CharField(
+    o_name = forms.CharField(
         label='Отчество',
         required=False,
         widget=forms.TextInput(
@@ -99,7 +99,7 @@ class PlayerRegistrationForm(forms.ModelForm):
         choices=SEX_CHOICES,
         required=False,
         widget=forms.Select(
-            attrs={'class': 'form-control'},)
+            attrs={'class': 'form-control'}, )
     )
     phone = forms.CharField(
         label='Номер телефона',
@@ -130,7 +130,7 @@ class PlayerRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = PlayerInfo
-        fields = ('first_name', 'last_name', 'patronymic',
+        fields = ('f_name', 'i_name', 'o_name',
                   'sex', 'passport', 'phone',
                   'date_of_birth', 'license', 'category')
         widgets = {'passport': AdminResubmitImageWidget}

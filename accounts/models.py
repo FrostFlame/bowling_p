@@ -1,10 +1,8 @@
-import os
-
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser
-from django.utils.crypto import get_random_string
+from django.db.models import Q
 
-# todo rename app (django name conventions)
+from accounts.utils import filename
 
 SEX_CHOICES = (
     ('0', 'Мужской'),
@@ -71,52 +69,48 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []  # removes email from REQUIRED_FIELDS
 
 
-# todo create own function
-def filename(instance, filename):
-    return os.path.join('passports', get_random_string(length=32) + '.' + filename.split('.')[-1])
-
-
 class PlayerManager(models.Manager):
     # todo rewrite filters
     def get_similar_players(self, primary_player):
-        similar_players = PlayerInfo.objects.filter(first_name__icontains=primary_player.first_name) \
-            .filter(last_name__icontains=primary_player.last_name) \
-            .filter(patronymic__icontains=primary_player.patronymic) \
-            .filter(date_of_birth__exact=primary_player.date_of_birth) \
-            .exclude(pk=primary_player.pk).filter(user=None)
+        similar_players = PlayerInfo.objects.filter(Q(i_name__icontains=primary_player.i_name) &
+                                                    Q(f_name__icontains=primary_player.f_name) &
+                                                    Q(o_name__icontains=primary_player.o_name) &
+                                                    Q(date_of_birth__exact=primary_player.date_of_birth) &
+                                                    ~Q(pk=primary_player.pk) &
+                                                    Q(user=None))
 
         return similar_players
 
 
 class PlayerInfo(models.Model):
     user = models.OneToOneField(User, null=True, unique=True, related_name="profile")
-    # todo add default, do not use null in charfields
-    license = models.CharField(max_length=20, null=True, blank=True)
+    license = models.CharField(max_length=20, blank=True)
     category = models.ForeignKey('SportCategory')
-    passport = models.ImageField(upload_to=filename, blank=True)
+    passport = models.ImageField(upload_to=filename)
 
     # todo add FIAS to database
-    city = models.CharField(max_length=30, null=True, blank=True)
+    city = models.CharField(max_length=30, default='Не указан', blank=True)
 
-    # todo f_name i_name o_name instead od this
-    first_name = models.CharField(max_length=50, blank=False)
-    last_name = models.CharField(max_length=50, blank=False)
-    patronymic = models.CharField(max_length=50, blank=False, null=True)
+    i_name = models.CharField(max_length=50, blank=False)
+    f_name = models.CharField(max_length=50, blank=False)
+    o_name = models.CharField(max_length=50, blank=True)
 
     date_of_birth = models.DateField(null=True)
-    sex = models.CharField(max_length=1, choices=SEX_CHOICES, null=True)
-    phone = models.CharField(max_length=15, null=True)
+    sex = models.CharField(max_length=1, choices=SEX_CHOICES, default='0')
+    phone = models.CharField(max_length=15, blank=True)
 
     objects = PlayerManager()
 
     def update(self, obj):
+        # Объединяет игрока созданного ранее модератором и игрока, который зарегистрирован пользователем
+
+        # Изменяем внешний ключ user существующего игрока на user нового
         user = obj.user
-
-        # todo add comment and explain
         obj.user = None
-
         obj.save()
         self.user = user
+
+        # Обновляем остальные поля
         self.license = obj.license
         self.category = obj.category
         self.passport = obj.passport

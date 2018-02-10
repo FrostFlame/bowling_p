@@ -1,4 +1,6 @@
+import os
 from django.contrib.sites.shortcuts import get_current_site
+from django.utils.crypto import get_random_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.template.loader import render_to_string
@@ -22,3 +24,7 @@ def send_activation_mail(request, player):
     )
     email.send()
     print(f"Email sent to {to_email}")
+
+
+def filename(instance, filename):
+    return os.path.join('passports', get_random_string(length=32) + '.' + filename.split('.')[-1])

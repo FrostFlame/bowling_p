@@ -9,8 +9,8 @@
     <form method="post" class="userInfo" style="border: 2px solid black">
         <a href="{% url 'bowlingApp:handling_registration' request.id %}">Заявка № {{ request.id }}</a>
         <br>
-        Имя: {{ request.user.profile.first_name }}<br>
-        Фамилия: {{ request.user.profile.last_name }}<br>
+        Имя: {{ request.user.profile.i_name }}<br>
+        Фамилия: {{ request.user.profile.f_name }}<br>
         Email: {{ request.user.email }}<br>
         Лицензия: {{ request.user.profile.license }}<br>
         Паспорт: <img src="{{ MEDIA_URL }}{{ request.user.profile.passport }}" class="img-responsive img-rounded"/> <br>
