@@ -16,13 +16,21 @@
 
     {% csrf_token %}
     {{ form.i_name.label }} {{ form.i_name }} <br>
+{{ form.i_name.errors }}
     {{ form.f_name.label }} {{ form.f_name }}<br>
+{{ form.f_name.errors }}
     {{ form.o_name.label }} {{ form.o_name }} <br>
+{{ form.o_name.errors }}
     {{ form.sex.label }} {{ form.sex }} <br>
+{{ form.sex.errors }}
     {{ form.phone.label }} {{ form.phone }}<br>
+{{ form.phone.errors }}
     {{ form.date_of_birth.label }} {{ form.date_of_birth }}<br>
+{{ form.date_of_birth.errors }}
     {{ form.license.label }} {{ form.license }}<br>
+{{ form.license.errors }}
     {{ form.category.label }} {{ form.category }}<br>
+{{ form.category.errors }}
     <input type="submit" value="Сохранить"/>
 </form>
 </body>

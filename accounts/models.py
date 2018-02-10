@@ -84,7 +84,7 @@ class PlayerManager(models.Manager):
 
 class PlayerInfo(models.Model):
     user = models.OneToOneField(User, null=True, unique=True, related_name="profile")
-    license = models.CharField(max_length=20, blank=True)
+    license = models.CharField(max_length=20, blank=True, default='Не указана')
     category = models.ForeignKey('SportCategory')
     passport = models.ImageField(upload_to=filename)
 
@@ -97,7 +97,7 @@ class PlayerInfo(models.Model):
 
     date_of_birth = models.DateField(null=True)
     sex = models.CharField(max_length=1, choices=SEX_CHOICES, default='0')
-    phone = models.CharField(max_length=15, blank=True)
+    phone = models.CharField(max_length=15, blank=True, default='Не указан')
 
     objects = PlayerManager()
 
