@@ -73,8 +73,42 @@ h6 {
     color: #bd2c19;
 }
 
+@media (max-width: 568px) {
+    .square {
+        float: left;
+        position: relative;
+        width: 100%;
+        padding-bottom: 100%;
+        margin: 1.66%;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+}
+
+@media (min-width: 569px) {
+    .square {
+        float: left;
+        position: relative;
+        width: 15%;
+        padding-bottom: 15%;
+        margin-right: 1.66%;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+}
+
+.no-padding {
+    padding: 0;
+}
+
 .no-border {
     border: none;
+}
+
+.ov-hidden {
+    overflow: hidden;
 }
 
 .mar-bot-10 {
