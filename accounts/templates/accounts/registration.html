@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -16,22 +17,17 @@
                     {{ reg_form.as_p }}
                     {{ player_form.as_p }}
 
-                    {# todo Errors are not displaying #}
-                    {% if reg_form.subject.errors %}
-                        <ol>
-                            {% for error in reg_form.subject.errors %}
-                                <li><strong>{{ error|escape }}</strong></li>
-                            {% endfor %}
-                        </ol>
-                    {% endif %}
+                    {% for field in reg_form %}
+                        {% for err in field.errors %}
+                            <p class="error">{{ err }}</p>
+                        {% endfor %}
+                    {% endfor %}
 
-                    {% if player_form.subject.errors %}
-                        <ol>
-                            {% for error in player_form.subject.errors %}
-                                <li><strong>{{ error|escape }}</strong></li>
-                            {% endfor %}
-                        </ol>
-                    {% endif %}
+                    {% for field in player_form %}
+                        {% for err in field.errors %}
+                            <p class="error">{{ err }}</p>
+                        {% endfor %}
+                    {% endfor %}
 
                     <div class="form-group">
                         <button class="btn btn-primary btn-block">Зарегистрироваться</button>
@@ -47,10 +43,17 @@
         </div>
     </div>
 
-{#    <style>#}
-        {# hide ugly django errors #}
-{#        .errorlist {#}
-{#            display: none;#}
-{#        }#}
-{#    </style>#}
+    <script src="{% static 'js/jquery.maskedinput.js' %}"></script>
+
+    <script>
+        $('#id_phone').mask("+7(999)999-9999");
+        $('#id_license').mask("99 №9999");
+    </script>
+
+    <style>
+        {#hide ugly django errors#}
+        .errorlist {
+            display: none;
+        }
+    </style>
 {% endblock %}

@@ -123,6 +123,7 @@ class PlayerRegistrationForm(forms.ModelForm):
     )
     license = forms.CharField(
         label='Номер лицензии',
+        required=False,
         widget=forms.TextInput(
             attrs={'class': 'form-control'}
         )
