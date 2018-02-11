@@ -1,4 +1,6 @@
 import os
+from datetime import datetime
+
 from django.db import models
 
 # Create your models here.
@@ -40,3 +42,19 @@ class TeamType(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Game(models.Model):
+    start = models.DateTimeField(default=datetime.now)
+    name = models.CharField(max_length=200, blank=False)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    info = models.ManyToManyField(PlayerInfo, through='GameInfo')
+
+    def __str__(self):
+        return self.name
+
+
+class GameInfo(models.Model):
+    player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    result = models.CharField(max_length=10)
