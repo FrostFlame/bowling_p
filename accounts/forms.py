@@ -65,13 +65,6 @@ class LoginUserForm(AuthenticationForm):
 
 
 class PlayerRegistrationForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        if 'user' in kwargs:
-            self.user = kwargs.pop('user')
-
-        self.request = kwargs.pop('request', None)
-        super(PlayerRegistrationForm, self).__init__(*args, **kwargs)
-
     i_name = forms.CharField(
         label='Имя',
         widget=forms.TextInput(
@@ -127,12 +120,17 @@ class PlayerRegistrationForm(forms.ModelForm):
             attrs={'class': 'form-control'}
         )
     )
+    city = forms.CharField(
+        label='Город',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
 
     class Meta:
         model = PlayerInfo
-        fields = ('f_name', 'i_name', 'o_name',
-                  'sex', 'passport', 'phone',
-                  'date_of_birth', 'license', 'category')
+        exclude = ('user',)
         widgets = {'passport': AdminResubmitImageWidget}
 
     def save(self, commit=True):

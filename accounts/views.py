@@ -26,11 +26,11 @@ class RegisterUserView(View):
 
     def post(self, request):
         user_form = forms.RegisterUserForm(request.POST)
-        profile_form = forms.PlayerRegistrationForm(request.POST, request.FILES, request=request)
+        profile_form = forms.PlayerRegistrationForm(request.POST, request.FILES)
         if all([user_form.is_valid(), profile_form.is_valid()]):
             user = user_form.save(request)
             player = PlayerInfo(user=user)
-            player = PlayerRegistrationForm(request.POST, request.FILES, instance=player, request=request)
+            player = PlayerRegistrationForm(request.POST, request.FILES, instance=player)
             player.is_active = False
             player_instance = player.save()
             send_activation_mail(request, player_instance)

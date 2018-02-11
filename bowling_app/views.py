@@ -11,6 +11,7 @@ from django.views.generic import CreateView
 
 from accounts.forms import PlayerRegistrationForm
 from accounts.models import RegistrationRequest, PlayerInfo
+from bowling_app.forms import StaffPlayerRegister
 
 
 class RegistrationRequestsView(View):
@@ -79,7 +80,7 @@ class PlayerCreate(CreateView):
     model = PlayerInfo
     template_name = "bowling_app/player_form.html"
     success_url = '/'
-    form_class = PlayerRegistrationForm
+    form_class = StaffPlayerRegister
 
     @method_decorator(staff_member_required)
     def dispatch(self, request, *args, **kwargs):
