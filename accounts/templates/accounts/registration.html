@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+{% endblock %}
 
 {% block content %}
 
@@ -44,10 +47,17 @@
     </div>
 
     <script src="{% static 'js/jquery.maskedinput.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.js' %}"></script>
+    <script src="{% static 'js/datepicker-ru.js' %}"></script>
 
     <script>
         $('#id_phone').mask("+7(999)999-9999");
         $('#id_license').mask("99 №9999");
+
+        $('#id_date_of_birth').datepicker({
+            changeMonth: true,
+            changeYear: true
+        });
     </script>
 
     <style>

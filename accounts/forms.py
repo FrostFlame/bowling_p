@@ -110,9 +110,8 @@ class PlayerRegistrationForm(forms.ModelForm):
     date_of_birth = forms.DateField(
         label='Дата рождения',
         required=False,
-        widget=forms.SelectDateWidget(
-            years=range(1930, 2018),
-            attrs={'placeholder': 'Дата рождения'}),
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Дата рождения', 'class': 'form-control'}),
     )
     category = forms.ModelChoiceField(
         label='Разряд',

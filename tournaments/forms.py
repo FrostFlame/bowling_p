@@ -33,6 +33,7 @@ class TournamentCreationForm(forms.ModelForm):
 
     games = forms.CharField(
         label='Количество игр',
+        initial='6',
         widget=forms.NumberInput(
             attrs={'class': 'form-control', 'min': '1', 'max': '99'}
         )
@@ -40,12 +41,16 @@ class TournamentCreationForm(forms.ModelForm):
 
     start = forms.DateTimeField(
         label='Начало',
-        widget=forms.SelectDateWidget()
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
     )
 
     end = forms.DateTimeField(
         label='Конец',
-        widget=forms.SelectDateWidget()
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
     )
 
     type = forms.ChoiceField(
