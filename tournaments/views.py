@@ -9,7 +9,7 @@ from django.views.generic import CreateView
 
 from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm
-from tournaments.models import Tournament
+from tournaments.models import Tournament, TournamentMembership
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -53,8 +53,7 @@ class AddPlayersView(View):
                       {'tournament': tournament, 'players': players, 'already_selected': already_selected})
 
     def post(self, request, id):
-        tournament = Tournament.objects.get(id=id)
         players = request.POST.getlist('select')
         for player in players:
-            tournament.players.add(PlayerInfo.objects.get(id=player))
+            TournamentMembership(player=PlayerInfo.objects.get(id=player), tournament=Tournament.objects.get(id=id)).save()
         return redirect('tournaments:tournaments_all')

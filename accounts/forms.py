@@ -84,7 +84,7 @@ class PlayerRegistrationForm(forms.ModelForm):
     )
     passport = forms.ImageField(
         label='Фотография паспорта',
-        widget=forms.FileInput(
+        widget=AdminResubmitImageWidget(
             attrs={'class': 'form-control'}
         )
     )
