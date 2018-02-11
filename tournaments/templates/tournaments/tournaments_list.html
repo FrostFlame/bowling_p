@@ -15,10 +15,12 @@
 
                 <p>Начало: {{ request.start }}</p>
                 <p>Конец: {{ request.end }}</p>
-
-
             </div>
         </div>
 
     {% endfor %}
+
+    {% if user.is_staff %}
+        <a href="{% url 'tournaments:tournaments_create' %}">Создать турнир</a>
+    {% endif %}
 {% endblock %}
