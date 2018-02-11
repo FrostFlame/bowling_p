@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 from file_resubmit.admin import AdminResubmitImageWidget
 
-from accounts.models import User, PlayerInfo, SEX_CHOICES, CATEGORY_CHOICES
+from accounts.models import User, PlayerInfo, SEX_CHOICES, SportCategory
 
 
 class RegisterUserForm(forms.ModelForm):
@@ -72,23 +72,23 @@ class PlayerRegistrationForm(forms.ModelForm):
         self.request = kwargs.pop('request', None)
         super(PlayerRegistrationForm, self).__init__(*args, **kwargs)
 
-    first_name = forms.CharField(
+    i_name = forms.CharField(
         label='Имя',
         widget=forms.TextInput(
             attrs={'placeholder': 'Имя', 'class': 'form-control'}),
     )
-    last_name = forms.CharField(
+    f_name = forms.CharField(
         label='Фамилия',
         widget=forms.TextInput(
             attrs={'placeholder': 'Фамилия', 'class': 'form-control'}),
     )
     passport = forms.ImageField(
         label='Фотография паспорта',
-        widget=forms.FileInput(
+        widget=AdminResubmitImageWidget(
             attrs={'class': 'form-control'}
         )
     )
-    patronymic = forms.CharField(
+    o_name = forms.CharField(
         label='Отчество',
         required=False,
         widget=forms.TextInput(
@@ -99,7 +99,7 @@ class PlayerRegistrationForm(forms.ModelForm):
         choices=SEX_CHOICES,
         required=False,
         widget=forms.Select(
-            attrs={'class': 'form-control'},)
+            attrs={'class': 'form-control'}, )
     )
     phone = forms.CharField(
         label='Номер телефона',
@@ -114,10 +114,10 @@ class PlayerRegistrationForm(forms.ModelForm):
             years=range(1930, 2018),
             attrs={'placeholder': 'Дата рождения'}),
     )
-    category = forms.ChoiceField(
+    category = forms.ModelChoiceField(
         label='Разряд',
-        choices=CATEGORY_CHOICES,
-        required=False,
+        queryset=SportCategory.objects.all(),
+        empty_label=None,
         widget=forms.Select(
             attrs={'class': 'form-control'}, )
     )
@@ -130,7 +130,7 @@ class PlayerRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = PlayerInfo
-        fields = ('first_name', 'last_name', 'patronymic',
+        fields = ('f_name', 'i_name', 'o_name',
                   'sex', 'passport', 'phone',
                   'date_of_birth', 'license', 'category')
         widgets = {'passport': AdminResubmitImageWidget}
