@@ -2,7 +2,6 @@ import os
 from datetime import datetime
 
 from django.db import models
-
 # Create your models here.
 from django.utils.crypto import get_random_string
 
@@ -31,6 +30,9 @@ class Tournament(models.Model):
     photo = models.ImageField(upload_to=filename, blank=True)
     players = models.ManyToManyField(PlayerInfo, through='TournamentMembership')
 
+    def __str__(self):
+        return self.name
+
 
 class TournamentMembership(models.Model):
     player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE)
@@ -48,7 +50,7 @@ class Game(models.Model):
     start = models.DateTimeField(default=datetime.now)
     name = models.CharField(max_length=200, blank=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-    info = models.ManyToManyField(PlayerInfo, through='GameInfo')
+    players = models.ManyToManyField(PlayerInfo, through='GameInfo')
 
     def __str__(self):
         return self.name

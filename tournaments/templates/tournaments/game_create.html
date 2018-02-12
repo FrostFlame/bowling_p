@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link href="{% static 'css/select2.min.css' %}" rel="stylesheet"/>
+    <script src="{% static 'js/select2.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <select name='select' class="select-players" name="states[]" multiple="multiple"
+                    style="width: 500px; ">
+                {% for player in selected %}
+                    <option selected
+                            value={{ player.id }}>{{ player.f_name }} {{ player.i_name }} {{ player.o_name }}
+                        <br>
+                    </option>
+                {% endfor %}
+            </select>
+            <input type="submit"/>
+        </form>
+    </div>
+
+
+
+    <script>
+        var passports = new Map();
+        {% for player in selected %}
+            passports.set('{{ player.id }}', '{{ player.phone }}');
+        {% endfor %}
+
+        function formatState(state) {
+            if (!state.id) {
+                return state.text;
+            }
+            var $state = $(
+                '<span>' + state.text + '<br><small>' + passports.get(state.id) + '</small>' + ' очков</span>'
+            );
+            return $state;
+        };
+
+        $(document).ready(function () {
+            $('.select-players').select2({
+                    templateResult: formatState
+                }
+            );
+        });
+    </script>
+{% endblock %}
+

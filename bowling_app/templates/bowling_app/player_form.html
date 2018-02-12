@@ -21,23 +21,6 @@
                 {% csrf_token %}
                 {{ form.as_p }}
 
-                {#        {{ form.i_name.label }} {{ form.i_name }}#}
-                {#        {{ form.i_name.errors }}#}
-                {#        {{ form.f_name.label }} {{ form.f_name }}#}
-                {#        {{ form.f_name.errors }}#}
-                {#        {{ form.o_name.label }} {{ form.o_name }}#}
-                {#        {{ form.o_name.errors }}#}
-                {#        {{ form.sex.label }} {{ form.sex }}#}
-                {#        {{ form.sex.errors }}#}
-                {#        {{ form.phone.label }} {{ form.phone }}#}
-                {#        {{ form.phone.errors }}#}
-                {#        {{ form.date_of_birth.label }} {{ form.date_of_birth }}#}
-                {#        {{ form.date_of_birth.errors }}#}
-                {#        {{ form.license.label }} {{ form.license }}#}
-                {#        {{ form.license.errors }}#}
-                {#        {{ form.category.label }} {{ form.category }}#}
-                {#        {{ form.category.errors }}#}
-
                 {% for field in form %}
                     {% for err in field.errors %}
                         <p class="error">{{ err }}</p>

@@ -13,6 +13,14 @@
         <p>Тип турнира: {{ request.type }}</p>
         <p>Тип команд: {{ request.team_type }}</p>
         <p>Количество игр: {{ request.games }}</p>
+
+        {% if user.is_staff %}
+            <p>
+                <a href="{% url 'tournaments:game_create' request.id %}" class="btn btn-primary">Добавить игру</a>
+            </p>
+        {% endif %}
+
+
     </div>
 
 {% endblock %}

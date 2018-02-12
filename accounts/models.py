@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser
+from django.db import models
 from django.db.models import Q
 
 from accounts.utils import filename
@@ -100,6 +100,9 @@ class PlayerInfo(models.Model):
     phone = models.CharField(max_length=15, blank=True, default='Не указан')
 
     objects = PlayerManager()
+
+    def __str__(self):
+        return f'{self.f_name} {self.i_name} {self.o_name}'
 
     def update(self, obj):
         # Объединяет игрока созданного ранее модератором и игрока, который зарегистрирован пользователем
