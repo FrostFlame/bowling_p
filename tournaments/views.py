@@ -1,5 +1,5 @@
 from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse_lazy, reverse
@@ -9,7 +9,7 @@ from django.views.generic import CreateView, UpdateView
 
 from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm
-from tournaments.models import Tournament, TournamentMembership
+from tournaments.models import Tournament, TournamentMembership, Game, GameInfo
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -68,3 +68,10 @@ class TournamentUpdate(UpdateView):
     template_name = 'tournaments/tournament_form.html'
     success_url = get_success_url
     form_class = TournamentCreationForm
+
+
+class TournamentGameInfo(View):
+    def get(self, request,tournament_pk,game_pk):
+        game=get_object_or_404(Game,pk=game_pk)
+        gameInfo=GameInfo.objects.filter(game=game)
+        return render(request,'tournaments/tournament_game_info.html',{'game':game,'gameInfo':gameInfo})

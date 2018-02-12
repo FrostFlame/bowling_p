@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h4>{{ game.name }}</h4>
+    <ul>
+        {% for gInf in gameInfo %}
+            <li>{{ gInf.player}}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
