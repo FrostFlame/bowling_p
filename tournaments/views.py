@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 
 from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm
@@ -57,3 +57,13 @@ class AddPlayersView(View):
         for player in players:
             TournamentMembership(player=PlayerInfo.objects.get(id=player), tournament=Tournament.objects.get(id=id)).save()
         return redirect('tournaments:tournaments_all')
+
+
+class TournamentUpdate(UpdateView):
+    def get_success_url(self):
+        return reverse('tournaments:tournament_page', args=(self.object.id,))
+
+    model = Tournament
+    template_name = 'tournaments/tournament_form.html'
+    success_url = get_success_url
+    form_class = TournamentCreationForm
