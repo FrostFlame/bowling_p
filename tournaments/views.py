@@ -15,7 +15,7 @@ from tournaments.models import Tournament, TournamentMembership
 @method_decorator(staff_member_required(), name='dispatch')
 class TournamentCreate(CreateView):
     def get_success_url(self):
-        return reverse('tournaments:tournament_page', args=(self.object.id,))
+        return reverse('tournaments:tournament_add_players', args=(self.object.id,))
 
     model = Tournament
     template_name = 'tournaments/tournament_form.html'
