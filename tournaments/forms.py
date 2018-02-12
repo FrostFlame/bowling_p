@@ -1,7 +1,7 @@
 from django import forms
 from file_resubmit.admin import AdminResubmitImageWidget
 
-from tournaments.models import Tournament, TYPE, TeamType
+from tournaments.models import Tournament, TYPE, TeamType, Game
 
 
 class TournamentCreationForm(forms.ModelForm):
@@ -70,3 +70,31 @@ class TournamentCreationForm(forms.ModelForm):
             attrs={'class': 'form-control'}
         )
     )
+
+
+class GameCreationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        if 'tournament' in kwargs:
+            self.tournament = kwargs.pop('tournament')
+        super(GameCreationForm, self).__init__(*args, **kwargs)
+
+    name = forms.CharField(label='Название',
+                           widget=forms.TextInput(
+                               attrs={'placeholder': 'Название', 'class': 'form-control'}
+                           ))
+    start = forms.DateTimeField(label='Время начала',
+                                widget=forms.DateTimeInput)
+
+    # tournament = forms.ModelChoiceField(queryset=Tournament.objects.all(),
+    #                                     widget=autocomplete.ModelSelect2(url='tournaments:tournament-autocomplete'))
+
+    def save(self, commit=True):
+        game = super(GameCreationForm, self).save(commit=False)
+        if commit:
+            game.tournament = self.tournament
+            game.save()
+        return game
+
+    class Meta:
+        model = Game
+        exclude = ('tournament', 'players')
