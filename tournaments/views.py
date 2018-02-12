@@ -59,6 +59,7 @@ class AddPlayersView(View):
         return redirect('tournaments:tournaments_all')
 
 
+@method_decorator(staff_member_required(), name='dispatch')
 class TournamentUpdate(UpdateView):
     def get_success_url(self):
         return reverse('tournaments:tournament_page', args=(self.object.id,))
