@@ -85,7 +85,7 @@ class PlayerRegistrationForm(forms.ModelForm):
         label='Отчество',
         required=False,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Фамилия', 'class': 'form-control'}),
+            attrs={'placeholder': 'Отчество', 'class': 'form-control'}),
     )
     sex = forms.ChoiceField(
         label='Пол',

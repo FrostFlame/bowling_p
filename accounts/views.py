@@ -54,7 +54,6 @@ def activate(request, uidb64, token):
         user.email_confirmed = True
         user.save()
         RegistrationRequest.objects.create_request(user=user)
-        return HttpResponse('Ваш почтовый адрес подтвержден. Заявка на регистрацию отправлена на рассмотрение. '
-                            'Вам будет отправлено письмо, как только ее подтвердят.')
+        return render(request, 'accounts/email_confirmed.html')
     else:
-        return HttpResponse('Ссылка на подтверждение почтового адреса недействительна!')
+        return render(request, 'accounts/email_unconfirmed.html')
