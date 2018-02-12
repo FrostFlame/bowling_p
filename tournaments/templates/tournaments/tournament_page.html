@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-4">
+            <img class="img-responsive" src="{{ MEDIA_URL }}{{ request.photo }}"/>
+        </div>
+        <p>Название: {{ request.name }}</p>
+        <p>Начало: {{ request.start }}</p>
+        <p>Конец: {{ request.end }}</p>
+        <p>Описание: {{ request.description }}</p>
+        <p>Тип турнира: {{ request.type }}</p>
+        <p>Тип команд: {{ request.team_type }}</p>
+        <p>Количество игр: {{ request.games }}</p>
+
+        {% if user.is_staff %}
+            <p>
+                <a href="{% url 'tournaments:game_create' request.id %}" class="btn btn-primary">Добавить игру</a>
+            </p>
+        {% endif %}
+
+
+    </div>
+
+{% endblock %}

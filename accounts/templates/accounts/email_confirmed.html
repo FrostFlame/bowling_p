@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Письмо отправлено
+{% endblock %}
+
+{% block content %}
+    <h4 class="mar-top-25">Ваш почтовый адрес подтвержден!</h4>
+
+    <p class="mar-top-25">Теперь нам нужно проверить Ваши данные, указанные при регистрации. Это может занять немного ремени.</p>
+
+    <p class="mar-top-25"> Вам будет отправлено письмо, как только мы закончим проверку.</p>
+
+    <a href="{% url 'bowlingApp:home' %}" class="btn btn-primary mar-top-75 center-block">Продолжить работу на сайте</a>
+{% endblock %}

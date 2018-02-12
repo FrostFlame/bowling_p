@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h3 class="text-center">Турниры</h3>
+
+    {% if user.is_staff %}
+        <div class="cretate ov-hidden">
+            <a href="{% url 'tournaments:tournaments_create' %}" class="right">Создать турнир</a>
+        </div>
+    {% endif %}
+
+    {% if requests %}
+        <div class="list-group mar-top-25">
+            <ul id="itemsUL" class="list-unstyled">
+                {% for request in requests %}
+                    <li>
+                        <a href="{% url 'tournaments:tournament_page' request.id %}" class="list-group-item ov-hidden"
+                           id="tournament{{ request.id }}">
+
+                            {% if user.is_staff %}
+                                <form action="/tournaments/delete/{{ request.id }}" method="post"
+                                      id="form{{ request.id }}"
+                                      onsubmit="return ConfirmDelete()"
+                                      class="badge no-padding">
+                                    <button class="badge no-border" type="submit"><i
+                                            class="glyphicon glyphicon-remove"></i></button>
+                                </form>
+                            {% endif %}
+                            <span class="square" style="background-image:url('{{ MEDIA_URL }}{{ request.photo }}');">
+{#                               <img src="" alt="">#}
+                            </span>
+                            <h4 class="list-group-item-heading" id="c${complex.id?c}">{{ request.name }}</h4>
+                            <br>
+                            <p class="list-group-item-text">Начало: {{ request.start }}</p>
+                            <p class="list-group-item-text">Конец: {{ request.end }}</p>
+                        </a>
+                    </li>
+
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <p class="text-center mar-top-125">Турниров пока нет</p>
+    {% endif %}
+
+
+    <script>
+        function ConfirmDelete() {
+            return !!confirm("Удалить турнир?");
+        }
+    </script>
+{% endblock %}
