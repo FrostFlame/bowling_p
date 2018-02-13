@@ -10,27 +10,12 @@ SEX_CHOICES = (
 )
 
 
-# CATEGORY_CHOICES = (
-#     ('NONE', 'Нет'),
-#     ('3JUN', '3 юношеский'),
-#     ('2JUN', '2 юношеский'),
-#     ('1JUN', '1 юношеский'),
-#     ('3ADU', '3 взрослый'),
-#     ('2ADU', '2 взрослый'),
-#     ('1ADU', '1 взрослый'),
-#     ('KMS', 'Кандидат в мастера спорта'),
-#     ('MS', 'Мастер спорта'),
-#     ('MSI', 'Мастер спорта международного класса')
-# )
-
-
 class UserManager(BaseUserManager):
-    # todo write docs in russian
-    """Define a model manager for User model with no username field."""
+    """Определяем менеджер для модели User без поля username"""
     use_in_migrations = True
 
     def create_user(self, email, password, **extra_fields):
-        """Create and save a User with the given email and password."""
+        """Создает и сохраняет пользователя с заданными email и паролем"""
         if not email:
             raise ValueError('The given email must be set')
         email = self.normalize_email(email)
@@ -40,7 +25,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, **extra_fields):
-        """Create and save a SuperUser with the given email and password."""
+        """Создает и сохраняет суперюзера с заданными email и паролем"""
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -56,21 +41,20 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    # Remove unused fields
+    # Убираем неиспользуемые поля
     username = None
     first_name = None
     last_name = None
     email_confirmed = models.BooleanField(null=False, default=False)
-    # Using email as username
+    # Вместо username используем email
     email = models.EmailField(unique=True, blank=False)
     USERNAME_FIELD = 'email'
 
     objects = UserManager()
-    REQUIRED_FIELDS = []  # removes email from REQUIRED_FIELDS
+    REQUIRED_FIELDS = []
 
 
 class PlayerManager(models.Manager):
-    # todo rewrite filters
     def get_similar_players(self, primary_player):
         similar_players = PlayerInfo.objects.filter(Q(i_name__icontains=primary_player.i_name) &
                                                     Q(f_name__icontains=primary_player.f_name) &
