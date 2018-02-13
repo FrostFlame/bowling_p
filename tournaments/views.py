@@ -1,14 +1,13 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect, get_object_or_404
-
 # Create your views here.
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView, UpdateView
 
 from accounts.models import PlayerInfo
-from tournaments.forms import TournamentCreationForm
+from tournaments.forms import TournamentCreationForm, GameCreationForm
 from tournaments.models import Tournament, TournamentMembership, Game, GameInfo
 
 
@@ -55,7 +54,8 @@ class AddPlayersView(View):
     def post(self, request, id):
         players = request.POST.getlist('select')
         for player in players:
-            TournamentMembership(player=PlayerInfo.objects.get(id=player), tournament=Tournament.objects.get(id=id)).save()
+            TournamentMembership(player=PlayerInfo.objects.get(id=player),
+                                 tournament=Tournament.objects.get(id=id)).save()
         return redirect('tournaments:tournaments_all')
 
 
@@ -71,7 +71,35 @@ class TournamentUpdate(UpdateView):
 
 
 class TournamentGameInfo(View):
-    def get(self, request,tournament_pk,game_pk):
-        game=get_object_or_404(Game,pk=game_pk)
-        gameInfo=GameInfo.objects.filter(game=game)
-        return render(request,'tournaments/tournament_game_info.html',{'game':game,'gameInfo':gameInfo})
+    def get(self, request, tournament_pk, game_pk):
+        game = get_object_or_404(Game, pk=game_pk)
+        gameInfo = GameInfo.objects.filter(game=game)
+        return render(request, 'tournaments/tournament_game_info.html', {'game': game, 'gameInfo': gameInfo})
+
+
+class GameCreateView(View):
+    def get(self, request, id):
+        selected = Tournament.objects.get(pk=id).players.all()
+        game_form = GameCreationForm()
+        return render(request, 'tournaments/game_create.html', {
+            'form': game_form,
+            'selected': selected,
+        })
+
+    def post(self, request, id):
+        tournament = Tournament.objects.get(pk=id)
+
+        game_form = GameCreationForm(request.POST, tournament=tournament)
+        if game_form.is_valid():
+            game = game_form.save()
+            players = request.POST.getlist('select')
+            for player in players:
+                GameInfo(player=PlayerInfo.objects.get(id=player),
+                         game=game).save()
+            return redirect(reverse('tournaments:tournament_page', kwargs={'id': tournament.id}))
+        else:
+            selected = Tournament.objects.get(pk=id).players.all()
+            return render(request, 'tournaments/game_create.html', {
+                'form': game_form,
+                'selected': selected
+            })
