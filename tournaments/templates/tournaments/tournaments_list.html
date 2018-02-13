@@ -8,30 +8,31 @@
         </div>
     {% endif %}
 
-    {% if requests %}
+    {% if tournaments %}
         <div class="list-group mar-top-25">
             <ul id="itemsUL" class="list-unstyled">
-                {% for request in requests %}
+                {% for tournament in tournaments %}
                     <li>
-                        <a href="{% url 'tournaments:tournament_page' request.id %}" class="list-group-item ov-hidden"
-                           id="tournament{{ request.id }}">
+                        <a href="{% url 'tournaments:tournament_page' tournament.id %}"
+                           class="list-group-item ov-hidden"
+                           id="tournament{{ tournament.id }}">
 
                             {% if user.is_staff %}
-                                <form action="/tournaments/delete/{{ request.id }}" method="post"
-                                      id="form{{ request.id }}"
+                                <form action="/tournaments/delete/{{ tournament.id }}" method="post"
+                                      id="form{{ tournament.id }}"
                                       onsubmit="return ConfirmDelete()"
                                       class="badge no-padding">
                                     <button class="badge no-border" type="submit"><i
                                             class="glyphicon glyphicon-remove"></i></button>
                                 </form>
                             {% endif %}
-                            <span class="square" style="background-image:url('{{ MEDIA_URL }}{{ request.photo }}');">
+                            <span class="square" style="background-image:url('{{ MEDIA_URL }}{{ tournament.photo }}');">
 {#                               <img src="" alt="">#}
                             </span>
-                            <h4 class="list-group-item-heading" id="c${complex.id?c}">{{ request.name }}</h4>
+                            <h4 class="list-group-item-heading" id="c${complex.id?c}">{{ tournament.name }}</h4>
                             <br>
-                            <p class="list-group-item-text">Начало: {{ request.start }}</p>
-                            <p class="list-group-item-text">Конец: {{ request.end }}</p>
+                            <p class="list-group-item-text">Начало: {{ tournament.start }}</p>
+                            <p class="list-group-item-text">Конец: {{ tournament.end }}</p>
                         </a>
                     </li>
 

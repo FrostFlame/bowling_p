@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, ListView
 
 from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm, GameCreationForm
@@ -22,18 +22,19 @@ class TournamentCreate(CreateView):
     form_class = TournamentCreationForm
 
 
-class TournamentsListView(View):
-    def get(self, request):
-        requests = Tournament.objects.all()
-        return render(request, 'tournaments/tournaments_list.html',
-                      {'requests': requests})
+class TournamentsListView(ListView):
+    queryset = Tournament.objects.all()
+    context_object_name = 'tournaments'
+    template_name = 'tournaments/tournaments_list.html'
 
 
 class TournamentView(View):
     def get(self, request, id):
         tournament = Tournament.objects.get(id=id)
+        games = tournament.tournament_games.all()
         return render(request, 'tournaments/tournament_page.html',
-                      {'request': tournament})
+                      {'request': tournament,
+                       'games': games})
 
 
 class AddPlayersView(View):
@@ -103,3 +104,36 @@ class GameCreateView(View):
                 'form': game_form,
                 'selected': selected
             })
+
+
+class GameUpdateView(View):
+    def get(self, request, tournament_pk, game_pk):
+        game = Game.objects.get(pk=game_pk)
+        form = GameCreationForm(instance=game)
+        # Игроки, которые уже добавлены к игре
+        selected_players = game.players.all()
+        # Остальные игроки, которые могут быть добавлены
+        players = Tournament.objects.get(pk=tournament_pk).players.exclude(pk__in=selected_players)
+
+        ctx = {
+            'form': form,
+            'players': players,
+            'selected': selected_players,
+        }
+        return render(request, 'tournaments/game_update.html', ctx)
+
+    def post(self, request, tournament_pk, game_pk):
+        tournament = Tournament.objects.get(pk=tournament_pk)
+        game = Game.objects.get(pk=game_pk)
+        form = GameCreationForm(request.POST, instance=game, tournament=tournament)
+
+        if form.is_valid():
+            game = form.save()
+            # Обновление игрок, участвующих в турнире
+            game.players.clear()
+            players_pk = request.POST.getlist('select')
+            players = PlayerInfo.objects.filter(id__in=players_pk)
+            for player in players:
+                GameInfo.objects.create(player=player, game=game)
+
+            return redirect('tournaments:tournaments_all')

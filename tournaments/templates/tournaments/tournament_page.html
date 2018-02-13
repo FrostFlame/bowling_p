@@ -19,6 +19,16 @@
                 <a href="{% url 'tournaments:game_create' request.id %}" class="btn btn-primary">Добавить игру</a>
             </p>
         {% endif %}
+        <div class="col-md-10">
+            <h3>Список игр</h3>
+            {% for game in games %}
+                <p>
+                    <a href="{% url 'tournaments:tournament_game_info' request.pk game.pk %}">
+                        {{ game.name }}
+                    </a>
+                </p>
+            {% endfor %}
+        </div>
 
 
     </div>

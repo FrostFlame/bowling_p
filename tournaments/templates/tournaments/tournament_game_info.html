@@ -7,4 +7,5 @@
             <li>{{ gInf.player}}</li>
         {% endfor %}
     </ul>
+    <a href="{% url 'tournaments:game_update' game.tournament_id game.id %}" class="btn btn-primary">Изменить</a>
 {% endblock %}

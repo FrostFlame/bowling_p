@@ -49,7 +49,7 @@ class TeamType(models.Model):
 class Game(models.Model):
     start = models.DateTimeField(default=datetime.now)
     name = models.CharField(max_length=200, blank=False)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='tournament_games')
     players = models.ManyToManyField(PlayerInfo, through='GameInfo')
 
     def __str__(self):
