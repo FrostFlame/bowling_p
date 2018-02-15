@@ -2,9 +2,9 @@ jQuery(function ($) {
     'use strict';
 
     // Navigation Scroll
-    $(window).scroll(function (event) {
-        Scroll();
-    });
+    // $(window).scroll(function (event) {
+    //     Scroll();
+    // });
 
     $('.navbar-collapse ul li a').on('click', function () {
         $('html, body').animate({scrollTop: $(this.hash).offset().top - 5}, 1000);
@@ -21,7 +21,7 @@ jQuery(function ($) {
         $('.navbar-collapse').find('.scroll a').each(function () {
             contentTop.push($($(this).attr('href')).offset().top);
             contentBottom.push($($(this).attr('href')).offset().top + $($(this).attr('href')).height());
-        })
+        });
         $.each(contentTop, function (i) {
             if (winTop > contentTop[i] - rangeTop) {
                 $('.navbar-collapse li.scroll')
@@ -29,7 +29,7 @@ jQuery(function ($) {
                     .eq(i).addClass('active');
             }
         })
-    };
+    }
 
     $('#tohash').on('click', function () {
         $('html, body').animate({scrollTop: $(this.hash).offset().top - 5}, 1000);

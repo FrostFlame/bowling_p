@@ -4,6 +4,8 @@
 {% block extrahead %}
     <link href="{% static 'css/select2.min.css' %}" rel="stylesheet"/>
     <script src="{% static 'js/select2.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui-timepicker-addon.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -24,9 +26,39 @@
         </form>
     </div>
 
+    <script src="{% static 'js/jquery-ui.js' %}"></script>
+    <script src="{% static 'js/datepicker-ru.js' %}"></script>
+
+    <script src="{% static 'js/jquery-ui-timepicker-addon.js' %}"></script>
 
 
     <script>
+        $.timepicker.regional['ru'] = {
+            timeOnlyTitle: 'Выберите время',
+            timeText: 'Время',
+            hourText: 'Часы',
+            minuteText: 'Минуты',
+            secondText: 'Секунды',
+            millisecText: 'Миллисекунды',
+            timezoneText: 'Часовой пояс',
+            currentText: 'Сейчас',
+            closeText: 'Закрыть',
+            timeFormat: 'HH:mm',
+            amNames: ['AM', 'A'],
+            pmNames: ['PM', 'P'],
+            isRTL: false
+        };
+        $.timepicker.setDefaults($.timepicker.regional['ru']);
+
+        $('#id_start').datetimepicker({
+            changeMonth: true,
+            changeYear: true
+        });
+    </script>
+
+
+    <script>
+
         var passports = new Map();
         {% for player in selected %}
             passports.set('{{ player.id }}', '{{ player.phone }}');

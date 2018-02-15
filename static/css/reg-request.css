@@ -1,0 +1,30 @@
+.text-xs {
+    font-size: 10px;
+}
+
+.passport {
+    padding: 10px;
+    background-color: rgba(205, 194, 238, 0.2);
+}
+
+.passport .text-uppercase {
+    font-weight: bold;
+}
+
+.personal {
+
+    padding: 10px;
+    background-color: rgba(240, 230, 232, 0.2);
+}
+
+.personal p {
+    border-bottom: 1px dotted #a19ca0;
+}
+
+.bor-bot-red {
+    border-bottom: 1px dotted #9c552e;
+}
+
+.pad-r-5 {
+    padding-right: 35px;
+}
