@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Игроки
+{% endblock %}
+
+{% block content %}
+    <h3 class="text-center">{{ player }}</h3>
+
+    <p>Пол: {{ player.get_sex_display }}</p>
+    <p>Город: {{ player.city }}</p>
+    <p>Дата рождения: {{ player.date_of_birth }}</p>
+    <p>Email: {{ player.user.email }}</p>
+    <p>Телефон: {{ player.phone }}</p>
+
+{% endblock %}

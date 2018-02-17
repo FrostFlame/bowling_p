@@ -109,6 +109,19 @@ class PlayersUnionView(View):
         return redirect(reverse('bowlingApp:bowling_manage_registration'))
 
 
+class PlayersListView(View):
+    # @method_decorator(staff_member_required())
+    def get(self, request):
+        players = PlayerInfo.objects.all()
+        return render(request, 'bowling_app/players_list.html', {"players": players})
+
+
+class PlayerProfileView(View):
+    def get(self, request, id):
+        player = PlayerInfo.objects.get(pk=id)
+        return render(request, 'bowling_app/player.html', {'player':player})
+
+
 class HomePage(View):
     def get(self, request):
         return render(request, 'bowling_app/home.html')
