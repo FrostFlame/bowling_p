@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Игроки
+{% endblock %}
+
+{% block content %}
+    <h3 class="text-center">Игроки</h3>
+
+    {% for player in players %}
+        <a href="{% url 'bowlingApp:player' player.id %}">
+            <p>{{ player.f_name }} {{ player.i_name }} {{ player.o_name }}</p>
+        </a>
+    {% endfor %}
+{% endblock %}

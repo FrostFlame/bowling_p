@@ -13,13 +13,14 @@
     </title>
     <!-- core CSS -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/font-awesome.css' %}" rel="stylesheet">
+    <link href="{% static 'css/fontawesome-all.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/animate.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/owl.carousel.css' %}" rel="stylesheet">
     <link href="{% static 'css/owl.transitions.css' %}" rel="stylesheet">
     <link href="{% static 'css/main.css' %}" rel="stylesheet">
 
     <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/fontawesome-all.min.js' %}"></script>
     <!--[if lt IE 9]>
     <script src="{% static 'js/html5shiv.js' %}"></script>
     <script src="{% static 'js/respond.min.js' %}"></script>
@@ -55,13 +56,17 @@
                     <li class="scroll"><a href="#stats">Статистика</a></li>
                     <li class="scroll"><a href="#callendar">Календарь</a></li>
 
-                    {% if user.is_staff %}
-                        <li class="scroll"><a href="{% url 'bowlingApp:bowling_manage_registration' %}">Заявки</a>
-                        </li>
-                        <li class="scroll"><a href="{% url 'bowlingApp:bowling_manage_registration' %}">Игроки</a></li>
-                    {% endif %}
                     {% if user.is_authenticated %}
-                        <li class="scroll"><a href="{% url 'auth:logout' %}">Выход</a></li>
+                        {% if user.is_staff %}
+                            <li class="scroll"><a href="{% url 'bowlingApp:bowling_manage_registration' %}">Заявки</a>
+                            </li>
+                            <li class="scroll"><a href="{% url 'bowlingApp:players_list' %}">Игроки</a>
+                            </li>
+                        {% endif %}
+
+                        <li class="scroll"><a href="{% url 'auth:logout' %}"><i class="fas fa-user"></i></a></li>
+                        <li class="scroll"><a href="{% url 'auth:logout' %}"><i class="fas fa-sign-out-alt"></i></a></li>
+
                     {% else %}
                         <li class="scroll"><a href="{% url 'auth:login' %}">Вход</a></li>
                     {% endif %}
