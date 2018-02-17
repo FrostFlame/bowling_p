@@ -77,6 +77,7 @@ class PlayerRegistrationForm(forms.ModelForm):
     )
     passport = forms.ImageField(
         label='Фотография паспорта',
+        required=True,
         widget=AdminResubmitImageWidget(
             attrs={'class': 'form-control'}
         )
@@ -90,19 +91,19 @@ class PlayerRegistrationForm(forms.ModelForm):
     sex = forms.ChoiceField(
         label='Пол',
         choices=SEX_CHOICES,
-        required=False,
+        required=True,
         widget=forms.Select(
             attrs={'class': 'form-control'}, )
     )
     phone = forms.CharField(
         label='Номер телефона',
-        required=False,
+        required=True,
         widget=forms.TextInput(
             attrs={'placeholder': 'Номер телефона', 'class': 'form-control'}),
     )
     date_of_birth = forms.DateField(
         label='Дата рождения',
-        required=False,
+        required=True,
         widget=forms.TextInput(
             attrs={'placeholder': 'Дата рождения', 'class': 'form-control'}),
     )
@@ -122,7 +123,7 @@ class PlayerRegistrationForm(forms.ModelForm):
     )
     city = forms.CharField(
         label='Город',
-        required=False,
+        required=True,
         widget=forms.TextInput(
             attrs={'class': 'form-control'}
         )
