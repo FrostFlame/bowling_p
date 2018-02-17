@@ -102,8 +102,9 @@
         </div>
         <form action="{% url 'bowlingApp:players_union' %}" method="post">
             {% csrf_token %}
-            <input type="hidden" name="by_user" value="{{ reg_request.user.profile.id }}">
-            <input type="hidden" name="by_moderator" value="{{ sim_player.id }}">
+            <input type="hidden" name="created_by_user" value="{{ reg_request.user.profile.id }}">
+            <input type="hidden" name="created_by_staff" value="{{ sim_player.id }}">
+            <input type="hidden" name="request_id" value="{{ reg_request.id }}">
             <input type="submit" value="Объединить">
         </form>
 
@@ -131,7 +132,9 @@
                             <textarea name="" class="form-control" id="id_reason" cols="30" rows="5"
                                       placeholder="Напишине причину отказа в регистрации или оставьте это поле пустым."></textarea>
                         </div>
-                        <button class="btn btn-block btn-lg btn-danger" type="submit" value="Decline" name="status">Отклонить заявку</button>
+                        <button class="btn btn-block btn-lg btn-danger" type="submit" value="Decline" name="status">
+                            Отклонить заявку
+                        </button>
                     </form>
                 </div>
             </div>

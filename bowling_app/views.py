@@ -9,7 +9,6 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView
 
-from accounts.forms import PlayerRegistrationForm
 from accounts.models import RegistrationRequest, PlayerInfo
 from bowling_app.forms import StaffPlayerRegister
 
@@ -93,13 +92,20 @@ class PlayersUnionView(View):
         return super(PlayersUnionView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request):
-        primary = PlayerInfo.objects.get(pk=request.POST['by_moderator'])
-        similar = PlayerInfo.objects.get(pk=request.POST['by_user'])
+        # Получаем игроков, которых необходимо объединить
+        primary = PlayerInfo.objects.get(pk=request.POST['created_by_staff'])
+        similar = PlayerInfo.objects.get(pk=request.POST['created_by_user'])
 
+        # Обновляем уже существующего игрока, оставшегося удаляем
         primary.update(similar)
         similar.delete()
 
+        # Подтверждаем аккаунт и принимаем заявку
         primary.user.is_active = True
+        request = RegistrationRequest.objects.get(pk=request.POST['request_id'])
+        request.status = RegistrationRequest.ACCEPTED
+        request.save()
+
         return redirect(reverse('bowlingApp:bowling_manage_registration'))
 
 
