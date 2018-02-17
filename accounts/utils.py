@@ -1,6 +1,9 @@
 import os
+from uuid import uuid4
+
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.crypto import get_random_string
+from django.utils.deconstruct import deconstructible
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.template.loader import render_to_string
@@ -23,5 +26,15 @@ def send_activation_mail(request, player):
     )
 
 
-def filename(instance, filename):
-    return os.path.join('passports', get_random_string(length=32) + '.' + filename.split('.')[-1])
+@deconstructible
+class UploadToPathAndRename(object):
+
+    def __init__(self, sub_path):
+        self.path = sub_path
+
+    def __call__(self, instance, filename):
+        ext = filename.split('.')[-1]
+        # set filename as random string
+        filename = '{}.{}'.format(uuid4().hex, ext)
+        # return the whole path to the file
+        return os.path.join(self.path, filename)

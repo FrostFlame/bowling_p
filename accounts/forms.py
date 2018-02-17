@@ -81,6 +81,12 @@ class PlayerRegistrationForm(forms.ModelForm):
             attrs={'class': 'form-control'}
         )
     )
+    avatar = forms.ImageField(
+        label='Аватар',
+        widget=AdminResubmitImageWidget(
+            attrs={'class': 'form-control'}
+        )
+    )
     o_name = forms.CharField(
         label='Отчество',
         required=False,
@@ -131,7 +137,7 @@ class PlayerRegistrationForm(forms.ModelForm):
     class Meta:
         model = PlayerInfo
         exclude = ('user',)
-        widgets = {'passport': AdminResubmitImageWidget}
+        widgets = {'passport': AdminResubmitImageWidget, 'avatar': AdminResubmitImageWidget}
 
     def save(self, commit=True):
         player = super(PlayerRegistrationForm, self).save(commit=False)

@@ -58,12 +58,12 @@
                         {{ player_form.city }}
                     </p>
 
-                     <p>
+                    <p>
                         <label for="{{ player_form.category.id_for_label }}">{{ player_form.category.label }}</label>
                         {{ player_form.category }}
                     </p>
 
-                     <p>
+                    <p>
                         <label for="{{ player_form.license.id_for_label }}">{{ player_form.license.label }}</label>
                         {{ player_form.license }}
                     </p>
@@ -74,6 +74,18 @@
                                     <span class="btn btn-default btn-file bg">
                                         Выбрать… <input type="file" id="imgInp" accept="image/jpeg, image/png"
                                                         name="passport" required>
+                                    </span>
+                                </span>
+                        <input type="text" autocomplete="off" class="form-control" readonly>
+                    </div>
+                    <img class="mar-bot-10" id='img-upload'/>
+
+                    <label class="">Аватар</label>
+                    <div class="input-group">
+                                <span class="input-group-btn">
+                                    <span class="btn btn-default btn-file bg">
+                                        Выбрать… <input type="file" id="imgAvatar" accept="image/jpeg, image/png"
+                                                        name="avatar" required>
                                     </span>
                                 </span>
                         <input type="text" autocomplete="off" class="form-control" readonly>

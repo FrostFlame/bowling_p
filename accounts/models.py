@@ -2,7 +2,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.db import models
 from django.db.models import Q
 
-from accounts.utils import filename
+from accounts.utils import UploadToPathAndRename
 
 SEX_CHOICES = (
     ('0', 'Мужской'),
@@ -70,7 +70,8 @@ class PlayerInfo(models.Model):
     user = models.OneToOneField(User, null=True, unique=True, related_name="profile")
     license = models.CharField(max_length=20, blank=True, default='Не указана')
     category = models.ForeignKey('SportCategory')
-    passport = models.ImageField(upload_to=filename)
+    passport = models.ImageField(upload_to=UploadToPathAndRename('passports/'))
+    avatar = models.ImageField(upload_to=UploadToPathAndRename('avatars/'))
 
     # todo add FIAS to database
     city = models.CharField(max_length=30, default='Не указан', blank=True)
