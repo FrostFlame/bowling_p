@@ -28,6 +28,8 @@
     padding-bottom: 6px;
 }
 
-#img-upload {
-    width: 100%;
+.img-upload {
+    float: right;
+    border-radius: 4px;
+    width: calc(100% - 92px);
 }

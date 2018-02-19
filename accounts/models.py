@@ -73,7 +73,7 @@ class PlayerInfo(models.Model):
     passport = models.ImageField(upload_to=UploadToPathAndRename('passports/'))
     avatar = models.ImageField(upload_to=UploadToPathAndRename('avatars/'))
 
-    # todo add FIAS to database
+    # todo add cities to database
     city = models.CharField(max_length=30, default='Не указан', blank=True)
 
     i_name = models.CharField(max_length=50, blank=False)

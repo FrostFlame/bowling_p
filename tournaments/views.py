@@ -40,6 +40,7 @@ class TournamentView(View):
 class AddPlayersView(View):
     def get(self, request, id):
         tournament = Tournament.objects.get(id=id)
+        # todo rewrite!!
         if tournament.type == '1':
             players = PlayerInfo.objects.filter(license__iregex='\\d+№0')
         elif tournament.type == '2':
@@ -47,14 +48,17 @@ class AddPlayersView(View):
         elif tournament.type == '3':
             players = PlayerInfo.objects.filter(license__iregex='\\d+')
         else:
+            # todo refactor
             players = PlayerInfo.objects.all()
         already_selected = tournament.players.all()
         return render(request, 'tournaments/add_players.html',
                       {'tournament': tournament, 'players': players, 'already_selected': already_selected})
 
+# todo change id param name
     def post(self, request, id):
         players = request.POST.getlist('select')
         for player in players:
+            # todo check id
             TournamentMembership(player=PlayerInfo.objects.get(id=player),
                                  tournament=Tournament.objects.get(id=id)).save()
         return redirect('tournaments:tournaments_all')

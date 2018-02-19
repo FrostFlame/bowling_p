@@ -7,6 +7,7 @@ from django.utils.crypto import get_random_string
 
 from accounts.models import PlayerInfo
 
+# todo enum
 TYPE = (
     ('1', 'Только для обладателей клубной лицензии'),
     ('2', 'Только для обладателей игровой лицензии'),

@@ -21,6 +21,18 @@
 
             <div class="panel-content">
                 <form action="" method="post" enctype="multipart/form-data">
+                    {% for field in reg_form %}
+                        {% for err in field.errors %}
+                            <p class="error">{{ err }}</p>
+                        {% endfor %}
+                    {% endfor %}
+
+                    {% for field in player_form %}
+                        {% for err in field.errors %}
+                            <p class="error">{{ err }}</p>
+                        {% endfor %}
+                    {% endfor %}
+
                     {% csrf_token %}
                     <p>
                         <label for="{{ player_form.i_name.id_for_label }}">{{ player_form.i_name.label }}</label>
@@ -68,43 +80,38 @@
                         {{ player_form.license }}
                     </p>
 
-                    <label class="">Фотография паспорта</label>
-                    <div class="input-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Фотография паспорта</label>
+                            <div class="input-group">
                                 <span class="input-group-btn">
                                     <span class="btn btn-default btn-file bg">
                                         Выбрать… <input type="file" id="imgInp" accept="image/jpeg, image/png"
                                                         name="passport" required>
                                     </span>
                                 </span>
-                        <input type="text" autocomplete="off" class="form-control" readonly>
-                    </div>
-                    <img class="mar-bot-10" id='img-upload'/>
+                                <input type="text" autocomplete="off" class="form-control" readonly>
+                            </div>
+                            <img class="mar-bot-10 img-upload" id='imgInpUpload'/>
+                        </div>
 
-                    <label class="">Аватар</label>
-                    <div class="input-group">
+
+                        <div class="col-sm-6">
+                            <label>Ваша фотография</label>
+                            <div class="input-group">
                                 <span class="input-group-btn">
                                     <span class="btn btn-default btn-file bg">
                                         Выбрать… <input type="file" id="imgAvatar" accept="image/jpeg, image/png"
                                                         name="avatar" required>
                                     </span>
                                 </span>
-                        <input type="text" autocomplete="off" class="form-control" readonly>
+                                <input type="text" autocomplete="off" class="form-control" readonly>
+                            </div>
+                            <img class="mar-bot-10 img-upload" id='imgAvatarUpload'/>
+                        </div>
                     </div>
-                    <img class="mar-bot-10" id='img-upload'/>
 
-                    {% for field in reg_form %}
-                        {% for err in field.errors %}
-                            <p class="error">{{ err }}</p>
-                        {% endfor %}
-                    {% endfor %}
-
-                    {% for field in player_form %}
-                        {% for err in field.errors %}
-                            <p class="error">{{ err }}</p>
-                        {% endfor %}
-                    {% endfor %}
-
-                    <div class="form-group">
+                    <div class="form-group mar-top-10">
                         <button class="btn btn-primary btn-block">Зарегистрироваться</button>
                     </div>
 
@@ -157,7 +164,9 @@
                     var reader = new FileReader();
 
                     reader.onload = function (e) {
-                        $('#img-upload').attr('src', e.target.result);
+                        var id = '#' + input.id + 'Upload';
+                        console.log(id);
+                        $(id).attr('src', e.target.result);
                     }
 
                     reader.readAsDataURL(input.files[0]);
@@ -165,6 +174,10 @@
             }
 
             $("#imgInp").change(function () {
+                readURL(this);
+            });
+
+            $("#imgAvatar").change(function () {
                 readURL(this);
             });
         });

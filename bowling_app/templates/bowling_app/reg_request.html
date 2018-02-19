@@ -39,10 +39,9 @@
                 <div class="image-container"></div>
             </div>
         </div>
-        <img src="{{ MEDIA_URL }}{{ reg_request.user.profile.avatar }}">
 
-        <div class="col-md-12">
-            <div class="personal mar-top-25">
+        <div class="col-sm-8">
+            <div class="personal mar-top-75">
                 <p><span class="small pad-r-5">Разряд: &nbsp; &nbsp;&nbsp;</span>{{ reg_request.user.profile.category }}
                 </p>
                 <p><span class="small pad-r-5">Лицензия:</span>{{ reg_request.user.profile.license }}</p>
@@ -51,6 +50,9 @@
                         class="small pad-r-5">Email: &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</span>{{ reg_request.user.email }}
                 </p>
             </div>
+        </div>
+        <div class="col-sm-4 mar-top-75 cropped">
+            <span class="squared" style="background-image:url('{{ MEDIA_URL }}{{ reg_request.user.profile.avatar }}');"></span>
         </div>
     </div>
 
@@ -182,6 +184,7 @@
                     <h4 class="text-center custom-margin">Объединить игроков?</h4>
                     <br>
 
+{#                    todo FIX THIS, add for#}
                     <form action="{% url 'bowlingApp:players_union' %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="created_by_user" value="{{ reg_request.user.profile.id }}">
