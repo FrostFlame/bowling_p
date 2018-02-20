@@ -20,7 +20,7 @@
             </div>
 
             <div class="panel-content">
-                <form action="" method="post" enctype="multipart/form-data">
+                <form id="reg_form" action="" method="post" enctype="multipart/form-data">
                     {% for field in reg_form %}
                         {% for err in field.errors %}
                             <p class="error">{{ err }}</p>
@@ -87,7 +87,11 @@
                                 <span class="input-group-btn">
                                     <span class="btn btn-default btn-file bg">
                                         Выбрать… <input type="file" id="imgInp" accept="image/jpeg, image/png"
-                                                        name="passport" required>
+                                                        name="passport" required data-validation="mime size"
+                                                        data-validation-allowing="jpg, png, gif"
+                                                        data-validation-max-size="20Mb"
+                                                        data-validation-error-msg-size="Вы не можете загружать изображения больше 20Мб"
+                                                        data-validation-error-msg-mime="Вы можете загружать только изображения.">
                                     </span>
                                 </span>
                                 <input type="text" autocomplete="off" class="form-control" readonly>

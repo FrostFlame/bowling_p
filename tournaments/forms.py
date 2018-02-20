@@ -13,14 +13,18 @@ class TournamentCreationForm(forms.ModelForm):
     photo = forms.ImageField(
         label='Изображение',
         widget=AdminResubmitImageWidget(
-            attrs={'class': 'form-control'}
+            attrs={'class': 'form-control', 'data-validation': 'mime size', 'data-validation-allowing': 'jpg, png, gif',
+                   'data-validation-max-size': '20Mb',
+                   'data-validation-error-msg-size': 'Вы не можете загружать изображения больше 20Мб',
+                   'data-validation-error-msg-mime': 'Вы можете загружать только изображения.'}
         )
     )
 
     name = forms.CharField(
         label='Название',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Название', 'class': 'form-control'}
+            attrs={'placeholder': 'Название', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}
         )
     )
 

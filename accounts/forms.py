@@ -12,17 +12,19 @@ class RegisterUserForm(forms.ModelForm):
     email = forms.EmailField(
         label='Email',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Email', 'class': 'form-control'}),
+            attrs={'placeholder': 'Email', 'class': 'form-control', 'data-validation': 'email'}),
     )
     password = forms.CharField(
         label='Пароль',
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'Пароль', 'class': 'form-control'}),
+            attrs={'placeholder': 'Пароль', 'class': 'form-control', 'data-validation': 'strength',
+                   'data-validation-strength': '2'}),
     )
     password2 = forms.CharField(
         label='Повторите пароль',
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'Повторите пароль', 'class': 'form-control'}),
+            attrs={'placeholder': 'Повторите пароль', 'class': 'form-control', 'data-validation': 'confirmation',
+                   'data-validation-confirm': 'password'}),
     )
 
     class Meta:
@@ -68,12 +70,14 @@ class PlayerRegistrationForm(forms.ModelForm):
     i_name = forms.CharField(
         label='Имя',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Имя', 'class': 'form-control'}),
+            attrs={'placeholder': 'Имя', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
     )
     f_name = forms.CharField(
         label='Фамилия',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Фамилия', 'class': 'form-control'}),
+            attrs={'placeholder': 'Фамилия', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
     )
     passport = forms.ImageField(
         label='Фотография паспорта',
@@ -92,7 +96,8 @@ class PlayerRegistrationForm(forms.ModelForm):
         label='Отчество',
         required=False,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Отчество', 'class': 'form-control'}),
+            attrs={'placeholder': 'Отчество', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
     )
     sex = forms.ChoiceField(
         label='Пол',

@@ -7,18 +7,21 @@ class StaffPlayerRegister(forms.ModelForm):
     i_name = forms.CharField(
         label='Имя',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Имя', 'class': 'form-control'}),
+            attrs={'placeholder': 'Имя', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
     )
     f_name = forms.CharField(
         label='Фамилия',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Фамилия', 'class': 'form-control'}),
+            attrs={'placeholder': 'Фамилия', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
     )
     o_name = forms.CharField(
         label='Отчество',
         required=False,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Фамилия', 'class': 'form-control'}),
+            attrs={'placeholder': 'Фамилия', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
     )
     sex = forms.ChoiceField(
         label='Пол',
@@ -57,7 +60,8 @@ class StaffPlayerRegister(forms.ModelForm):
         label='Город',
         required=False,
         widget=forms.TextInput(
-            attrs={'class': 'form-control'}
+            attrs={'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}
         )
     )
 
