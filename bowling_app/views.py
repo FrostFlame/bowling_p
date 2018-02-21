@@ -2,7 +2,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import get_template
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -125,3 +125,11 @@ class PlayerProfileView(View):
 class HomePage(View):
     def get(self, request):
         return render(request, 'bowling_app/home.html')
+
+class PlayerBlockUnblock(View):
+    def post(self,request,id):
+        player = get_object_or_404(PlayerInfo,pk=id)
+        player.user.is_active= not player.user.is_active
+        player.user.save()
+        return redirect(reverse('bowlingApp:player',kwargs={'id':id}))
+

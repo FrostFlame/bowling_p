@@ -12,5 +12,12 @@
     <p>Дата рождения: {{ player.date_of_birth }}</p>
     <p>Email: {{ player.user.email }}</p>
     <p>Телефон: {{ player.phone }}</p>
-
+    <form method="post" action="{% url 'bowlingApp:player_activity' player.id %}">
+        {% csrf_token %}
+        {% if player.user.is_active %}
+            <button type="submit">Заблокировать</button>
+            {% elif not player.user.is_active %}
+            <button type="submit">Разблокировать</button>
+        {% endif %}
+    </form>
 {% endblock %}
