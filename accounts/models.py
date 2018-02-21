@@ -65,10 +65,31 @@ class PlayerManager(models.Manager):
 
         return similar_players
 
+    def get_players_by_license_type(self, license_type):
+        if license_type == 'C':
+            players = PlayerInfo.objects.filter(license__iregex='\\d+№0')
+        elif license_type == 'G':
+            players = PlayerInfo.objects.filter(license__iregex='\\d+№1')
+        elif license_type == 'L':
+            players = PlayerInfo.objects.filter(license__iregex='\\d+')
+        else:
+            players = PlayerInfo.objects.all()
+        return players
+
 
 class PlayerInfo(models.Model):
     user = models.OneToOneField(User, null=True, unique=True, related_name="profile")
     license = models.CharField(max_length=20, blank=True, default='Не указана')
+
+    @property
+    def _type_of_license(self):
+        if '№0' in self.license:
+            return 'club_license'
+        elif '№1' in self.license:
+            return 'game_license'
+        else:
+            return 'no_license'
+
     category = models.ForeignKey('SportCategory')
     passport = models.ImageField(upload_to=UploadToPathAndRename('passports/'))
     avatar = models.ImageField(upload_to=UploadToPathAndRename('avatars/'))

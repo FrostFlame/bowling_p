@@ -8,7 +8,7 @@ from django.views.generic import CreateView, UpdateView, ListView
 
 from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm, GameCreationForm
-from tournaments.models import Tournament, TournamentMembership, Game, GameInfo
+from tournaments.models import Tournament, TournamentMembership, Game, GameInfo, TournamentType
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -40,16 +40,7 @@ class TournamentView(View):
 class AddPlayersView(View):
     def get(self, request, id):
         tournament = Tournament.objects.get(id=id)
-        # todo rewrite!!
-        if tournament.type == '1':
-            players = PlayerInfo.objects.filter(license__iregex='\\d+№0')
-        elif tournament.type == '2':
-            players = PlayerInfo.objects.filter(license__iregex='\\d+№1')
-        elif tournament.type == '3':
-            players = PlayerInfo.objects.filter(license__iregex='\\d+')
-        else:
-            # todo refactor
-            players = PlayerInfo.objects.all()
+        players = PlayerInfo.objects.get_players_by_license_type(tournament.type)
         already_selected = tournament.players.all()
         return render(request, 'tournaments/add_players.html',
                       {'tournament': tournament, 'players': players, 'already_selected': already_selected})

@@ -3,18 +3,18 @@ from datetime import datetime
 
 from django.db import models
 # Create your models here.
+from djchoices import DjangoChoices, ChoiceItem
 from django.utils.crypto import get_random_string
 
 from accounts.models import PlayerInfo
 
 # todo enum
-TYPE = (
-    ('1', 'Только для обладателей клубной лицензии'),
-    ('2', 'Только для обладателей игровой лицензии'),
-    ('3', 'Для обладателей любой лицензии'),
-    ('4', "Публичный")
-)
-
+class TournamentType(DjangoChoices):
+    # choices
+    CLUB_LICENSE = ChoiceItem('C', 'Только для обладателей клубной лицензии')
+    GAME_LICENSE = ChoiceItem('G', 'Только для обладателей игровой лицензии')
+    ANY_LICENSE = ChoiceItem('L', 'Для обладателей любой лицензии')
+    PUBLIC = ChoiceItem('P', "Публичный")
 
 def filename(instance, filename):
     return os.path.join('tournaments', get_random_string(length=32) + '.' + filename.split('.')[-1])
@@ -25,7 +25,7 @@ class Tournament(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField()
     description = models.TextField(max_length=500, blank=True, default='')
-    type = models.CharField(max_length=1, choices=TYPE)
+    type = models.CharField(max_length=1, choices=TournamentType.choices)
     team_type = models.ForeignKey('TeamType')
     games = models.IntegerField('amount of games in the tournament', default=1)
     photo = models.ImageField(upload_to=filename, blank=True)
