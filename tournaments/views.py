@@ -54,7 +54,7 @@ class AddPlayersView(View):
         return render(request, 'tournaments/add_players.html',
                       {'tournament': tournament, 'players': players, 'already_selected': already_selected})
 
-# todo change id param name
+    # todo change id param name
     def post(self, request, id):
         players = request.POST.getlist('select')
         for player in players:

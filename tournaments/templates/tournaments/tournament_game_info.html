@@ -7,10 +7,69 @@
 
 {% block content %}
     <h4>{{ game.name }}</h4>
-    <ul>
-        {% for gInf in gameInfo %}
-            <li>{{ gInf.player}}</li>
-        {% endfor %}
-    </ul>
     <a href="{% url 'tournaments:game_update' game.tournament_id game.id %}" class="btn btn-primary">Изменить</a>
+
+
+
+    <h5>Результаты</h5>
+
+    <div class="playerInfo col-md-12" style="border: solid 1px black; border-radius: 3px; padding: 10px">
+
+        <div class="col-md-4"><b>Игрок</b></div>
+        <div class="col-md-2"><b>Очки</b></div>
+        <div class="col-md-3"><b>Новое значение</b></div>
+        <br>
+        <hr>
+
+
+        {% for gInf in gameInfo %}
+            <form action="" method="post" name="playersToEdit" onsubmit="updateResults(event)"
+                  class="updateResultsForm">
+                {% csrf_token %}
+                <div class="col-md-4">{{ gInf.player }}
+                </div>
+                <div class="col-md-2" id="result{{ gInf.pk }}">{{ gInf.result }}</div>
+
+                <div class="col-md-4">
+                    <input type="hidden" name="info_id" value="{{ gInf.pk }}">
+
+                    <div class="form-group">
+                        <input class="col-md-3 form-control" style="width:50%;" type="text" name="result">
+                    </div>
+
+                </div>
+                <input type="submit" name="type" value="Сохранить" class="btn btn-success ">
+            </form>
+
+            <hr class="mar-top-10">
+
+        {% endfor %}
+    </div>
+
+    <script>
+        function updateResults(event) {
+            $.ajax({
+                    url: '{% url 'tournaments:update_game_result' %}',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: $(event.target).serialize(),
+                    success:
+                        function (data) {
+                            if (data['Success']) {
+                                $('#result' + data['id']).text(data['Success']);
+                                $(event.target).find('input[type="text"]').removeClass('error');
+
+                                $(event.target).find('input[type="text"]').addClass('success');
+
+                            } else {
+                                $(event.target).find('input[type="text"]').addClass('error');
+                            }
+                        }
+                }
+            );
+            event.preventDefault();
+        }
+
+    </script>
+
 {% endblock %}

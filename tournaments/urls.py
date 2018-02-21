@@ -1,5 +1,6 @@
 from django.conf.urls import url
 
+from tournaments.ajax_views import GameResultUpdate
 from tournaments.views import *
 
 urlpatterns = [
@@ -12,5 +13,8 @@ urlpatterns = [
     url(r'^(?P<tournament_pk>\d+)/game/(?P<game_pk>\d+)$',
         TournamentGameInfo.as_view(), name='tournament_game_info'),
     url(r'^(?P<tournament_pk>\d+)/game/(?P<game_pk>\d+)/edit$',
-        GameUpdateView.as_view(), name='game_update')
+        GameUpdateView.as_view(), name='game_update'),
+
+    # Ajax
+    url(r'^ajax/update_results', GameResultUpdate.as_view(), name='update_game_result')
 ]
