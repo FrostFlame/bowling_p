@@ -1419,3 +1419,11 @@ ul.nostyle i {
         padding-top: 0px;
     }
 }
+
+.error {
+    border-color: #ff6359;
+}
+
+.success {
+    border-color: #62ff6d;
+}
