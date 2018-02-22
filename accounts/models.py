@@ -81,21 +81,12 @@ class PlayerInfo(models.Model):
     user = models.OneToOneField(User, null=True, unique=True, related_name="profile")
     license = models.CharField(max_length=20, blank=True, default='Не указана')
 
-    @property
-    def _type_of_license(self):
-        if '№0' in self.license:
-            return 'club_license'
-        elif '№1' in self.license:
-            return 'game_license'
-        else:
-            return 'no_license'
-
     category = models.ForeignKey('SportCategory')
     passport = models.ImageField(upload_to=UploadToPathAndRename('passports/'))
     avatar = models.ImageField(upload_to=UploadToPathAndRename('avatars/'))
 
     # todo add cities to database
-    city = models.CharField(max_length=30, default='Не указан', blank=True)
+    city = models.ForeignKey('City')
 
     i_name = models.CharField(max_length=50, blank=False)
     f_name = models.CharField(max_length=50, blank=False)
@@ -157,6 +148,13 @@ class RegistrationRequest(models.Model):
 
 class SportCategory(models.Model):
     name = models.CharField(max_length=40)
+
+    def __str__(self):
+        return self.name
+
+
+class City(models.Model):
+    name = models.CharField(max_length=60, default='Не указан')
 
     def __str__(self):
         return self.name

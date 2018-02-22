@@ -4,7 +4,7 @@ from django.views import View
 
 from accounts import forms
 from accounts.forms import PlayerRegistrationForm
-from accounts.models import RegistrationRequest, PlayerInfo, User
+from accounts.models import RegistrationRequest, PlayerInfo, User, City
 
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
