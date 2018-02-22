@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load tournament_extras %}
 
 {% block extrahead %}
     <link href="{% static 'css/select2.min.css' %}" rel="stylesheet"/>
@@ -22,7 +23,7 @@
                     </option>
                 {% endfor %}
             </select>
-            <input type="submit"/>
+            <input class="btn btn-success" type="submit"/>
         </form>
     </div>
 
@@ -59,9 +60,9 @@
 
     <script>
 
-        var passports = new Map();
+        var points = new Map();
         {% for player in selected %}
-            passports.set('{{ player.id }}', '{{ player.phone }}');
+            points.set('{{ player.id }}', '{% get_player_points player tournament  %}');
         {% endfor %}
 
         function formatState(state) {
@@ -69,7 +70,7 @@
                 return state.text;
             }
             var $state = $(
-                '<span>' + state.text + '<br><small>' + passports.get(state.id) + '</small>' + ' очков</span>'
+                '<span>' + state.text + '<br><small>' + points.get(state.id) + '</small>' + ' очков</span>'
             );
             return $state;
         };

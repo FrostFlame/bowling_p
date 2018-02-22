@@ -3,10 +3,12 @@ from datetime import datetime
 
 from django.db import models
 # Create your models here.
-from djchoices import DjangoChoices, ChoiceItem
+from django.db.models import Sum
 from django.utils.crypto import get_random_string
+from djchoices import DjangoChoices, ChoiceItem
 
 from accounts.models import PlayerInfo
+
 
 # todo enum
 class TournamentType(DjangoChoices):
@@ -15,6 +17,7 @@ class TournamentType(DjangoChoices):
     GAME_LICENSE = ChoiceItem('G', 'Только для обладателей игровой лицензии')
     ANY_LICENSE = ChoiceItem('L', 'Для обладателей любой лицензии')
     PUBLIC = ChoiceItem('P', "Публичный")
+
 
 def filename(instance, filename):
     return os.path.join('tournaments', get_random_string(length=32) + '.' + filename.split('.')[-1])
@@ -33,6 +36,11 @@ class Tournament(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_player_points(self, player):
+        games = Game.objects.filter(tournament=self)
+        info = GameInfo.objects.filter(game__in=games, player=player)
+        return info.aggregate(Sum('result'))['result__sum']
 
 
 class TournamentMembership(models.Model):
@@ -60,4 +68,4 @@ class Game(models.Model):
 class GameInfo(models.Model):
     player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    result = models.CharField(max_length=10)
+    result = models.IntegerField(default=0)

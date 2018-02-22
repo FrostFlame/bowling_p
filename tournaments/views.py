@@ -8,7 +8,7 @@ from django.views.generic import CreateView, UpdateView, ListView
 
 from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm, GameCreationForm
-from tournaments.models import Tournament, TournamentMembership, Game, GameInfo, TournamentType
+from tournaments.models import Tournament, TournamentMembership, Game, GameInfo
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -74,10 +74,12 @@ class TournamentGameInfo(View):
 
 
 class GameCreateView(View):
-    def get(self, request, id):
-        selected = Tournament.objects.get(pk=id).players.all()
-        game_form = GameCreationForm()
+    def get(self, request, pk):
+        tournament = Tournament.objects.get(pk=pk)
+        selected = tournament.players.all()
+        game_form = GameCreationForm(),
         return render(request, 'tournaments/game_create.html', {
+            'tournament': tournament,
             'form': game_form,
             'selected': selected,
         })
