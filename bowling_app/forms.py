@@ -1,6 +1,7 @@
 from django import forms
+from file_resubmit.admin import AdminResubmitImageWidget
 
-from accounts.models import PlayerInfo, SportCategory, SEX_CHOICES
+from accounts.models import PlayerInfo, SportCategory, SEX_CHOICES, City
 
 
 class StaffPlayerRegister(forms.ModelForm):
@@ -22,6 +23,12 @@ class StaffPlayerRegister(forms.ModelForm):
         widget=forms.TextInput(
             attrs={'placeholder': 'Фамилия', 'class': 'form-control', 'data-validation': 'custom',
                    'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
+    )
+    avatar = forms.ImageField(
+        label='Аватар',
+        widget=AdminResubmitImageWidget(
+            attrs={'class': 'form-control'}
+        )
     )
     sex = forms.ChoiceField(
         label='Пол',
@@ -56,12 +63,14 @@ class StaffPlayerRegister(forms.ModelForm):
             attrs={'class': 'form-control'}
         )
     )
-    city = forms.CharField(
+    city = forms.ModelChoiceField(
         label='Город',
-        required=False,
-        widget=forms.TextInput(
-            attrs={'class': 'form-control', 'data-validation': 'custom',
-                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}
+        queryset=City.objects.all(),
+        empty_label=None,
+        required=True,
+
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
         )
     )
 
