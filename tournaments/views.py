@@ -104,6 +104,10 @@ class GameCreateView(View):
 
 
 class GameUpdateView(View):
+    @method_decorator(staff_member_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(GameUpdateView, self).dispatch(request, *args, **kwargs)
+
     def get(self, request, tournament_pk, game_pk):
         game = Game.objects.get(pk=game_pk)
         form = GameCreationForm(instance=game)
