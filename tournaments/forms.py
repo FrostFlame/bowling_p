@@ -31,7 +31,7 @@ class TournamentCreationForm(forms.ModelForm):
     description = forms.CharField(
         label="Описание",
         widget=forms.Textarea(
-            attrs={'class': 'form-control'}
+            attrs={'class': 'form-control', 'rows': '4'}
         )
     )
 

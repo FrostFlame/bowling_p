@@ -7,24 +7,24 @@
 {% endblock %}
 
 {% block content %}
-    <form id="form_torn_reg" action="" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+    <div class="col-md-8">
+        <form id="form_torn_reg" action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-        {% for field in form %}
+            {% for field in form %}
 
-            {% if field.id_for_label != 'id_photo' %}
-                <p>
+                {% if field.id_for_label != 'id_photo' %}
+                    <p>
 
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}</p>
-            {% endif %}
-        {% endfor %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}</p>
+                {% endif %}
+            {% endfor %}
 
-        {#        {{ form.as_p }}#}
-
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="input-group">
+            <div class="row form-group">
+                <div class="col-sm-4">
+                    <label>Изображение</label>
+                    <div class="input-group">
                     <span class="input-group-btn">
                         <span class="btn btn-default btn-file">
                             Выбрать… <input type="file" id="id_photo" accept="image/jpeg, image/png"
@@ -35,14 +35,17 @@
                                             data-validation-error-msg-mime="Вы можете загружать только изображения.">
                         </span>
                     </span>
-                    <input type="text" autocomplete="off" class="form-control" readonly>
+                        <input type="text" autocomplete="off" class="form-control" readonly>
+                    </div>
+                    <img class="mar-bot-10 img-upload" id='id_photoUpload'/>
                 </div>
-                <img class="mar-bot-10 img-upload" id='id_photoUpload'/>
             </div>
-        </div>
 
-        <button class="btn btn-primary">Продолжить</button>
-    </form>
+            <div class="form-group mar-top-10">
+                <button class="btn btn-primary">Продолжить</button>
+            </div>
+        </form>
+    </div>
 
     <script src="{% static 'js/jquery.maskedinput.js' %}"></script>
     <script src="{% static 'js/jquery-ui.js' %}"></script>
@@ -52,12 +55,14 @@
 
         $('#id_start').datepicker({
             changeMonth: true,
-            changeYear: true
+            changeYear: true,
+            yearRange: "2015:+nn"
         });
 
         $('#id_end').datepicker({
             changeMonth: true,
-            changeYear: true
+            changeYear: true,
+            yearRange: "2015:+nn"
         });
     </script>
 {% endblock %}
