@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
 
 {% block content %}
 
@@ -9,3 +9,4 @@
     {% endif %}
 
 {% endblock %}
+/Users/sagithaliullin/student/gitHub/bowling/static/app-assets/images/logo/robust-logo-light.png

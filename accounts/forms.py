@@ -71,13 +71,13 @@ class PlayerRegistrationForm(forms.ModelForm):
         label='Имя',
         widget=forms.TextInput(
             attrs={'placeholder': 'Имя', 'class': 'form-control', 'data-validation': 'custom',
-                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
+                   'data-validation-regexp': '^[а-яА-Я]+$'}),
     )
     f_name = forms.CharField(
         label='Фамилия',
         widget=forms.TextInput(
             attrs={'placeholder': 'Фамилия', 'class': 'form-control', 'data-validation': 'custom',
-                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
+                   'data-validation-regexp': '^[а-яА-Я]+$'}),
     )
     passport = forms.ImageField(
         label='Фотография паспорта',

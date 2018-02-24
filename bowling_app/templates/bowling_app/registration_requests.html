@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
 {% block title %}
     Заявки на регистрацию
 {% endblock %}

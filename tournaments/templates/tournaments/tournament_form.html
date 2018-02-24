@@ -1,14 +1,45 @@
-{% extends 'base.html' %}
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
 {% load static %}
 
 {% block extrahead %}
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'css/imageupload.css' %}">
 {% endblock %}
 
 {% block content %}
     <form id="form_torn_reg" action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
+
+        {% for field in form %}
+
+            {% if field.id_for_label != 'id_photo' %}
+                <p>
+
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}</p>
+            {% endif %}
+        {% endfor %}
+
+        {#        {{ form.as_p }}#}
+
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <span class="btn btn-default btn-file">
+                            Выбрать… <input type="file" id="id_photo" accept="image/jpeg, image/png"
+                                            name="passport" required data-validation="mime size"
+                                            data-validation-allowing="jpg, png, gif"
+                                            data-validation-max-size="20Mb"
+                                            data-validation-error-msg-size="Вы не можете загружать изображения больше 20Мб"
+                                            data-validation-error-msg-mime="Вы можете загружать только изображения.">
+                        </span>
+                    </span>
+                    <input type="text" autocomplete="off" class="form-control" readonly>
+                </div>
+            </div>
+        </div>
+        <img class="mar-bot-10 img-upload" id='id_photoUpload'/>
         <button class="btn btn-primary">Продолжить</button>
     </form>
 
@@ -30,3 +61,45 @@
     </script>
 {% endblock %}
 
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $(document).on('change', '.btn-file :file', function () {
+                var input = $(this),
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                input.trigger('fileselect', [label]);
+            });
+
+            $('.btn-file :file').on('fileselect', function (event, label) {
+
+                var input = $(this).parents('.input-group').find(':text'),
+                    log = label;
+
+                if (input.length) {
+                    input.val(log);
+                } else {
+                    if (log) alert(log);
+                }
+
+            });
+
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        var id = '#' + input.id + 'Upload';
+                        console.log(id);
+                        $(id).attr('src', e.target.result);
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            $("#id_photo").change(function () {
+                readURL(this);
+            });
+        });
+    </script>
+{% endblock %}
