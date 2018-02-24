@@ -18,7 +18,7 @@ class RegisterUserForm(forms.ModelForm):
         label='Пароль',
         widget=forms.PasswordInput(
             attrs={'placeholder': 'Пароль', 'class': 'form-control', 'data-validation': 'strength',
-                   'data-validation-strength': '2'}),
+                   'data-validation-strength': '1'}),
     )
     password2 = forms.CharField(
         label='Повторите пароль',
@@ -71,13 +71,13 @@ class PlayerRegistrationForm(forms.ModelForm):
         label='Имя',
         widget=forms.TextInput(
             attrs={'placeholder': 'Имя', 'class': 'form-control', 'data-validation': 'custom',
-                   'data-validation-regexp': '^[а-яА-Я]+$'}),
+                   'data-validation-regexp': '^[а-яёА-ЯЁ]+$'}),
     )
     f_name = forms.CharField(
         label='Фамилия',
         widget=forms.TextInput(
             attrs={'placeholder': 'Фамилия', 'class': 'form-control', 'data-validation': 'custom',
-                   'data-validation-regexp': '^[а-яА-Я]+$'}),
+                   'data-validation-regexp': '^[а-яёА-ЯЁ]+([-][А-ЯЁа-яё]+)?$'}),
     )
     passport = forms.ImageField(
         label='Фотография паспорта',
@@ -87,7 +87,7 @@ class PlayerRegistrationForm(forms.ModelForm):
         )
     )
     avatar = forms.ImageField(
-        label='Аватар',
+        label='Фотография профиля',
         widget=AdminResubmitImageWidget(
             attrs={'class': 'form-control'}
         )
@@ -97,7 +97,7 @@ class PlayerRegistrationForm(forms.ModelForm):
         required=False,
         widget=forms.TextInput(
             attrs={'placeholder': 'Отчество', 'class': 'form-control', 'data-validation': 'custom',
-                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
+                   'data-validation-regexp': '^[а-яёА-ЯЁ]*$'}),
     )
     sex = forms.ChoiceField(
         label='Пол',
@@ -116,7 +116,8 @@ class PlayerRegistrationForm(forms.ModelForm):
         label='Дата рождения',
         required=True,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Дата рождения', 'class': 'form-control'}),
+            attrs={'placeholder': 'Дата рождения', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})$'}),
     )
     category = forms.ModelChoiceField(
         label='Разряд',
