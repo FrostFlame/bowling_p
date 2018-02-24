@@ -269,12 +269,11 @@ ul.nostyle i {
 
 @media (min-width: 767px) {
     /*.navbar {*/
-        /*padding: 20px 0;*/
-        /*-webkit-transition: background .5s ease-in-out, padding .5s ease-in-out;*/
-        /*-moz-transition: background .5s ease-in-out, padding .5s ease-in-out;*/
-        /*transition: background .5s ease-in-out, padding .5s ease-in-out;*/
+    /*padding: 20px 0;*/
+    /*-webkit-transition: background .5s ease-in-out, padding .5s ease-in-out;*/
+    /*-moz-transition: background .5s ease-in-out, padding .5s ease-in-out;*/
+    /*transition: background .5s ease-in-out, padding .5s ease-in-out;*/
     /*}*/
-
     .top-nav-collapse {
         padding: 0;
     }
@@ -1434,4 +1433,12 @@ ul.nostyle i {
 
 .success {
     border-color: #62ff6d;
+}
+
+.btn span.glyphicon {
+    opacity: 0;
+}
+
+.btn.active span.glyphicon {
+    opacity: 1;
 }
