@@ -33,6 +33,8 @@ class RegisterUserView(View):
             player = PlayerRegistrationForm(request.POST, request.FILES, instance=player)
             player.is_active = False
             player_instance = player.save()
+            player_instance.watermark()
+            player_instance.save()
             send_activation_mail(request, player_instance)
             email = user.email
             return render(request, 'accounts/confirm_email.html',

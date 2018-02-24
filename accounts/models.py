@@ -1,8 +1,12 @@
+import io
+from PIL import Image
 from django.contrib.auth.models import BaseUserManager, AbstractUser
+from django.core.files.base import ContentFile
+from django.core.files.images import ImageFile
 from django.db import models
 from django.db.models import Q
 
-from accounts.utils import UploadToPathAndRename
+from accounts.utils import UploadToPathAndRename, add_watermark
 
 SEX_CHOICES = (
     ('0', 'Мужской'),
@@ -118,6 +122,14 @@ class PlayerInfo(models.Model):
         self.sex = obj.sex
         self.phone = obj.phone
         self.save()
+
+    def watermark(self):
+        x = add_watermark(self.passport.path, 'static/images/logo.png')
+        img_io = io.BytesIO()
+        x.save(img_io, format='png')
+        self.passport.save(self.passport.url,
+                           content=ContentFile(img_io.getvalue()),
+                           save=False)
 
 
 class RegistrationRequestManager(models.Manager):
