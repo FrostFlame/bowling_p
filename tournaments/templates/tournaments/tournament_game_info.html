@@ -7,8 +7,9 @@
 
 {% block content %}
     <h4>{{ game.name }}</h4>
-    <a href="{% url 'tournaments:game_update' game.tournament_id game.id %}" class="btn btn-primary">Изменить</a>
-
+    {% if request.user.is_staff %}
+        <a href="{% url 'tournaments:game_update' game.tournament_id game.id %}" class="btn btn-primary">Изменить</a>
+    {% endif %}
 
     <h3>Результаты</h3>
 

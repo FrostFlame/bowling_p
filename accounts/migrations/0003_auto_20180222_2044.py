@@ -3,11 +3,9 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('accounts', '0002_playerinfo_avatar'),
     ]
@@ -20,9 +18,5 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(default='Не указан', max_length=60)),
             ],
         ),
-        migrations.AlterField(
-            model_name='playerinfo',
-            name='city',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounts.City'),
-        ),
+
     ]
