@@ -124,7 +124,7 @@ class PlayerInfo(models.Model):
         self.save()
 
     def watermark(self):
-        x = add_watermark(self.passport.path, 'static/images/logo.png')
+        x = add_watermark(self.passport.path, 'static/images/watermark2.png')
         img_io = io.BytesIO()
         x.save(img_io, format='png')
         self.passport.save(self.passport.url,
