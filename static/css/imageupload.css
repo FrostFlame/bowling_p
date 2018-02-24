@@ -38,5 +38,5 @@
 .img-upload {
     float: right;
     border-radius: 4px !important;
-    width: calc(100% - 92px);
+    width: 100%;
 }
