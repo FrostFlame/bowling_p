@@ -77,7 +77,7 @@ class GameCreateView(View):
     def get(self, request, pk):
         tournament = Tournament.objects.get(pk=pk)
         selected = tournament.players.all()
-        game_form = GameCreationForm(),
+        game_form = GameCreationForm()
         return render(request, 'tournaments/game_create.html', {
             'tournament': tournament,
             'form': game_form,
