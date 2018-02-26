@@ -1,5 +1,12 @@
-{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% extends user.is_staff|yesno:"base.html,base.html" %}
 {% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
+
+    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+{% endblock %}
 
 {% block title %}
     Игра
@@ -46,18 +53,23 @@
         </div>
     {% else %}
 
-        <table class="table table-striped">
+        <table class="table table-bordered" id="results">
             <thead>
             <tr>
+                <th>#</th>
                 <th>Игрок</th>
+                <th>Разряд</th>
+                <th>Город</th>
                 <th>Результат</th>
             </tr>
             </thead>
             <tbody>
             {% for gInf in gameInfo %}
-
                 <tr>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ gInf.player }}</td>
+                    <td>{{ gInf.player.category }}</td>
+                    <td>{{ gInf.player.city }}</td>
                     <td>{{ gInf.result }}</td>
                 </tr>
             {% endfor %}
@@ -66,6 +78,12 @@
         </table>
 
     {% endif %}
+
+
+
+
+
+
 
 
     <script>
@@ -92,6 +110,12 @@
             event.preventDefault();
         }
 
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#results').DataTable();
+        });
     </script>
 
 {% endblock %}
