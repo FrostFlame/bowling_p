@@ -26,13 +26,11 @@
                                             class="glyphicon glyphicon-remove"></i></button>
                                 </form>
                             {% endif %}
-                            <span class="square" style="background-image:url('{{ MEDIA_URL }}{{ tournament.photo }}');">
-{#                               <img src="" alt="">#}
-                            </span>
+                            <span class="square" style="background-image:url('{{ MEDIA_URL }}{{ tournament.photo }}');"></span>
                             <h4 class="list-group-item-heading" id="c${complex.id?c}">{{ tournament.name }}</h4>
                             <br>
-                            <p class="list-group-item-text">Начало: {{ tournament.start }}</p>
-                            <p class="list-group-item-text">Конец: {{ tournament.end }}</p>
+                            <p class="list-group-item-text">город: Казань</p>
+                            <p class="list-group-item-text mar-top-10">{{ tournament.start|date:"d.m.Y" }} – {{ tournament.end|date:"d.m.Y" }}</p>
                         </a>
                     </li>
 

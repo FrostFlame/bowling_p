@@ -7,8 +7,7 @@ from tournaments.models import Tournament, TournamentType, TeamType, Game
 class TournamentCreationForm(forms.ModelForm):
     class Meta:
         model = Tournament
-        fields = ('name', 'start', 'end', 'description', 'type', 'team_type', 'games',)
-        # widgets = {'photo': AdminResubmitImageWidget}
+        fields = ('name', 'start', 'end', 'description', 'type', 'team_type', 'games', 'photo')
 
     photo = forms.ImageField(
         label='Изображение',

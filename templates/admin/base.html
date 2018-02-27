@@ -1,603 +1,527 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" data-textdirection="ltr" class="loading">
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-    <meta name="description"
-          content="Robust admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
-    <meta name="keywords"
-          content="admin template, robust admin template, dashboard template, flat admin template, responsive admin template, web app">
-    <meta name="author" content="PIXINVENT">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
         {% block title %}
             Title
         {% endblock %}
     </title>
 
-    <link rel="apple-touch-icon" sizes="60x60" href="{% static 'admin/images/ico/apple-icon-60.png' %}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'admin/images/ico/apple-icon-76.png' %}">
-    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'admin/images/ico/apple-icon-120.png' %}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'admin/images/ico/apple-icon-152.png' %}">
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'admin/images/ico/favicon.ico' %}">
-    <link rel="shortcut icon" type="image/png" href="{% static 'admin/images/ico/favicon-32.png' %}">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-touch-fullscreen" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <!-- BEGIN VENDOR CSS-->
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/bootstrap.css' %}">
-    <!-- font icons-->
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/fonts/icomoon.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/fonts/flag-icon-css/css/flag-icon.min.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/vendors/css/extensions/pace.css' %}">
-    <!-- END VENDOR CSS-->
-    <!-- BEGIN ROBUST CSS-->
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/bootstrap-extended.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/app.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/colors.css' %}">
-    <!-- END ROBUST CSS-->
-    <!-- BEGIN Page Level CSS-->
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/core/menu/menu-types/vertical-menu.css' %}">
-    <link rel="stylesheet" type="text/css"
-          href="{% static 'admin/css/core/menu/menu-types/vertical-overlay-menu.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/core/colors/palette-gradient.css' %}">
-    <!-- END Page Level CSS-->
-    <!-- BEGIN Custom CSS-->
-    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
-    <!-- END Custom CSS-->
+    <link href="{% static 'admin/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'admin/css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'admin/css/datepicker3.css' %}" rel="stylesheet">
+    <link href="{% static 'admin/css/styles.css' %}" rel="stylesheet">
+
     <script src="{% static 'js/jquery.js' %}"></script>
-    <script src="{% static 'js/fontawesome-all.min.js' %}"></script>
     <link href="{% static 'css/main.css' %}" rel="stylesheet">
 
     {% block extrahead %}
-    {% endblock %}
-</head>
-<body data-open="click" data-menu="vertical-menu" data-col="2-columns"
-      class="vertical-layout vertical-menu 2-columns  fixed-navbar">
 
-<!-- navbar-fixed-top-->
-<nav class="header-navbar navbar navbar-with-menu navbar-fixed-top navbar-semi-dark navbar-shadow">
-    <div class="navbar-wrapper">
+    {% endblock %}
+    <!--[if lt IE 9]>
+	<script src="js/html5shiv.js"></script>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+</head>
+<body>
+{#================================ NAVBAR =======================================================#}
+<nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
         <div class="navbar-header">
-            <ul class="nav navbar-nav">
-                <li class="nav-item mobile-menu hidden-md-up float-xs-left"><a
-                        class="nav-link nav-menu-main menu-toggle hidden-xs"><i class="icon-menu5 font-large-1"></i></a>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#sidebar-collapse"><span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span></button>
+            <a class="navbar-brand" href="#"><img src="{% static 'images/logo2.png' %}" style="width: 150px" alt=""></a>
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                    <em class="fa fa-bell"></em><span class="label label-danger">5</span>
+                </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li><a href="#">
+                            <div><em class="fa fa-envelope"></em> 1 New Message
+                                <span class="pull-right text-muted small">3 mins ago</span></div>
+                        </a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">
+                            <div><em class="fa fa-heart"></em> 12 New Likes
+                                <span class="pull-right text-muted small">4 mins ago</span></div>
+                        </a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">
+                            <div><em class="fa fa-user"></em> 5 New Followers
+                                <span class="pull-right text-muted small">4 mins ago</span></div>
+                        </a></li>
+                    </ul>
                 </li>
-                <li class="nav-item"><a href="{% url 'bowlingApp:home' %}" class="navbar-brand nav-link"><img
-                        alt="branding logo"
-                        src="{% static 'admin/images/logo/logo3.png' %}"
-                        data-expand="{% static 'admin/images/logo/logo3.png' %}"
-                        data-collapse="{% static 'admin/images/logo/logo-small8.png' %}"
-                        class="brand-logo"></a>
-                </li>
-                <li class="nav-item hidden-md-up float-xs-right"><a data-toggle="collapse" data-target="#navbar-mobile"
-                                                                    class="nav-link open-navbar-container"><i
-                        class="icon-ellipsis pe-2x icon-icon-rotate-right-right"></i></a></li>
             </ul>
         </div>
-
-        <div class="navbar-container content container-fluid">
-            <div id="navbar-mobile" class="collapse navbar-toggleable-sm">
-                <ul class="nav navbar-nav">
-                    <li class="nav-item hidden-sm-down"><a class="nav-link nav-menu-main menu-toggle hidden-xs"><i
-                            class="icon-menu5"> </i></a></li>
-                    <li class="nav-item hidden-sm-down"><a href="#" class="nav-link nav-link-expand"><i
-                            class="ficon icon-expand2"></i></a></li>
-                </ul>
-
-                <ul class="nav navbar-nav float-xs-right">
-                    {#                    Заявки#}
-                    <li class="dropdown dropdown-notification nav-item">
-                        <a href="{% url 'bowlingApp:bowling_manage_registration' %}" class="nav-link nav-link-label">
-                            <i class="ficon icon-bell4"></i>
-                            <span
-                                    class="tag tag-pill tag-default tag-danger tag-default tag-up">5</span></a>
-
-                    </li>
-
-                    <li class="dropdown dropdown-user nav-item"><a href="#" data-toggle="dropdown"
-                                                                   class="dropdown-toggle nav-link dropdown-user-link">
-                        <span
-                                class="avatar avatar-online"><img
-                                src="{% static 'admin/images/portrait/small/avatar-s-1.png' %}"
-                                alt="avatar"><i></i></span>
-                        <span class="user-name">Модератор</span></a>
-                        <div class="dropdown-menu dropdown-menu-right"><a href="#" class="dropdown-item">
-                            <i class="icon-head"></i> Профиль</a><a href="#" class="dropdown-item">
-                            <div class="dropdown-divider"></div>
-                            <a href="{% url 'auth:logout' %}" class="dropdown-item"><i class="icon-power3"></i>
-                                Выход</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    </div><!-- /.container-fluid -->
 </nav>
 
-<!-- ////////////////////////////////////////////////////////////////////////////-->
+{#================================ SIDEBAR =======================================================#}
+<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+    <ul class="nav menu">
+        <li class="active"><a href="{% url 'bowlingApp:home' %}"><em class="fa fa-home">&nbsp;</em> Главная</a></li>
+        <li><a href="#news"><em class="fa fa-newspaper-o">&nbsp;</em> Новости</a></li>
+        <li class="parent"><a data-toggle="collapse" href="#sub-item-1">
+            <em class="fa fa-trophy">&nbsp;</em> Турниры <span data-toggle="collapse" href="#sub-item-1"
+                                                               class="icon pull-right"><em
+                class="fa fa-plus"></em></span>
+        </a>
+            <ul class="children collapse" id="sub-item-1">
+                <li><a class="" href="{% url 'tournaments:tournaments_all' %}">
+                    <span class="fa fa-globe">&nbsp;</span> Публичные
+                </a></li>
+                <li><a class="" href="#">
+                    <span class="fa fa-soccer-ball-o">&nbsp;</span> Спортивные
+                </a></li>
+                <li><a class="" href="#">
+                    <span class="fa fa-money">&nbsp;</span> Коммерческие
+                </a></li>
+                <li><a class="" href="{% url 'tournaments:tournaments_create' %}">
+                    <span class="fa fa-plus-square-o">&nbsp;</span> Создать
+                </a></li>
+            </ul>
+        </li>
+        <li><a href="#albums"><em class="fa fa-picture-o">&nbsp;</em> Альбомы</a></li>
+        <li><a href="#stats"><em class="fa fa-bar-chart-o">&nbsp;</em> Статистика</a></li>
+        <li><a href="#calendar"><em class="fa fa-calendar">&nbsp;</em> Календарь</a></li>
+        <li><a href="{% url 'bowlingApp:bowling_manage_registration' %}"><em class="fa fa-bell-o">&nbsp;</em> Заявки</a></li>
+        <li><a href="{% url 'bowlingApp:players_list' %}"><em class="fa fa-users">&nbsp;</em> Игроки</a></li>
+
+    </ul>
 
 
-<!-- main menu-->
-<div data-scroll-to-active="true" class="main-menu menu-fixed menu-dark menu-accordion menu-shadow">
-    <!-- main menu content-->
-    <div class="main-menu-content">
-        <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
-            <li class=" nav-item"><a href="{% url 'bowlingApp:home' %}"><i class="icon-home4"></i><span
-                    data-i18n="nav.dash.main"
-                    class="menu-title">Главная</span></a>
-            </li>
-            <li class=" nav-item"><a href="#"><i class="icon-newspaper"></i><span
-                    class="menu-title"> Новости</span></a>
-            </li>
-            <li class=" nav-item"><a href="#"><i class="icon-trophy"></i><span
-                    data-i18n="nav.project.main"
-                    class="menu-title">Турниры</span></a>
-                <ul class="menu-content">
-                    <li><a href="{% url 'tournaments:tournaments_all' %}" data-i18n="nav.invoice.invoice_template"
-                           class="menu-item">Все</a>
-                    </li>
-                    <li><a href="#" data-i18n="nav.gallery_pages.gallery_grid" class="menu-item">Публичные</a>
-                    </li>
-                    <li><a href="#" data-i18n="nav.search_pages.search_page" class="menu-item">Спортивные</a>
-                    </li>
-                    <li><a href="#" data-i18n="nav.search_pages.search_website" class="menu-item">Комерческие</a>
-                    </li>
-                </ul>
-            </li>
-            <li class=" nav-item"><a href="#"><i class="icon-images"></i><span
-                    data-i18n="nav.cards.main"
-                    class="menu-title">Альбомы</span></a>
-            </li>
-            <li class=" nav-item"><a href="#"><i class="icon-stats-bars"></i><span
-                    data-i18n="nav.advance_cards.main"
-                    class="menu-title">Статистика</span></a>
-            </li>
-            <li class=" nav-item"><a href="#"><i class="icon-calendar5"></i><span
-                    data-i18n="nav.content.main"
-                    class="menu-title">Календарь</span></a>
-            </li>
-            <li class=" nav-item"><a href="#"><i class="icon-bell"></i><span
-                    data-i18n="nav.components.main"
-                    class="menu-title">Заявки</span></a>
-            </li>
-            <li class=" nav-item"><a href="{% url 'bowlingApp:players_list' %}"><i
-                    class="icon-users"></i><span data-i18n="nav.icons.main"
-                                                                  class="menu-title">Игроки</span></a>
-            </li>
-        </ul>
-    </div>
-    <!-- /main menu content-->
-    <!-- main menu footer-->
-    <!-- include includes/menu-footer-->
-    <!-- main menu footer-->
-</div>
-<!-- / main menu-->
+    {#        <li><a href="#"><em class="fa fa-power-off">&nbsp;</em> Logout</a></li>#}
+    </ul>
+</div><!--/.sidebar-->
 
-<div class="app-content content container-fluid full-h-a">
-    <div class="content-wrapper">
-        <div class="content-header row">
-        </div>
-        <div class="content-body"><!-- stats -->
-            {% block content %}
-                <div class="row">
-                    <div class="col-xl-3 col-lg-6 col-xs-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="card-block">
-                                    <div class="media">
-                                        <div class="media-body text-xs-left">
-                                            <h3 class="pink">278</h3>
-                                            <span>New Projects</span>
-                                        </div>
-                                        <div class="media-right media-middle">
-                                            <i class="icon-bag2 pink font-large-2 float-xs-right"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-6 col-xs-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="card-block">
-                                    <div class="media">
-                                        <div class="media-body text-xs-left">
-                                            <h3 class="teal">156</h3>
-                                            <span>New Clients</span>
-                                        </div>
-                                        <div class="media-right media-middle">
-                                            <i class="icon-user1 teal font-large-2 float-xs-right"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-6 col-xs-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="card-block">
-                                    <div class="media">
-                                        <div class="media-body text-xs-left">
-                                            <h3 class="deep-orange">64.89 %</h3>
-                                            <span>Conversion Rate</span>
-                                        </div>
-                                        <div class="media-right media-middle">
-                                            <i class="icon-diagram deep-orange font-large-2 float-xs-right"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-6 col-xs-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="card-block">
-                                    <div class="media">
-                                        <div class="media-body text-xs-left">
-                                            <h3 class="cyan">423</h3>
-                                            <span>Support Tickets</span>
-                                        </div>
-                                        <div class="media-right media-middle">
-                                            <i class="icon-ios-help-outline cyan font-large-2 float-xs-right"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+{#================================ CONTENT =======================================================#}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    {% block content %}
+
+        <div class="row">
+            <ol class="breadcrumb">
+                <li><a href="#">
+                    <em class="fa fa-home"></em>
+                </a></li>
+                <li class="active">Dashboard</li>
+            </ol>
+        </div><!--/.row-->
+
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Dashboard</h1>
+            </div>
+        </div><!--/.row-->
+
+        <div class="panel panel-container">
+            <div class="row">
+                <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+                    <div class="panel panel-teal panel-widget border-right">
+                        <div class="row no-padding"><em class="fa fa-xl fa-shopping-cart color-blue"></em>
+                            <div class="large">120</div>
+                            <div class="text-muted">New Orders</div>
                         </div>
                     </div>
                 </div>
-                <!--/ stats -->
-                <!--/ project charts -->
-                <div class="row">
-                    <div class="col-xl-8 col-lg-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <ul class="list-inline text-xs-center pt-2 m-0">
-                                    <li class="mr-1">
-                                        <h6><i class="icon-circle warning"></i> <span
-                                                class="grey darken-1">Remaining</span>
-                                        </h6>
-                                    </li>
-                                    <li class="mr-1">
-                                        <h6><i class="icon-circle success"></i> <span
-                                                class="grey darken-1">Completed</span>
-                                        </h6>
+                <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+                    <div class="panel panel-blue panel-widget border-right">
+                        <div class="row no-padding"><em class="fa fa-xl fa-comments color-orange"></em>
+                            <div class="large">52</div>
+                            <div class="text-muted">Comments</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+                    <div class="panel panel-orange panel-widget border-right">
+                        <div class="row no-padding"><em class="fa fa-xl fa-users color-teal"></em>
+                            <div class="large">24</div>
+                            <div class="text-muted">New Users</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+                    <div class="panel panel-red panel-widget ">
+                        <div class="row no-padding"><em class="fa fa-xl fa-search color-red"></em>
+                            <div class="large">25.2k</div>
+                            <div class="text-muted">Page Views</div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--/.row-->
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Site Traffic Overview
+                        <ul class="pull-right panel-settings panel-button-tab-right">
+                            <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
+                                <em class="fa fa-cogs"></em>
+                            </a>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li>
+                                        <ul class="dropdown-settings">
+                                            <li><a href="#">
+                                                <em class="fa fa-cog"></em> Settings 1
+                                            </a></li>
+                                            <li class="divider"></li>
+                                            <li><a href="#">
+                                                <em class="fa fa-cog"></em> Settings 2
+                                            </a></li>
+                                            <li class="divider"></li>
+                                            <li><a href="#">
+                                                <em class="fa fa-cog"></em> Settings 3
+                                            </a></li>
+                                        </ul>
                                     </li>
                                 </ul>
-                                <div class="chartjs height-250">
-                                    <canvas id="line-stacked-area" height="250"></canvas>
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                                <div class="row">
-                                    <div class="col-xs-3 text-xs-center">
-                                        <span class="text-muted">Total Projects</span>
-                                        <h2 class="block font-weight-normal">18</h2>
-                                        <progress class="progress progress-xs mt-2 progress-success" value="70"
-                                                  max="100"></progress>
-                                    </div>
-                                    <div class="col-xs-3 text-xs-center">
-                                        <span class="text-muted">Total Task</span>
-                                        <h2 class="block font-weight-normal">125</h2>
-                                        <progress class="progress progress-xs mt-2 progress-success" value="40"
-                                                  max="100"></progress>
-                                    </div>
-                                    <div class="col-xs-3 text-xs-center">
-                                        <span class="text-muted">Completed Task</span>
-                                        <h2 class="block font-weight-normal">242</h2>
-                                        <progress class="progress progress-xs mt-2 progress-success" value="60"
-                                                  max="100"></progress>
-                                    </div>
-                                    <div class="col-xs-3 text-xs-center">
-                                        <span class="text-muted">Total Revenue</span>
-                                        <h2 class="block font-weight-normal">$11,582</h2>
-                                        <progress class="progress progress-xs mt-2 progress-success" value="90"
-                                                  max="100"></progress>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-lg-12">
-                        <div class="card card-inverse bg-info">
-                            <div class="card-body">
-                                <div class="position-relative">
-                                    <div class="chart-title position-absolute mt-2 ml-2 white">
-                                        <h1 class="display-4">84%</h1>
-                                        <span>Employees Satisfied</span>
-                                    </div>
-                                    <canvas id="emp-satisfaction" class="height-400 block"></canvas>
-                                    <div class="chart-stats position-absolute position-bottom-0 position-right-0 mb-2 mr-3 white">
-                                        <a href="#" class="btn bg-info bg-darken-3 mr-1 white">Statistics <i
-                                                class="icon-stats-bars"></i></a> for the last year.
-                                    </div>
-                                </div>
-                            </div>
+                            </li>
+                        </ul>
+                        <span class="pull-right clickable panel-toggle panel-button-tab-left"><em
+                                class="fa fa-toggle-up"></em></span></div>
+                    <div class="panel-body">
+                        <div class="canvas-wrapper">
+                            <canvas class="main-chart" id="line-chart" height="200" width="600"></canvas>
                         </div>
                     </div>
                 </div>
-                <!--/ project charts -->
-                <!-- Recent invoice with Statistics -->
-                <div class="row match-height">
-                    <div class="col-xl-4 col-lg-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="media">
-                                    <div class="p-2 text-xs-center bg-deep-orange media-left media-middle">
-                                        <i class="icon-user1 font-large-2 white"></i>
-                                    </div>
-                                    <div class="p-2 media-body">
-                                        <h5 class="deep-orange">New Users</h5>
-                                        <h5 class="text-bold-400">1,22,356</h5>
-                                        <progress class="progress progress-sm progress-deep-orange mt-1 mb-0" value="45"
-                                                  max="100"></progress>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="media">
-                                    <div class="p-2 text-xs-center bg-cyan media-left media-middle">
-                                        <i class="icon-camera7 font-large-2 white"></i>
-                                    </div>
-                                    <div class="p-2 media-body">
-                                        <h5>New Products</h5>
-                                        <h5 class="text-bold-400">28</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="media">
-                                    <div class="p-2 media-body text-xs-left">
-                                        <h5>New Users</h5>
-                                        <h5 class="text-bold-400">1,22,356</h5>
-                                    </div>
-                                    <div class="p-2 text-xs-center bg-teal media-right media-middle">
-                                        <i class="icon-user1 font-large-2 white"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-8 col-lg-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Recent Invoices</h4>
-                                <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
-                                <div class="heading-elements">
-                                    <ul class="list-inline mb-0">
-                                        <li><a data-action="reload"><i class="icon-reload"></i></a></li>
-                                        <li><a data-action="expand"><i class="icon-expand2"></i></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="card-block">
-                                    <p>Total paid invoices 240, unpaid 150. <span class="float-xs-right"><a href="#">Invoice Summary <i
-                                            class="icon-arrow-right2"></i></a></span></p>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table table-hover mb-0">
-                                        <thead>
-                                        <tr>
-                                            <th>Invoice#</th>
-                                            <th>Customer Name</th>
-                                            <th>Status</th>
-                                            <th>Due</th>
-                                            <th>Amount</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td class="text-truncate"><a href="#">INV-001001</a></td>
-                                            <td class="text-truncate">Elizabeth W.</td>
-                                            <td class="text-truncate"><span
-                                                    class="tag tag-default tag-success">Paid</span>
-                                            </td>
-                                            <td class="text-truncate">10/05/2016</td>
-                                            <td class="text-truncate">$ 1200.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-truncate"><a href="#">INV-001012</a></td>
-                                            <td class="text-truncate">Andrew D.</td>
-                                            <td class="text-truncate"><span
-                                                    class="tag tag-default tag-success">Paid</span>
-                                            </td>
-                                            <td class="text-truncate">20/07/2016</td>
-                                            <td class="text-truncate">$ 152.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-truncate"><a href="#">INV-001401</a></td>
-                                            <td class="text-truncate">Megan S.</td>
-                                            <td class="text-truncate"><span
-                                                    class="tag tag-default tag-success">Paid</span>
-                                            </td>
-                                            <td class="text-truncate">16/11/2016</td>
-                                            <td class="text-truncate">$ 1450.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-truncate"><a href="#">INV-01112</a></td>
-                                            <td class="text-truncate">Doris R.</td>
-                                            <td class="text-truncate"><span
-                                                    class="tag tag-default tag-warning">Overdue</span></td>
-                                            <td class="text-truncate">11/12/2016</td>
-                                            <td class="text-truncate">$ 5685.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-truncate"><a href="#">INV-008101</a></td>
-                                            <td class="text-truncate">Walter R.</td>
-                                            <td class="text-truncate"><span
-                                                    class="tag tag-default tag-warning">Overdue</span></td>
-                                            <td class="text-truncate">18/05/2016</td>
-                                            <td class="text-truncate">$ 685.00</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+            </div>
+        </div><!--/.row-->
+
+        <div class="row">
+            <div class="col-xs-6 col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-body easypiechart-panel">
+                        <h4>New Orders</h4>
+                        <div class="easypiechart" id="easypiechart-blue" data-percent="92"><span
+                                class="percent">92%</span>
                         </div>
                     </div>
                 </div>
-                <!-- Recent invoice with Statistics -->
-                <div class="row match-height">
-                    <div class="col-xl-4 col-md-6 col-sm-12">
-                        <div class="card" style="height: 440px;">
-                            <div class="card-body">
-                                <img class="card-img-top img-fluid" src="../../admin/images/carousel/05.jpg"
-                                     alt="Card image cap">
-                                <div class="card-block">
-                                    <h4 class="card-title">Basic</h4>
-                                    <p class="card-text">Some quick example text to build on the card title and make up
-                                        the
-                                        bulk of the card's content.</p>
-                                    <a href="#" class="btn btn-outline-pink">Go somewhere</a>
-                                </div>
-                            </div>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-body easypiechart-panel">
+                        <h4>Comments</h4>
+                        <div class="easypiechart" id="easypiechart-orange" data-percent="65"><span
+                                class="percent">65%</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-body easypiechart-panel">
+                        <h4>New Users</h4>
+                        <div class="easypiechart" id="easypiechart-teal" data-percent="56"><span
+                                class="percent">56%</span>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-md-6 col-sm-12">
-                        <div class="card" style="height: 440px;">
-                            <div class="card-body">
-                                <div class="card-block">
-                                    <h4 class="card-title">List Group</h4>
-                                    <p class="card-text">Some quick example text to build on the card title and make up
-                                        the
-                                        bulk of the card's content.</p>
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <span class="tag tag-default tag-pill bg-primary float-xs-right">4</span> Cras
-                                        justo
-                                        odio
-                                    </li>
-                                    <li class="list-group-item">
-                                        <span class="tag tag-default tag-pill bg-info float-xs-right">2</span> Dapibus
-                                        ac
-                                        facilisis in
-                                    </li>
-                                    <li class="list-group-item">
-                                        <span class="tag tag-default tag-pill bg-warning float-xs-right">1</span> Morbi
-                                        leo
-                                        risus
-                                    </li>
-                                    <li class="list-group-item">
-                                        <span class="tag tag-default tag-pill bg-success float-xs-right">3</span> Porta
-                                        ac
-                                        consectetur ac
-                                    </li>
-                                    <li class="list-group-item">
-                                        <span class="tag tag-default tag-pill bg-danger float-xs-right">8</span>
-                                        Vestibulum
-                                        at eros
+                </div>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-body easypiechart-panel">
+                        <h4>Visitors</h4>
+                        <div class="easypiechart" id="easypiechart-red" data-percent="27"><span
+                                class="percent">27%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!--/.row-->
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default chat">
+                    <div class="panel-heading">
+                        Chat
+                        <ul class="pull-right panel-settings panel-button-tab-right">
+                            <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
+                                <em class="fa fa-cogs"></em>
+                            </a>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li>
+                                        <ul class="dropdown-settings">
+                                            <li><a href="#">
+                                                <em class="fa fa-cog"></em> Settings 1
+                                            </a></li>
+                                            <li class="divider"></li>
+                                            <li><a href="#">
+                                                <em class="fa fa-cog"></em> Settings 2
+                                            </a></li>
+                                            <li class="divider"></li>
+                                            <li><a href="#">
+                                                <em class="fa fa-cog"></em> Settings 3
+                                            </a></li>
+                                        </ul>
                                     </li>
                                 </ul>
-                                <div class="card-block">
-                                    <a href="#" class="card-link">Card link</a>
-                                    <a href="#" class="card-link">Another link</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-md-12 col-sm-12">
-                        <div class="card" style="height: 440px;">
-                            <div class="card-body">
-                                <div class="card-block">
-                                    <h4 class="card-title">Carousel</h4>
-                                    <h6 class="card-subtitle text-muted">Support card subtitle</h6>
-                                </div>
-                                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-                                    <ol class="carousel-indicators">
-                                        <li data-target="#carousel-example-generic" data-slide-to="0" class=""></li>
-                                        <li data-target="#carousel-example-generic" data-slide-to="1"
-                                            class="active"></li>
-                                        <li data-target="#carousel-example-generic" data-slide-to="2" class=""></li>
-                                    </ol>
-                                    <div class="carousel-inner" role="listbox">
-                                        <div class="carousel-item">
-                                            <img src="../../admin/images/carousel/02.jpg" alt="First slide">
-                                        </div>
-                                        <div class="carousel-item active">
-                                            <img src="../../admin/images/carousel/03.jpg" alt="Second slide">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="../../admin/images/carousel/01.jpg" alt="Third slide">
-                                        </div>
+                            </li>
+                        </ul>
+                        <span class="pull-right clickable panel-toggle panel-button-tab-left"><em
+                                class="fa fa-toggle-up"></em></span></div>
+                    <div class="panel-body">
+                        <ul>
+                            <li class="left clearfix"><span class="chat-img pull-left">
+								<img src="http://placehold.it/60/30a5ff/fff" alt="User Avatar" class="img-circle"/>
+								</span>
+                                <div class="chat-body clearfix">
+                                    <div class="header"><strong class="primary-font">John Doe</strong>
+                                        <small class="text-muted">32 mins ago</small>
                                     </div>
-                                    <a class="left carousel-control" href="#carousel-example-generic" role="button"
-                                       data-slide="prev">
-                                        <span class="icon-prev" aria-hidden="true"></span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                    <a class="right carousel-control" href="#carousel-example-generic" role="button"
-                                       data-slide="next">
-                                        <span class="icon-next" aria-hidden="true"></span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ante turpis,
+                                        rutrum ut
+                                        ullamcorper sed, dapibus ac nunc.</p>
                                 </div>
-                                <div class="card-block">
-                                    <p class="card-text">Some quick example text to build on the card title and make up
-                                        the
-                                        bulk of the card's content.</p>
+                            </li>
+                            <li class="right clearfix"><span class="chat-img pull-right">
+								<img src="http://placehold.it/60/dde0e6/5f6468" alt="User Avatar" class="img-circle"/>
+								</span>
+                                <div class="chat-body clearfix">
+                                    <div class="header"><strong class="pull-left primary-font">Jane Doe</strong>
+                                        <small class="text-muted">6 mins ago</small>
+                                    </div>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ante turpis,
+                                        rutrum ut
+                                        ullamcorper sed, dapibus ac nunc.</p>
                                 </div>
-                            </div>
-                        </div>
+                            </li>
+                            <li class="left clearfix"><span class="chat-img pull-left">
+								<img src="http://placehold.it/60/30a5ff/fff" alt="User Avatar" class="img-circle"/>
+								</span>
+                                <div class="chat-body clearfix">
+                                    <div class="header"><strong class="primary-font">John Doe</strong>
+                                        <small class="text-muted">32 mins ago</small>
+                                    </div>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ante turpis,
+                                        rutrum ut
+                                        ullamcorper sed, dapibus ac nunc.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <input id="btn-input" type="text" class="form-control input-md"
+                                   placeholder="Type your message here..."/><span class="input-group-btn">
+								<button class="btn btn-primary btn-md" id="btn-chat">Send</button>
+						</span></div>
                     </div>
                 </div>
-            {% endblock %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        To-do List
+                        <ul class="pull-right panel-settings panel-button-tab-right">
+                            <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
+                                <em class="fa fa-cogs"></em>
+                            </a>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li>
+                                        <ul class="dropdown-settings">
+                                            <li><a href="#">
+                                                <em class="fa fa-cog"></em> Settings 1
+                                            </a></li>
+                                            <li class="divider"></li>
+                                            <li><a href="#">
+                                                <em class="fa fa-cog"></em> Settings 2
+                                            </a></li>
+                                            <li class="divider"></li>
+                                            <li><a href="#">
+                                                <em class="fa fa-cog"></em> Settings 3
+                                            </a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <span class="pull-right clickable panel-toggle panel-button-tab-left"><em
+                                class="fa fa-toggle-up"></em></span></div>
+                    <div class="panel-body">
+                        <ul class="todo-list">
+                            <li class="todo-list-item">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="checkbox-1"/>
+                                    <label for="checkbox-1">Make coffee</label>
+                                </div>
+                                <div class="pull-right action-buttons"><a href="#" class="trash">
+                                    <em class="fa fa-trash"></em>
+                                </a></div>
+                            </li>
+                            <li class="todo-list-item">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="checkbox-2"/>
+                                    <label for="checkbox-2">Check emails</label>
+                                </div>
+                                <div class="pull-right action-buttons"><a href="#" class="trash">
+                                    <em class="fa fa-trash"></em>
+                                </a></div>
+                            </li>
+                            <li class="todo-list-item">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="checkbox-3"/>
+                                    <label for="checkbox-3">Reply to Jane</label>
+                                </div>
+                                <div class="pull-right action-buttons"><a href="#" class="trash">
+                                    <em class="fa fa-trash"></em>
+                                </a></div>
+                            </li>
+                            <li class="todo-list-item">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="checkbox-4"/>
+                                    <label for="checkbox-4">Make more coffee</label>
+                                </div>
+                                <div class="pull-right action-buttons"><a href="#" class="trash">
+                                    <em class="fa fa-trash"></em>
+                                </a></div>
+                            </li>
+                            <li class="todo-list-item">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="checkbox-5"/>
+                                    <label for="checkbox-5">Work on the new design</label>
+                                </div>
+                                <div class="pull-right action-buttons"><a href="#" class="trash">
+                                    <em class="fa fa-trash"></em>
+                                </a></div>
+                            </li>
+                            <li class="todo-list-item">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="checkbox-6"/>
+                                    <label for="checkbox-6">Get feedback on design</label>
+                                </div>
+                                <div class="pull-right action-buttons"><a href="#" class="trash">
+                                    <em class="fa fa-trash"></em>
+                                </a></div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <input id="btn-input" type="text" class="form-control input-md"
+                                   placeholder="Add new task"/><span class="input-group-btn">
+								<button class="btn btn-primary btn-md" id="btn-todo">Add</button>
+						</span></div>
+                    </div>
+                </div>
+            </div><!--/.col-->
 
-        </div>
-    </div>
-</div>
-<!-- ////////////////////////////////////////////////////////////////////////////-->
 
+            <div class="col-md-6">
+                <div class="panel panel-default ">
+                    <div class="panel-heading">
+                        Timeline
+                        <ul class="pull-right panel-settings panel-button-tab-right">
+                            <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
+                                <em class="fa fa-cogs"></em>
+                            </a>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li>
+                                        <ul class="dropdown-settings">
+                                            <li><a href="#">
+                                                <em class="fa fa-cog"></em> Settings 1
+                                            </a></li>
+                                            <li class="divider"></li>
+                                            <li><a href="#">
+                                                <em class="fa fa-cog"></em> Settings 2
+                                            </a></li>
+                                            <li class="divider"></li>
+                                            <li><a href="#">
+                                                <em class="fa fa-cog"></em> Settings 3
+                                            </a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <span class="pull-right clickable panel-toggle panel-button-tab-left"><em
+                                class="fa fa-toggle-up"></em></span></div>
+                    <div class="panel-body timeline-container">
+                        <ul class="timeline">
+                            <li>
+                                <div class="timeline-badge"><em class="glyphicon glyphicon-pushpin"></em></div>
+                                <div class="timeline-panel">
+                                    <div class="timeline-heading">
+                                        <h4 class="timeline-title">Lorem ipsum dolor sit amet</h4>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at sodales
+                                            nisl.
+                                            Donec malesuada orci ornare risus finibus feugiat.</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="timeline-badge primary"><em class="glyphicon glyphicon-link"></em></div>
+                                <div class="timeline-panel">
+                                    <div class="timeline-heading">
+                                        <h4 class="timeline-title">Lorem ipsum dolor sit amet</h4>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="timeline-badge"><em class="glyphicon glyphicon-camera"></em></div>
+                                <div class="timeline-panel">
+                                    <div class="timeline-heading">
+                                        <h4 class="timeline-title">Lorem ipsum dolor sit amet</h4>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at sodales
+                                            nisl.
+                                            Donec malesuada orci ornare risus finibus feugiat.</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="timeline-badge"><em class="glyphicon glyphicon-paperclip"></em></div>
+                                <div class="timeline-panel">
+                                    <div class="timeline-heading">
+                                        <h4 class="timeline-title">Lorem ipsum dolor sit amet</h4>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!--/.col-->
+            <div class="col-sm-12">
+                <p class="back-link">Lumino Theme by <a href="https://www.medialoot.com">Medialoot</a></p>
+            </div>
+        </div><!--/.row-->
+    {% endblock %}
+</div>    <!--/.main-->
 
-<footer class="footer footer-static footer-light navbar-border">
-    <p class="clearfix text-muted text-sm-center mb-0 px-2"><span class="float-md-left d-xs-block d-md-inline-block">Copyright  &copy; 2018 <a
-            href="https://kpfu.ru/itis" target="_blank"
-            class="text-bold-800 grey darken-2">Высшая Школа ИТИС </a></span>
-        <span class="float-md-right d-xs-block d-md-inline-block">Казанский Федеральный Университет</span></p>
-</footer>
+<script src="{% static 'admin/js/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'admin/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'admin/js/chart.min.js' %}"></script>
+<script src="{% static 'admin/js/chart-data.js' %}"></script>
+<script src="{% static 'admin/js/easypiechart.js' %}"></script>
+<script src="{% static 'admin/js/easypiechart-data.js' %}"></script>
+<script src="{% static 'admin/js/bootstrap-datepicker.js' %}"></script>
+<script src="{% static 'admin/js/custom.js' %}"></script>
 
-{% block scripts %}
-
-{% endblock %}
-
-<!-- BEGIN VENDOR JS-->
-<script src="{% static 'admin/vendors/js/ui/tether.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'admin/vendors/js/ui/perfect-scrollbar.jquery.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'admin/vendors/js/ui/unison.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'admin/vendors/js/ui/blockUI.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'admin/vendors/js/ui/jquery.matchHeight-min.js' %}" type="text/javascript"></script>
-<script src="{% static 'admin/vendors/js/ui/screenfull.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'admin/vendors/js/extensions/pace.min.js' %}" type="text/javascript"></script>
-<!-- BEGIN VENDOR JS-->
-<!-- BEGIN PAGE VENDOR JS-->
-<script src="{% static 'admin/vendors/js/charts/chart.min.js' %}" type="text/javascript"></script>
-<!-- END PAGE VENDOR JS-->
-<!-- BEGIN ROBUST JS-->
-<script src="{% static 'admin/js/core/app-menu.js' %}" type="text/javascript"></script>
-<script src="{% static 'admin/js/core/app.js' %}" type="text/javascript"></script>
-<!-- END ROBUST JS-->
-<!-- BEGIN PAGE LEVEL JS-->
-<script src="{% static 'admin/js/scripts/pages/dashboard-lite.js' %}" type="text/javascript"></script>
-<!-- END PAGE LEVEL JS-->
-
-<script src="{% static 'js/fontawesome-all.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
 <script src="{% static 'js/jquery.form-validator.min.js' %}"></script>
 <script src="{% static 'js/security.js' %}"></script>
 <script src="{% static 'js/formValid.js' %}"></script>
 
 <script src="{% static 'js/html5shiv.js' %}"></script>
+
+{% block scripts %}
+
+{% endblock %}
 
 </body>
 </html>
