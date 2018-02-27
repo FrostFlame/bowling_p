@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}
+    Профиль игрока
+{% endblock %}
+{% block content %}
+    <form method="get" action="#">
+        <button type="submit">Редактировать</button>
+    </form>
+    <img src="{{ MEDIA_URL }}{{ player.avatar }}" alt="Аватар">
+    <p>{{ player.user.email }}</p>
+{% endblock %}
