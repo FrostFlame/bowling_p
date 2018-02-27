@@ -1,5 +1,6 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render,redirect, get_object_or_404
+from django.urls import reverse
 from django.views import View
 
 from accounts import forms
@@ -59,3 +60,11 @@ def activate(request, uidb64, token):
         return render(request, 'accounts/email_confirmed.html')
     else:
         return render(request, 'accounts/email_unconfirmed.html')
+
+class ProfileView (View):
+    def get(self,request):
+        if request.user.is_authenticated:
+            player=get_object_or_404(PlayerInfo,user=request.user)
+            return render(request, 'accounts/profile.html',{'player':player})
+        else:
+            return redirect(reverse('auth:login'))

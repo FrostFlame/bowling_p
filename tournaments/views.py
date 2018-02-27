@@ -84,8 +84,8 @@ class GameCreateView(View):
             'selected': selected,
         })
 
-    def post(self, request, id):
-        tournament = Tournament.objects.get(pk=id)
+    def post(self, request, pk):
+        tournament = Tournament.objects.get(pk=pk)
 
         game_form = GameCreationForm(request.POST, tournament=tournament)
         if game_form.is_valid():
@@ -96,7 +96,7 @@ class GameCreateView(View):
                          game=game).save()
             return redirect(reverse('tournaments:tournament_page', kwargs={'id': tournament.id}))
         else:
-            selected = Tournament.objects.get(pk=id).players.all()
+            selected = tournament.players.all()
             return render(request, 'tournaments/game_create.html', {
                 'form': game_form,
                 'selected': selected
