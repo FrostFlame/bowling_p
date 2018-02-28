@@ -1,18 +1,35 @@
 {% extends user.is_staff|yesno:"admin/base.html,base.html" %}
 
+{% load tournament_extras %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
+
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+
+    {# tableexport.js staff #}
+    <script lang="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.12.2/xlsx.core.min.js"></script>
+    <script src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.0.0/js/tableexport.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.0.0/css/tableexport.min.css">
+
+{% endblock %}
+
 {% block content %}
 
     <div class="row">
         <div class="col-md-12">
-            <h3>{{ request.name }}</h3>
-                {% if user.is_staff %}
-                    <a class="right" href="{% url 'tournaments:tournament_update' request.id %}"><i class="fas fa-pencil-alt"></i> редактировать</a>
+            <h3>{{ tournament.name }}</h3>
+            {% if user.is_staff %}
+                <a class="right" href="{% url 'tournaments:tournament_update' tournament.id %}"><i
+                        class="fas fa-pencil-alt"></i> редактировать</a>
             {% endif %}
 
-            <p>{{ request.description }}</p>
+            <p>{{ tournament.description }}</p>
         </div>
         <div class="col-md-4 mar-top-10">
-            <img class="img-rounded" style="width: 100%;" src="{{ MEDIA_URL }}{{ request.photo }}"/>
+            <img class="img-rounded" style="width: 100%;" src="{{ MEDIA_URL }}{{ tournament.photo }}"/>
         </div>
 
         <div class="col-md-4 mar-top-10">
@@ -21,10 +38,10 @@
                     Параметры
                 </div>
                 <div class="panel-body">
-                    <p>Дата: {{ request.start|date:"d.m.Y" }} – {{ request.end|date:"d.m.Y" }}</p>
+                    <p>Дата: {{ tournament.start|date:"d.m.Y" }} – {{ tournament.end|date:"d.m.Y" }}</p>
                     <p>Город: Москва</p>
-                    <p>Тип турнира: {{ request.get_type_display }}</p>
-                    <p>Тип команд: {{ request.team_type }}</p>
+                    <p>Тип турнира: {{ tournament.get_type_display }}</p>
+                    <p>Тип команд: {{ tournament.team_type }}</p>
                 </div>
             </div>
         </div>
@@ -33,20 +50,12 @@
             <div class="list-group">
                 <span class="list-group-item list-group-item-action"><b>Список игр</b></span>
                 {% for game in games %}
-                    <a href="{% url 'tournaments:tournament_game_info' request.pk game.pk %}"
+                    <a href="{% url 'tournaments:tournament_game_info' tournament.pk game.pk %}"
                        class="list-group-item list-group-item-action">{{ game.name }}</a>
                 {% endfor %}
-                <a href="#" class="list-group-item list-group-item-action">Игра 1</a>
-                <a href="#" class="list-group-item list-group-item-action">Игра 2</a>
-                <a href="#" class="list-group-item list-group-item-action">Игра 3</a>
-                <a href="#" class="list-group-item list-group-item-action">Игра 4</a>
-                <a href="#" class="list-group-item list-group-item-action">Игра 5</a>
-                <a href="#" class="list-group-item list-group-item-action">Игра 6</a>
-                <a href="#" class="list-group-item list-group-item-action">Десперадо</a>
-                <a href="#" class="list-group-item list-group-item-action">Финал</a>
 
                 {% if user.is_staff %}
-                    <a href="{% url 'tournaments:game_create' request.id %}"
+                    <a href="{% url 'tournaments:game_create' tournament.id %}"
                        class="list-group-item list-group-item-success">Добавить
                         игру</a>
                 {% endif %}
@@ -57,8 +66,75 @@
     <div class="row">
         <div class="col-md-12">
             <h3>Статистика</h3>
-{#            место для таблицы со статистикой#}
+            <table class="table" id="result-table">
+                <thead>
+                <tr>
+                    <th rowspan="2">#</th>
+                    <th rowspan="2">Игрок</th>
+                    <th colspan="{{ games.count }}" class="text-center">Игры</th>
+                    <th rowspan="2">Город</th>
+                    <th rowspan="2">Сумма</th>
+                    <th rowspan="2">+-200</th>
+                    <th rowspan="2">Сред</th>
+                    <th rowspan="2">Мин. игра</th>
+                    <th rowspan="2">Макс. игра</th>
+                </tr>
+                <tr>
+                    {% for game in games %}
+                        <th>{{ forloop.counter }}</th>
+                    {% endfor %}
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for player in players %}
+                    <tr>
+
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ player }}</td>
+                        {% for game in games_dict|get_item:player.id %}
+                            <td>{{ game.result }}</td>
+                        {% endfor %}
+                        <td>{{ player.city }}</td>
+                        <td>{% get_player_points player tournament %}</td>
+                        <td>{% get_player_200_points player tournament %}</td>
+                        <td>{% get_player_avg_points player tournament %}</td>
+                        <td>{% get_player_min_points player tournament %}</td>
+                        <td>{% get_player_max_points player tournament %}</td>
+                    </tr>
+
+                {% endfor %}
+
+
+                </tbody>
+            </table>
         </div>
     </div>
+
+
+
+    <script>
+        $(document).ready(function () {
+
+            $('#result-table').DataTable();
+
+
+            TableExport.prototype.formatConfig.xlsx.buttonContent = "Экспорт в xlsx";
+            TableExport.prototype.formatConfig.csv.buttonContent = "Экспорт в csv";
+            TableExport(document.getElementById("result-table"), {
+                headers: true,                              // (Boolean), display table headers (th or td elements) in the <thead>, (default: true)
+                formats: ['xlsx', 'csv'],                   // (String[]), filetype(s) for the export, (default: ['xlsx', 'csv', 'txt'])
+                filename: '{{ tournament.name }}' + ' Cтат.',                             // (id, String), filename for the downloaded file, (default: 'id')
+                bootstrap: true,                           // (Boolean), style buttons using bootstrap, (default: true)
+                exportButtons: true,                        // (Boolean), automatically generate the built-in export buttons for each of the specified formats (default: true)
+                position: 'bottom',                         // (top, bottom), position of the caption element relative to table, (default: 'bottom')
+                ignoreRows: null,                           // (Number, Number[]), row indices to exclude from the exported file(s) (default: null)
+                ignoreCols: null,                           // (Number, Number[]), column indices to exclude from the exported file(s) (default: null)
+                trimWhitespace: false,
+            });
+
+
+        });
+    </script>
 
 {% endblock %}

@@ -1442,3 +1442,7 @@ ul.nostyle i {
 .btn.active span.glyphicon {
     opacity: 1;
 }
+
+#result-table td, th {
+    text-align: center;
+}

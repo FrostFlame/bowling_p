@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
@@ -31,10 +33,27 @@ class TournamentsListView(ListView):
 class TournamentView(View):
     def get(self, request, id):
         tournament = Tournament.objects.get(id=id)
-        games = tournament.tournament_games.all()
+        games = tournament.tournament_games.all().order_by('start')
+
+        players = tournament.players.all()
+        gd = defaultdict(list)
+        for game in games:
+            for player in players:
+                try:
+                    gd[player.id].append(player.player_games.get(game=game))
+                except GameInfo.DoesNotExist:
+                    gi = GameInfo(result=0)
+                    gd[player.id].append(gi)
+        games_dict = dict()
+        for player in players:
+            games_dict[player.id] = player.player_games.filter(game__in=games).order_by('game__start')
+
         return render(request, 'tournaments/tournament_page.html',
-                      {'request': tournament,
-                       'games': games})
+                      {'tournament': tournament,
+                       'games': games,
+                       'players': players,
+                       'games_dict': gd
+                       })
 
 
 class AddPlayersView(View):

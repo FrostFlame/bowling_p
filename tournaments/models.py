@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django.db import models
 # Create your models here.
-from django.db.models import Sum
+from django.db.models import Sum, Max, Min
 from django.utils.crypto import get_random_string
 from djchoices import DjangoChoices, ChoiceItem
 
@@ -38,9 +38,28 @@ class Tournament(models.Model):
         return self.name
 
     def get_player_points(self, player):
+        """
+        Возвращает сумму очков, набранную игроком за весь турнир
+        """
         games = Game.objects.filter(tournament=self)
         info = GameInfo.objects.filter(game__in=games, player=player)
         return info.aggregate(Sum('result'))['result__sum']
+
+    def get_player_max_points(self, player):
+        """
+        Возвращает максимальное количество очков, которые игрок набрал в рамках игр данного турнира
+        """
+        games = Game.objects.filter(tournament=self)
+        info = GameInfo.objects.filter(game__in=games, player=player)
+        return info.aggregate(Max('result'))['result__max']
+
+    def get_player_min_points(self, player):
+        """
+        Возвращает минимальное количество очков, которые игрок набрал в рамках игр данного турнира
+        """
+        games = Game.objects.filter(tournament=self)
+        info = GameInfo.objects.filter(game__in=games, player=player)
+        return info.aggregate(Min('result'))['result__min']
 
 
 class TournamentMembership(models.Model):
@@ -66,6 +85,6 @@ class Game(models.Model):
 
 
 class GameInfo(models.Model):
-    player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE, related_name='player_games')
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='game_players')
     result = models.IntegerField(default=0)
