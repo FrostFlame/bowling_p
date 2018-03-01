@@ -85,15 +85,17 @@ class ProfileEditView (View):
                                                              'player_form':player_form})
     def post(self,request):
         user_form = forms.UserEditForm(request.POST,instance=request.user)
+        old_email=request.user.email
         player=get_object_or_404(PlayerInfo,user=request.user)
         player_form = forms.PlayerEditForm(request.POST, request.FILES,instance=player)
         if all([user_form.is_valid(), player_form.is_valid()]):
             user = user_form.save()
             user.save()
             player=player_form.save(commit=False)
-            player.is_active = False
+            if old_email!=user.email:
+                player.is_active = False
+                send_activation_mail(request, player=PlayerInfo.objects.get(user=user))
             player.save()
-            send_activation_mail(request, player=PlayerInfo.objects.get(user=user))
             return redirect(reverse('auth:profile'))
         else:
             return render(request, 'accounts/profile_edit.html',
