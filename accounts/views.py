@@ -1,10 +1,12 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render,redirect, get_object_or_404
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views import View
 
 from accounts import forms
-from accounts.forms import PlayerRegistrationForm
+from accounts.forms import PlayerRegistrationForm, UserEditForm, PlayerEditForm
 from accounts.models import RegistrationRequest, PlayerInfo, User, City
 
 from django.utils.encoding import force_text
@@ -62,9 +64,37 @@ def activate(request, uidb64, token):
         return render(request, 'accounts/email_unconfirmed.html')
 
 class ProfileView (View):
+    @method_decorator(login_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProfileView,self).dispatch(request,*args,**kwargs)
+
     def get(self,request):
-        if request.user.is_authenticated:
-            player=get_object_or_404(PlayerInfo,user=request.user)
-            return render(request, 'accounts/profile.html',{'player':player})
+        player=get_object_or_404(PlayerInfo,user=request.user)
+        return render(request, 'accounts/profile.html',{'player':player})
+
+class ProfileEditView (View):
+    @method_decorator(login_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProfileEditView,self).dispatch(request,*args,**kwargs)
+
+    def get(self,request):
+        player=get_object_or_404(PlayerInfo,user=request.user)
+        user_form = UserEditForm(instance=request.user)
+        player_form = PlayerEditForm(instance=player)
+        return render(request, 'accounts/profile_edit.html',{'user_form':user_form,
+                                                             'player_form':player_form})
+    def post(self,request):
+        user_form = forms.UserEditForm(request.POST,instance=request.user)
+        player=get_object_or_404(PlayerInfo,user=request.user)
+        player_form = forms.PlayerEditForm(request.POST, request.FILES,instance=player)
+        if all([user_form.is_valid(), player_form.is_valid()]):
+            user = user_form.save()
+            user.save()
+            player=player_form.save(commit=False)
+            player.is_active = False
+            player.save()
+            send_activation_mail(request, player=PlayerInfo.objects.get(user=user))
+            return redirect(reverse('auth:profile'))
         else:
-            return redirect(reverse('auth:login'))
+            return render(request, 'accounts/profile_edit.html',
+                          {'user_form': user_form, 'player_form': player_form})

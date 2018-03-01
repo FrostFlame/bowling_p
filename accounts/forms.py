@@ -154,3 +154,33 @@ class PlayerRegistrationForm(forms.ModelForm):
         if commit:
             player.save()
         return player
+
+class UserEditForm(forms.ModelForm):
+    email = forms.EmailField(
+        label='Email',
+        required=True,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Email', 'class': 'form-control', 'data-validation': 'email'}),
+    )
+
+    class Meta:
+        model = User
+        fields = ('email',)
+
+class PlayerEditForm (forms.ModelForm):
+    avatar = forms.ImageField(
+        label='Фотография профиля',
+        widget=AdminResubmitImageWidget(
+            attrs={'class': 'form-control'}
+        )
+    )
+    phone = forms.CharField(
+        label='Номер телефона',
+        required=True,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Номер телефона', 'class': 'form-control'}),
+    )
+    class Meta:
+        model= PlayerInfo
+        fields=('avatar','phone',)
+

@@ -5,7 +5,7 @@ from accounts import views
 from accounts.forms import LoginUserForm
 from django.contrib.auth.views import LoginView, LogoutView
 
-from accounts.views import ProfileView
+from accounts.views import ProfileView,ProfileEditView
 
 urlpatterns = [
     url(r'register/$', views.RegisterUserView.as_view(), name="register"),
@@ -15,5 +15,5 @@ urlpatterns = [
     url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         views.activate, name='activate'),
     url(r'profile/$', ProfileView.as_view(), name="profile"),
-
+    url(r'profile/edit$', ProfileEditView.as_view(), name="profile_edit"),
 ]
