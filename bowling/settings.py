@@ -29,7 +29,7 @@ DEBUG = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ALLOWED_HOSTS = ['*']
-
+LOGIN_URL = reverse_lazy ('auth:login')
 LOGIN_REDIRECT_URL = reverse_lazy('bowlingApp:home')
 # Application definition
 

@@ -3,7 +3,7 @@
     Профиль игрока
 {% endblock %}
 {% block content %}
-    <form method="get" action="#">
+    <form method="get" action="{% url 'auth:profile_edit' %}">
         <button type="submit">Редактировать</button>
     </form>
     <img src="{{ MEDIA_URL }}{{ player.avatar }}" alt="Аватар">
