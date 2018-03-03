@@ -1,13 +1,14 @@
 from django import forms
 from file_resubmit.admin import AdminResubmitImageWidget
 
+from accounts.models import City
 from tournaments.models import Tournament, TournamentType, TeamType, Game
 
 
 class TournamentCreationForm(forms.ModelForm):
     class Meta:
         model = Tournament
-        fields = ('name', 'start', 'end', 'description', 'type', 'team_type', 'games', 'photo')
+        fields = ('name', 'start', 'end', 'description', 'type', 'team_type', 'city', 'games', 'photo')
 
     photo = forms.ImageField(
         label='Изображение',
@@ -76,6 +77,16 @@ class TournamentCreationForm(forms.ModelForm):
         )
     )
 
+    city = forms.ModelChoiceField(
+        label='Город',
+        queryset=City.objects.all(),
+        empty_label=None,
+        required=True,
+
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+        )
+    )
 
 class GameCreationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

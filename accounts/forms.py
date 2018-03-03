@@ -140,7 +140,7 @@ class PlayerRegistrationForm(forms.ModelForm):
         required=True,
 
         widget=forms.Select(
-            attrs={'class': 'form-control'}
+            attrs={'class': 'js-example-basic-single'}
         )
     )
 

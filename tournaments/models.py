@@ -7,7 +7,7 @@ from django.db.models import Sum, Max, Min
 from django.utils.crypto import get_random_string
 from djchoices import DjangoChoices, ChoiceItem
 
-from accounts.models import PlayerInfo
+from accounts.models import PlayerInfo, City
 
 
 # todo enum
@@ -33,6 +33,7 @@ class Tournament(models.Model):
     games = models.IntegerField('amount of games in the tournament', default=1)
     photo = models.ImageField(upload_to=filename, blank=True)
     players = models.ManyToManyField(PlayerInfo, through='TournamentMembership')
+    city = models.ForeignKey(City)
 
     def __str__(self):
         return self.name

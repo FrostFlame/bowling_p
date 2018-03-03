@@ -25,4 +25,11 @@ urlpatterns = [
                   url(r'^account/', include('accounts.urls', namespace='auth')),
                   url(r'^', include('bowling_app.urls', namespace="bowlingApp")),
                   url(r'^tournaments/', include('tournaments.urls', namespace='tournaments')),
+                  url(r'^news/', include('news.urls', namespace='news')),
+
+                  # summernote
+                  url(r'^summernote/', include('django_summernote.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

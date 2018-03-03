@@ -89,7 +89,6 @@ class PlayerInfo(models.Model):
     passport = models.ImageField(upload_to=UploadToPathAndRename('passports/'))
     avatar = models.ImageField(upload_to=UploadToPathAndRename('avatars/'))
 
-    # todo add cities to database
     city = models.ForeignKey('City')
 
     i_name = models.CharField(max_length=50, blank=False)
