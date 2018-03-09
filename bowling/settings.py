@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'tournaments',
     'news',
     'django_summernote',
+    'dal',
+    'dal_select2'
 ]
 
 MIDDLEWARE = [
