@@ -8,4 +8,20 @@
         <a href={% url 'auth:logout' %}>Logout</a>
     {% endif %}
 
+    {% if news %}
+        {% for post in news %}
+            <a href="{% url 'news:news_view' post.id %}"
+                       class="list-group-item ov-hidden"
+                       id="post{{ post.id }}">
+
+                        <span class="square"
+                              style="background-image:url('{{ MEDIA_URL }}{{ post.image }}');"></span>
+                        <h4 class="list-group-item-heading" id="c${complex.id?c}">{{ post.title }}</h4>
+                        <br>
+                    </a>
+        {% endfor %}
+    {% else %}
+        Пока нет новостей
+    {% endif %}
+
 {% endblock %}
