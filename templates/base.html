@@ -52,8 +52,8 @@
                     <li class="scroll"><a href="#callendar">Календарь</a></li>
 
                     {% if user.is_authenticated %}
-                        <li class="scroll"><a href="#profile"><i class="fas fa-user"></i></a></li>
-                        <li class="scroll"><a href="{% url 'auth:logout' %}"><i class="fas fa-sign-out-alt"></i></a></li>
+                        <li class="scroll"><a href="{% url 'auth:profile' %}">Профиль</a></li>
+                        <li class="scroll"><a href="{% url 'auth:logout' %}">Выход</a></li>
                     {% else %}
                         <li class="scroll"><a href="{% url 'auth:login' %}">Вход</a></li>
                     {% endif %}
