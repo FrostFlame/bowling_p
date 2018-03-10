@@ -16,5 +16,5 @@ urlpatterns = [
         GameUpdateView.as_view(), name='game_update'),
 
     # Ajax
-    url(r'^ajax/update_results', GameResultUpdate.as_view(), name='update_game_result')
+    url(r'^ajax/update_results', GameResultUpdate.as_view(), name='update_game_result'),
 ]

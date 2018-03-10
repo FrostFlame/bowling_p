@@ -3,6 +3,8 @@
 {% block extrahead %}
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'css/imageupload.css' %}">
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}"/>
 {% endblock %}
 
 {% block title %}
@@ -20,6 +22,7 @@
 
             <div class="panel-content">
                 <form id="reg_form" action="" method="post" enctype="multipart/form-data">
+                    {{ player_form.media }}
                     {% for field in reg_form %}
                         {% for err in field.errors %}
                             <p class="error">{{ err }}</p>

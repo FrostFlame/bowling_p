@@ -11,6 +11,7 @@ from django.views.generic import CreateView
 
 from accounts.models import RegistrationRequest, PlayerInfo
 from bowling_app.forms import StaffPlayerRegister
+from news.models import News
 
 
 class RegistrationRequestsView(View):
@@ -124,7 +125,7 @@ class PlayerProfileView(View):
 
 class HomePage(View):
     def get(self, request):
-        return render(request, 'bowling_app/home.html')
+        return render(request, 'bowling_app/home.html', {'news': News.objects.order_by('-created')[:3]})
 
 class PlayerBlockUnblock(View):
     def post(self,request,id):

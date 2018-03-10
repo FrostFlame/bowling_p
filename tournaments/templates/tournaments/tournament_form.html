@@ -4,11 +4,15 @@
 {% block extrahead %}
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'css/imageupload.css' %}">
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}"/>
+
 {% endblock %}
 
 {% block content %}
     <div class="col-md-8">
         <form id="form_torn_reg" action="" method="post" enctype="multipart/form-data">
+            {{ form.media }}
             {% csrf_token %}
 
             {% for field in form %}

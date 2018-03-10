@@ -1,3 +1,4 @@
+from dal import autocomplete
 from django import forms
 from file_resubmit.admin import AdminResubmitImageWidget
 
@@ -83,9 +84,8 @@ class TournamentCreationForm(forms.ModelForm):
         empty_label=None,
         required=True,
 
-        widget=forms.Select(
-            attrs={'class': 'form-control'}
-        )
+        widget=autocomplete.ModelSelect2(url='bowlingApp:city-autocomplete',
+                                         attrs={'class': 'form-control'})
     )
 
 class GameCreationForm(forms.ModelForm):

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body><h3 class="text-center">Новости</h3>
+
+{% if user.is_staff %}
+    <div class="cretate ov-hidden">
+        <a href="{% url 'news:news_create' %}" class="right">Создать новость</a>
+    </div>
+{% endif %}
+
+{% if news %}
+    <div class="list-group mar-top-25">
+        <ul id="itemsUL" class="list-unstyled">
+            {% for post in news %}
+                <li>
+                    <a href="{% url 'news:news_view' post.id %}"
+                       class="list-group-item ov-hidden"
+                       id="post{{ post.id }}">
+
+                        <span class="square"
+                              style="background-image:url('{{ MEDIA_URL }}{{ post.image }}');"></span>
+                        <h4 class="list-group-item-heading" id="c${complex.id?c}">{{ post.title }}</h4>
+                        <br>
+                    </a>
+                </li>
+
+            {% endfor %}
+        </ul>
+    </div>
+{% else %}
+    <p class="text-center mar-top-125">Новостей пока нет</p>
+{% endif %}
+
+
+{% if is_paginated %}
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+        {% else %}
+            <span>&laquo;</span>
+        {% endif %}
+        {% for i in paginator.page_range %}
+            {% if page_obj.number == i %}
+                <span>{{ i }} <span class="sr-only"></span></span>
+            {% else %}
+                <a href="?page={{ i }}">{{ i }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+        {% else %}
+            <span>&raquo;</span>
+        {% endif %}
+{% endif %}
+</body>
+</html>

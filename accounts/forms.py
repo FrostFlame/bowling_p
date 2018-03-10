@@ -1,7 +1,7 @@
+from dal import autocomplete
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
-
 from django.core.exceptions import ValidationError
 from file_resubmit.admin import AdminResubmitImageWidget
 
@@ -138,10 +138,8 @@ class PlayerRegistrationForm(forms.ModelForm):
         queryset=City.objects.all(),
         empty_label=None,
         required=True,
-
-        widget=forms.Select(
-            attrs={'class': 'js-example-basic-single'}
-        )
+        widget=autocomplete.ModelSelect2(url='bowlingApp:city-autocomplete',
+                                         attrs={'class': 'form-control'})
     )
 
     class Meta:
@@ -155,6 +153,7 @@ class PlayerRegistrationForm(forms.ModelForm):
             player.save()
         return player
 
+
 class UserEditForm(forms.ModelForm):
     email = forms.EmailField(
         label='Email',
@@ -167,7 +166,8 @@ class UserEditForm(forms.ModelForm):
         model = User
         fields = ('email',)
 
-class PlayerEditForm (forms.ModelForm):
+
+class PlayerEditForm(forms.ModelForm):
     avatar = forms.ImageField(
         label='Фотография профиля',
         widget=AdminResubmitImageWidget(
@@ -180,7 +180,7 @@ class PlayerEditForm (forms.ModelForm):
         widget=forms.TextInput(
             attrs={'placeholder': 'Номер телефона', 'class': 'form-control'}),
     )
-    class Meta:
-        model= PlayerInfo
-        fields=('avatar','phone',)
 
+    class Meta:
+        model = PlayerInfo
+        fields = ('avatar', 'phone',)
