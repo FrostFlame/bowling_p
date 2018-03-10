@@ -68,7 +68,7 @@
 <div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
     <ul class="nav menu">
         <li class="active"><a href="{% url 'bowlingApp:home' %}"><em class="fa fa-home">&nbsp;</em> Главная</a></li>
-        <li><a href="#news"><em class="fa fa-newspaper-o">&nbsp;</em> Новости</a></li>
+        <li><a href="{% url 'news:news_list' %}"><em class="fa fa-newspaper-o">&nbsp;</em> Новости</a></li>
         <li class="parent"><a data-toggle="collapse" href="#sub-item-1">
             <em class="fa fa-trophy">&nbsp;</em> Турниры <span data-toggle="collapse" href="#sub-item-1"
                                                                class="icon pull-right"><em
