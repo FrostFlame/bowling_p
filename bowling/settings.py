@@ -181,6 +181,7 @@ CACHES = {
 }
 
 # fixtures
+# todo fixtureX?
 FIXTURE_DIRS = (
     '/tournaments/fixturex/tournaments',
 )
