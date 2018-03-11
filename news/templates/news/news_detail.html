@@ -2,21 +2,27 @@
 {% load static %}
 
 {% block title %}
-    Новость
+    Новость {{ object.created|date:"d.m.Y" }}
 {% endblock %}
 
 {% block content %}
-    <h3>{{ object.title }}</h3>
-
-
-    {% if object.image %}
-        <div class="col-sm-3">
-            <img class="img-responsive" src="{{ MEDIA_URL }}{{ object.image }}">
-        </div>
+    <div class="col-md-10">
+    {% if user.is_staff %}
+        <a class="right" href="{% url 'news:news_update' object.id %}">Редактировать</a>
     {% endif %}
+        <h2>{{ object.title }}</h2>
+        <p class="text-info">{{ object.created }}</p>
 
-    <div class="col-sm-9">
-        {{ object.text |safe }}
+
+        {% if object.image %}
+            <div class="col-md-12 mar-top-25">
+                <img class="img-responsive" src="{{ MEDIA_URL }}{{ object.image }}">
+            </div>
+        {% endif %}
+
+        <div class="col-md-12 mar-top-25">
+            {{ object.text |safe }}
+        </div>
     </div>
 
 {% endblock %}
