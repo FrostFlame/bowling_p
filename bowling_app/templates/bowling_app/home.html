@@ -2,29 +2,35 @@
 
 {% block content %}
 
-    <p>Welcome to you home page</p>
+    <h1 class="text-center">Федерация боулинга Республики Татарстан</h1>
 
-    {% if user.is_authenticated %}
-        <a href={% url 'auth:logout' %}>Logout</a>
-    {% endif %}
-
-    {% if news %}
-        {% for post in news %}
-            <a href="{% url 'news:news_view' post.id %}"
-               class="list-group-item ov-hidden"
-               id="post{{ post.id }}">
+    <div class="row mar-top-75">
+        <div class="col-md-6">
+            {% if news %}
+                {% for post in news %}
+                    <a href="{% url 'news:news_view' post.id %}"
+                       class="list-group-item ov-hidden"
+                       id="post{{ post.id }}">
 
                         <span class="square"
                               style="background-image:url('{{ MEDIA_URL }}{{ post.image }}');"></span>
-                <h4 class="list-group-item-heading" id="c${complex.id?c}">{{ post.title }}</h4>
-                <br>
-            </a>
-        {% endfor %}
-    {% else %}
-        Пока нет новостей
-    {% endif %}
-    <form action="{% url 'news:news_list' %}">
-        <input type="submit" value="Все новости"/>
-    </form>
+                        <h4 class="list-group-item-heading" id="c${complex.id?c}">{{ post.title }}</h4>
+                        <br>
+                    </a>
+                {% endfor %}
+                {% if news_count > 3 %}
+                    <button class="btn btn-block btn-lg btn-default" onclick="window.location.href='{% url 'news:news_list' %}'">Перейти ко всем новостям</button>
+                {% endif %}
+
+            {% else %}
+                Пока нет новостей
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            <h4>Здесь будет список ближайших турниров</h4>
+        </div>
+    </div>
+
 
 {% endblock %}

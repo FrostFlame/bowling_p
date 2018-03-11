@@ -88,18 +88,25 @@ class TournamentCreationForm(forms.ModelForm):
                                          attrs={'class': 'form-control'})
     )
 
+
 class GameCreationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         if 'tournament' in kwargs:
             self.tournament = kwargs.pop('tournament')
         super(GameCreationForm, self).__init__(*args, **kwargs)
 
-    name = forms.CharField(label='Название',
-                           widget=forms.TextInput(
-                               attrs={'placeholder': 'Название', 'class': 'form-control'}
-                           ))
-    start = forms.DateTimeField(label='Время начала',
-                                widget=forms.DateTimeInput)
+    name = forms.CharField(
+        label='Название',
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Название', 'class': 'form-control'}
+        )
+    )
+    start = forms.DateTimeField(
+        label='Время начала',
+        widget=forms.DateTimeInput(
+            attrs={'class': 'form-control'}
+        )
+    )
 
     # tournament = forms.ModelChoiceField(queryset=Tournament.objects.all(),
     #                                     widget=autocomplete.ModelSelect2(url='tournaments:tournament-autocomplete'))

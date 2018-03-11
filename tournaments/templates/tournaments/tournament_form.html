@@ -11,24 +11,30 @@
 
 {% block content %}
     <div class="col-md-8">
-        <form id="form_torn_reg" action="" method="post" enctype="multipart/form-data">
-            {{ form.media }}
-            {% csrf_token %}
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="text-center">Создание турнира</h3>
+            </div>
 
-            {% for field in form %}
+            <div class="panel-body">
+                <form id="form_torn_reg" action="" method="post" enctype="multipart/form-data">
+                    {{ form.media }}
+                    {% csrf_token %}
 
-                {% if field.id_for_label != 'id_photo' %}
-                    <p>
+                    {% for field in form %}
 
-                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        {{ field }}</p>
-                {% endif %}
-            {% endfor %}
+                        {% if field.id_for_label != 'id_photo' %}
+                            <p>
 
-            <div class="row form-group">
-                <div class="col-sm-4">
-                    <label>Изображение</label>
-                    <div class="input-group">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}</p>
+                        {% endif %}
+                    {% endfor %}
+
+                    <div class="row form-group">
+                        <div class="col-sm-4">
+                            <label>Изображение</label>
+                            <div class="input-group">
                     <span class="input-group-btn">
                         <span class="btn btn-default btn-file">
                             Выбрать… <input type="file" id="id_photo" accept="image/jpeg, image/png"
@@ -40,16 +46,18 @@
                                             data-validation-error-msg-mime="Вы можете загружать только изображения.">
                         </span>
                     </span>
-                        <input type="text" autocomplete="off" class="form-control" readonly>
+                                <input type="text" autocomplete="off" class="form-control" readonly>
+                            </div>
+                            <img class="mar-bot-10 img-upload" id='id_photoUpload'/>
+                        </div>
                     </div>
-                    <img class="mar-bot-10 img-upload" id='id_photoUpload'/>
-                </div>
-            </div>
 
-            <div class="form-group mar-top-10">
-                <button class="btn btn-primary">Продолжить</button>
+                    <div class="form-group mar-top-10">
+                        <button class="btn btn-primary">Продолжить</button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 
     <script src="{% static 'js/jquery.maskedinput.js' %}"></script>

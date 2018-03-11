@@ -5,15 +5,22 @@
 {% endblock %}
 
 {% block content %}
-    <h3 class="text-center">Игроки</h3>
+    <div class="col-md-8">
+        <h3 class="text-center">Игроки</h3>
 
-    {% if user.is_staff %}
-        <a class="right" href="{% url 'bowlingApp:player_create' %}">Добавить игрока</a>
-    {% endif %}
+        <div class="ov-hidden">
+            {% if user.is_staff %}
+                <a class="right" href="{% url 'bowlingApp:player_create' %}">Добавить игрока</a>
+            {% endif %}
+        </div>
 
-    {% for player in players %}
-        <a href="{% url 'bowlingApp:player' player.id %}">
-            <p>{{ player.f_name }} {{ player.i_name }} {{ player.o_name }}</p>
-        </a>
-    {% endfor %}
+        <div class="list-group mar-top-25">
+            {% for player in players %}
+
+                <a href="{% url 'bowlingApp:player' player.id %}" class="list-group-item">
+                    {{ player.f_name }} {{ player.i_name }} {{ player.o_name }} ({{ player.date_of_birth }})
+                </a>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

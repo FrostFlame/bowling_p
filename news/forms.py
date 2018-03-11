@@ -10,8 +10,21 @@ class NewsCreationForm(forms.ModelForm):
         model = News
         fields = ('title', 'image', 'text')
 
-    title = forms.CharField()
+    title = forms.CharField(
+        label='Заголовок',
+        required=True,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
 
-    image = forms.ImageField()
+    image = forms.ImageField(
+        label='Обложка'
+    )
 
-    text = forms.CharField(widget=SummernoteWidget())
+    text = forms.CharField(
+        label='Содержимое',
+        widget=SummernoteWidget(
+            attrs={'width': '100%'}
+        )
+    )

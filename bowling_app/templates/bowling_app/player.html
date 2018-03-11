@@ -5,19 +5,32 @@
 {% endblock %}
 
 {% block content %}
-    <h3 class="text-center">{{ player }}</h3>
+    <h4><a href="{% url 'bowlingApp:players_list' %}">Все игроки</a></h4>
 
-    <p>Пол: {{ player.get_sex_display }}</p>
-    <p>Город: {{ player.city }}</p>
-    <p>Дата рождения: {{ player.date_of_birth }}</p>
-    <p>Email: {{ player.user.email }}</p>
-    <p>Телефон: {{ player.phone }}</p>
-    <form method="post" action="{% url 'bowlingApp:player_activity' player.id %}">
-        {% csrf_token %}
-        {% if player.user.is_active %}
-            <button type="submit">Заблокировать</button>
+    <h3 class="mar-top-25">{{ player }}</h3>
+
+    <div class="col-md-8">
+
+        <p>Пол: {{ player.get_sex_display }}</p>
+        <p>Город: {{ player.city }}</p>
+        <p>Дата рождения: {{ player.date_of_birth }}</p>
+        <p>Email: {{ player.user.email }}</p>
+        <p>Телефон: {{ player.phone }}</p>
+    </div>
+
+    <div class="col-sm-4 mar-top-75 cropped">
+        <span class="squared"
+              style="background-image:url('{{ MEDIA_URL }}{{ reg_request.user.profile.avatar }}');"></span>
+    </div>
+
+    <div class="col-md-12">
+        <form method="post" action="{% url 'bowlingApp:player_activity' player.id %}">
+            {% csrf_token %}
+            {% if player.user.is_active %}
+                <button class="btn btn-danger" type="submit">Заблокировать</button>
             {% elif not player.user.is_active %}
-            <button type="submit">Разблокировать</button>
-        {% endif %}
-    </form>
+                <button class="btn btn-warning" type="submit">Разблокировать</button>
+            {% endif %}
+        </form>
+    </div>
 {% endblock %}

@@ -5,26 +5,44 @@
     <script src="{% static 'js/select2.min.js' %}"></script>
 {% endblock %}
 
-{% block content %}
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+{% block title %}
+    Редактирование игры
+{% endblock %}
 
-        <select name='select' class="select-players" name="states[]" multiple="multiple"
-                style="width: 500px; ">
-            {% for player in players %}
-                <option value={{ player.id }}>{{ player.f_name }} {{ player.i_name }} {{ player.o_name }}</option>
-            {% endfor %}
-            {% for player in selected %}
-                <option selected
-                        value={{ player.id }}>{{ player.f_name }} {{ player.i_name }} {{ player.o_name }}
-                    <br>
-                </option>
-            {% endfor %}
-        </select>
-        <p><input type="submit" value="Отправить">
-        </p>
-    </form>
+{% block content %}
+    <div class="col-md-8">
+        <div class="panel">
+
+            <div class="panel-heading">
+                <h3>Редактирование игры</h3>
+            </div>
+            <div class="panel-body">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <div class="form-group">
+                        <label for="players_select">Игроки</label>
+                        <br>
+                        <select name='select' class="select-players" name="states[]" multiple="multiple"
+                                style="width: 400px; ">
+                            {% for player in players %}
+                                <option value={{ player.id }}>{{ player.f_name }} {{ player.i_name }} {{ player.o_name }}</option>
+                            {% endfor %}
+                            {% for player in selected %}
+                                <option selected
+                                        value={{ player.id }}>{{ player.f_name }} {{ player.i_name }} {{ player.o_name }}
+                                    <br>
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input type="submit" name="type" value="Сохранить" class="btn btn-success ">
+                </form>
+            </div>
+        </div>
+
+    </div>
 
     <script>
         var passports = new Map();
