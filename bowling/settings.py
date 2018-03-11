@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'file_resubmit',
     'tournaments',
     'news',
+    'rolepermissions',
     'django_summernote',
     'dal',
     'dal_select2'
@@ -184,3 +185,7 @@ CACHES = {
 FIXTURE_DIRS = (
     '/tournaments/fixturex/tournaments',
 )
+
+
+ROLEPERMISSIONS_MODULE = 'bowling.roles'
+ROLEPERMISSIONS_REDIRECT_TO_LOGIN = True
