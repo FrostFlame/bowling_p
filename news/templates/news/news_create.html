@@ -1,22 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>News create</title>
-    <!-- include libraries(jQuery, bootstrap) -->
-    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load static %}
 
-    <!-- include summernote css/js -->
-    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet">
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script>
-</head>
-<body>
-<form action="" method="post"  enctype="multipart/form-data" >
-    {% csrf_token %}
-    {{ form.as_p |safe}}
-    <input class="btn btn-success" type="submit"/>
-</form>
-</body>
-</html>
+{% block title %}
+    Создание новости
+{% endblock %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/summernote.css' %}">
+    <script src="{% static 'js/summernote.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p |safe }}
+        <input class="btn btn-success" type="submit"/>
+    </form>
+{% endblock %}
