@@ -28,6 +28,7 @@ def get_player_200_points(player, tournament):
     return tournament.get_player_points(player) - (tournament.games * 200)
 
 
+# todo add docstring
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)

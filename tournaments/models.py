@@ -59,6 +59,7 @@ class Tournament(models.Model):
         Возвращает минимальное количество очков, которые игрок набрал в рамках игр данного турнира
         """
         games = Game.objects.filter(tournament=self)
+        # todo add get_min_result method
         info = GameInfo.objects.filter(game__in=games, player=player)
         return info.aggregate(Min('result'))['result__min']
 
