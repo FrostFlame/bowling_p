@@ -12,6 +12,7 @@ class TournamentCreationForm(forms.ModelForm):
         fields = ('name', 'start', 'end', 'description', 'type', 'team_type', 'city', 'games', 'photo')
 
     photo = forms.ImageField(
+        required=False,
         label='Изображение',
         widget=AdminResubmitImageWidget(
             attrs={'class': 'form-control', 'data-validation': 'mime size', 'data-validation-allowing': 'jpg, png, gif',
