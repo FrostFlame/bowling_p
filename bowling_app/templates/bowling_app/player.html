@@ -22,7 +22,7 @@
         <span class="squared"
               style="background-image:url('{{ MEDIA_URL }}{{ reg_request.user.profile.avatar }}');"></span>
     </div>
-
+    {% if player.user is not None %}
     <div class="col-md-12">
         <form method="post" action="{% url 'bowlingApp:player_activity' player.id %}">
             {% csrf_token %}
@@ -33,4 +33,5 @@
             {% endif %}
         </form>
     </div>
+    {% endif %}
 {% endblock %}
