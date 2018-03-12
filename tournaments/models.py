@@ -11,6 +11,8 @@ from accounts.models import PlayerInfo, City
 
 
 # todo enum
+
+
 class TournamentType(DjangoChoices):
     # choices
     CLUB_LICENSE = ChoiceItem('C', 'Только для обладателей клубной лицензии')
@@ -31,7 +33,7 @@ class Tournament(models.Model):
     type = models.CharField(max_length=1, choices=TournamentType.choices)
     team_type = models.ForeignKey('TeamType')
     games = models.IntegerField('amount of games in the tournament', default=1)
-    photo = models.ImageField(upload_to=filename, blank=True)
+    photo = models.ImageField(upload_to=filename, blank=True, default=os.path.join('default','tournament_avatar.png'))
     players = models.ManyToManyField(PlayerInfo, through='TournamentMembership')
     city = models.ForeignKey(City)
 
