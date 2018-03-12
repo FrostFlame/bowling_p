@@ -1,0 +1,26 @@
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+
+{% block title %}
+    Игроки
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-8">
+        <h3 class="text-center">Игроки</h3>
+
+        <div class="ov-hidden">
+            {% if user.is_staff %}
+                <a class="right" href="{% url 'bowlingApp:player_create' %}">Добавить игрока</a>
+            {% endif %}
+        </div>
+
+        <div class="list-group mar-top-25">
+            {% for player in players %}
+
+                <a href="{% url 'bowlingApp:player' player.id %}" class="list-group-item">
+                    {{ player.f_name }} {{ player.i_name }} {{ player.o_name }} ({{ player.date_of_birth }})
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

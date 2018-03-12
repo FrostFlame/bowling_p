@@ -1,56 +1,204 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Заявка № {{ reg_request.id }}</title>
-</head>
-<body>
-<div style="border: #0f0f0f 1px solid; padding: 5px">
-    <a href="">Заявка № {{ reg_request.id }}</a>
-    <br>
-    Имя: {{ reg_request.user.profile.i_name }}<br>
-    Фамилия: {{ reg_request.user.profile.f_name }}<br>
-    Отчество: {{ reg_request.user.profile.o_name }}<br>
-    Дата рождения: {{ reg_request.user.profile.date_of_birth }}<br>
-    Пол: {{ reg_request.user.profile.get_sex_display }}<br>
-    Город: {{ reg_request.user.profile.city }}<br>
-    Номер телефона: {{ reg_request.user.profile.phone }}<br>
-    Email: {{ reg_request.user.email }}<br>
-    Разряд: {{ reg_request.user.profile.get_category_display }}<br>
-    Лицензия: {{ reg_request.user.profile.license }}<br>
-    Паспорт: <img src="{{ MEDIA_URL }}{{ reg_request.user.profile.passport }}" class="img-responsive img-rounded"/>
-    <br>
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load static %}
 
-    <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="request_id" value="{{ reg_request.id }}">
-        <button type="submit" value="Accept" name="status">Принять</button>
-        <button type="submit" value="Decline" name="status">Отклонить</button>
-    </form>
-</div>
+{% block title %}
+    Заявка №{{ reg_request.id }}
+{% endblock %}
 
-<h3>Похожие игроки:</h3>
-{% for sim_player in similar_players %}
-    <div style="border: 2px solid gainsboro">
-        Имя: {{ sim_player.i_name }}<br>
-        Фамилия: {{ sim_player.f_name }}<br>
-        Отчество: {{ sim_player.o_name }}<br>
-        Дата рождения: {{ sim_player.date_of_birth }}<br>
-        Пол: {{ sim_player.get_sex_display }}<br>
-        Город: {{ sim_player.city }}<br>
-        Номер телефона: {{ sim_player.phone }}<br>
-        Разряд: {{ sim_player.get_category_display }}<br>
-        Лицензия: {{ sim_player.license }}<br>
-        Паспорт: <img src="{{ MEDIA_URL }}{{ sim_player.passport }}" class="img-responsive img-rounded"/> <br>
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/reg-request.css' %}">
+    <link rel="stylesheet" href="{% static 'css/imageviewer.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="cont ov-hidden">
+        <h3 class="text-center">Заявка</h3>
+        <div class="col-lg-3 col-md-12 mar-top-25">
+            <div class="passport">
+                <p class="bor-bot-red"><span class="text-xs pad-r-5">Фамилия </span> <span
+                        class="text-uppercase"> {{ reg_request.user.profile.f_name }}</span></p>
+
+                <p class="bor-bot-red"><span class="text-xs pad-r-5">Имя &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span> <span
+                        class="text-uppercase"> {{ reg_request.user.profile.i_name }}</span></p>
+                <p class="bor-bot-red"><span class="text-xs pad-r-5">Отчество</span> <span
+                        class="text-uppercase"> {{ reg_request.user.profile.o_name }}</span></p>
+
+                <p class="bor-bot-red"><span class="text-xs pad-r-5">Пол &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span> <span
+                        class="text-uppercase"> {{ reg_request.user.profile.get_sex_display|slice:":3" }}.</span></p>
+
+                <p class="bor-bot-red"><span class="text-xs">Дата рождения &nbsp;</span> <span
+                        class="text-uppercase"> {{ reg_request.user.profile.date_of_birth|date:"d.m.Y" }}</span></p>
+
+                <p class="bor-bot-red"><span class="text-xs pad-r-5">Город &nbsp; &nbsp; &nbsp; </span> <span
+                        class="text-uppercase"> {{ reg_request.user.profile.city }}</span></p>
+            </div>
+        </div>
+
+        <div class="col-lg-9 col-md-12 mar-top-25">
+            <div id="image-gallery">
+                <div class="image-container"></div>
+            </div>
+        </div>
+
+        <div class="col-sm-8">
+            <div class="personal mar-top-75">
+                <p><span class="small pad-r-5">Разряд: &nbsp; &nbsp;&nbsp;</span>{{ reg_request.user.profile.category }}
+                </p>
+                <p><span class="small pad-r-5">Лицензия:</span>{{ reg_request.user.profile.license }}</p>
+                <p><span class="small pad-r-5">Телефон: </span>{{ reg_request.user.profile.phone }}</p>
+                <p><span
+                        class="small pad-r-5">Email: &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</span>{{ reg_request.user.email }}
+                </p>
+            </div>
+        </div>
+        <div class="col-sm-4 mar-top-75 cropped">
+            <span class="squared" style="background-image:url('{{ MEDIA_URL }}{{ reg_request.user.profile.avatar }}');"></span>
+        </div>
     </div>
-    <form action="{% url 'bowlingApp:players_union' %}" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="by_user" value="{{ reg_request.user.profile.id }}">
-        <input type="hidden" name="by_moderator" value="{{ sim_player.id }}">
-        <input type="submit" value="Объединить">
-    </form>
 
-    <br>
-{% endfor %}
-</body>
-</html>
+    <script src="{% static 'js/imageviewer.min.js' %}"></script>
+    <script type="text/javascript">
+        $(function () {
+            var images = [{
+                small: '{{ MEDIA_URL }}{{ reg_request.user.profile.passport }}',
+                big: '{{ MEDIA_URL }}{{ reg_request.user.profile.passport }}'
+            }];
+
+            var curImageIdx = 1,
+                total = images.length;
+            var wrapper = $('#image-gallery'),
+                curSpan = wrapper.find('.current');
+            var viewer = ImageViewer(wrapper.find('.image-container'));
+
+            function showImage() {
+                var imgObj = images[curImageIdx - 1];
+                viewer.load(imgObj.small, imgObj.big);
+                curSpan.html(curImageIdx);
+            }
+
+            //initially show image
+            showImage();
+        });
+    </script>
+
+
+    {% if similar_players %}
+        <div class="similar ov-hidden mar-top-25">
+            <h4 class="text-center">Похожие игроки:</h4>
+            {% for sim_player in similar_players %}
+                <div class="col-md-6 mar-top-10">
+                    <div class="passport">
+                        <p class="bor-bot-red"><span class="text-xs pad-r-5">Фамилия </span> <span
+                                class="text-uppercase"> {{ sim_player.f_name }}</span></p>
+
+                        <p class="bor-bot-red"><span
+                                class="text-xs pad-r-5">Имя &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
+                            <span
+                                    class="text-uppercase"> {{ sim_player.i_name }}</span></p>
+                        <p class="bor-bot-red"><span class="text-xs pad-r-5">Отчество</span> <span
+                                class="text-uppercase"> {{ sim_player.o_name }}</span></p>
+
+                        <p class="bor-bot-red"><span
+                                class="text-xs pad-r-5">Пол &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
+                            <span
+                                    class="text-uppercase"> {{ sim_player.get_sex_display|slice:":3" }}.</span></p>
+
+                        <p class="bor-bot-red"><span class="text-xs">Дата рождения &nbsp;</span> <span
+                                class="text-uppercase"> {{ sim_player.date_of_birth|date:"d.m.Y" }}</span></p>
+
+                        <p class="bor-bot-red"><span class="text-xs pad-r-5">Город &nbsp; &nbsp; &nbsp; </span> <span
+                                class="text-uppercase"> {{ sim_player.city }}</span></p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mar-top-10">
+                    <div class="personal">
+                        <p><span class="small pad-r-5">Разряд: &nbsp; &nbsp;&nbsp;</span>{{ sim_player.category }}</p>
+                        <p><span class="small pad-r-5">Лицензия:</span>{{ sim_player.license }}</p>
+                        <p><span class="small pad-r-5">Телефон: </span>{{ sim_player.phone }}</p>
+                        <p><span
+                                class="small pad-r-5">Email: &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</span>{{ .email }}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+    <div class="col-md-12 mar-top-25 mar-bot-10">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="request_id" value="{{ reg_request.id }}">
+            {% if similar_players %}
+                <a href="#" class="btn btn-warning" data-toggle="modal" data-target="#join-modal"
+                   tabindex="-1">Объединить</a>
+            {% endif %}
+            <button class="btn btn-success" type="submit" value="Accept" name="status">Принять заявку</button>
+            <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#reject-modal"
+               tabindex="-1">Отклонить</a>
+        </form>
+    </div>
+
+    <!-- REJECT REQUEST MODAL -->
+    <div class="modal fade" id="reject-modal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-center custom-margin">Отказ в регистрации</h4>
+                    <br>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <h5>Укажите причину
+                                отказа. {{ reg_request.user.profile.i_name }} {{ reg_request.user.profile.f_name }}
+                                получит письмо, в котором будет сказано, почему его аккаунт не был зарегистрирован.</h5>
+                            <label for="reason" class="sr-only">Причина отказа</label>
+                            <textarea name="" class="form-control" id="id_reason" cols="30" rows="5"
+                                      placeholder="Напишине причину отказа в регистрации или оставьте это поле пустым."></textarea>
+                        </div>
+                        <button class="btn btn-block btn-lg btn-danger" type="submit" value="Decline" name="status">
+                            Отклонить заявку
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- REJECT REQUEST MODAL -->
+
+
+    <!-- JOIN REQUEST MODAL -->
+    <div class="modal fade" id="join-modal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-center custom-margin">Объединить игроков?</h4>
+                    <br>
+
+{#                    todo FIX THIS, add for#}
+                    <form action="{% url 'bowlingApp:players_union' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="created_by_user" value="{{ reg_request.user.profile.id }}">
+                        <input type="hidden" name="created_by_staff" value="{{ sim_player.id }}">
+                        <input type="hidden" name="request_id" value="{{ reg_request.id }}">
+                        <button class="btn btn-block btn-lg btn-success" type="submit">
+                            Объединить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- JOIN REQUEST MODAL -->
+
+
+{% endblock %}

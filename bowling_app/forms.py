@@ -1,25 +1,36 @@
+from dal import autocomplete
 from django import forms
+from file_resubmit.admin import AdminResubmitImageWidget
 
-from accounts.models import PlayerInfo, SportCategory, SEX_CHOICES
+from accounts.models import PlayerInfo, SportCategory, SEX_CHOICES, City
 
 
 class StaffPlayerRegister(forms.ModelForm):
     i_name = forms.CharField(
         label='Имя',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Имя', 'class': 'form-control'}),
+            attrs={'placeholder': 'Имя', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
     )
     f_name = forms.CharField(
         label='Фамилия',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Фамилия', 'class': 'form-control'}),
+            attrs={'placeholder': 'Фамилия', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
     )
     o_name = forms.CharField(
         label='Отчество',
         required=False,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Фамилия', 'class': 'form-control'}),
+            attrs={'placeholder': 'Фамилия', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
     )
+    # avatar = forms.ImageField(
+    #     label='Аватар',
+    #     widget=AdminResubmitImageWidget(
+    #         attrs={'class': 'form-control'}
+    #     )
+    # )
     sex = forms.ChoiceField(
         label='Пол',
         choices=SEX_CHOICES,
@@ -53,17 +64,19 @@ class StaffPlayerRegister(forms.ModelForm):
             attrs={'class': 'form-control'}
         )
     )
-    city = forms.CharField(
+    city = forms.ModelChoiceField(
         label='Город',
-        required=False,
-        widget=forms.TextInput(
-            attrs={'class': 'form-control'}
-        )
+        queryset=City.objects.all(),
+        empty_label=None,
+        required=True,
+
+        widget=autocomplete.ModelSelect2(url='bowlingApp:city-autocomplete',
+                                         attrs={'class': 'form-control'})
     )
 
     class Meta:
         model = PlayerInfo
-        exclude = ('user', 'passport')
+        exclude = ('user', 'passport', 'avatar')
 
     def save(self, commit=True):
         player = super(StaffPlayerRegister, self).save(commit=False)

@@ -1,0 +1,73 @@
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load static %}
+{% block extrahead %}
+    <link href="{% static 'css/select2.min.css' %}" rel="stylesheet"/>
+    <script src="{% static 'js/select2.min.js' %}"></script>
+{% endblock %}
+
+{% block title %}
+    Редактирование игры
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-8">
+        <div class="panel">
+
+            <div class="panel-heading">
+                <h3>Редактирование игры</h3>
+            </div>
+            <div class="panel-body">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <div class="form-group">
+                        <label for="players_select">Игроки</label>
+                        <br>
+                        <select name='select' class="select-players" name="states[]" multiple="multiple"
+                                style="width: 400px; ">
+                            {% for player in players %}
+                                <option value={{ player.id }}>{{ player.f_name }} {{ player.i_name }} {{ player.o_name }}</option>
+                            {% endfor %}
+                            {% for player in selected %}
+                                <option selected
+                                        value={{ player.id }}>{{ player.f_name }} {{ player.i_name }} {{ player.o_name }}
+                                    <br>
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input type="submit" name="type" value="Сохранить" class="btn btn-success ">
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var passports = new Map();
+        {% for player in selected %}
+            passports.set('{{ player.id }}', '{{ player.phone }}');
+        {% endfor %}
+        {% for player in players %}
+            passports.set('{{ player.id }}', '{{ player.phone }}');
+        {% endfor %}
+
+        function formatState(state) {
+            if (!state.id) {
+                return state.text;
+            }
+            var $state = $(
+                '<span>' + state.text + '<br><small>' + passports.get(state.id) + '</small>' + ' очков</span>'
+            );
+            return $state;
+        };
+
+        $(document).ready(function () {
+            $('.select-players').select2({
+                    templateResult: formatState
+                }
+            );
+        });
+    </script>
+{% endblock %}

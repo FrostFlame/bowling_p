@@ -1,16 +1,64 @@
-{% extends 'base.html' %}
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
 {% load static %}
 
 {% block extrahead %}
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'css/imageupload.css' %}">
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}"/>
+
 {% endblock %}
 
 {% block content %}
-    <form action="" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-primary">Продолжить</button>
-    </form>
+    <div class="col-md-8">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="text-center">Создание турнира</h3>
+            </div>
+
+            <div class="panel-body">
+                <form id="form_torn_reg" action="" method="post" enctype="multipart/form-data">
+                    {{ form.media }}
+                    {% csrf_token %}
+
+                    {% for field in form %}
+
+                        {% if field.id_for_label != 'id_photo' %}
+                            <p>
+
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}</p>
+                        {% endif %}
+                    {% endfor %}
+
+                    <div class="row form-group">
+                        <div class="col-sm-4">
+                            <label>Изображение</label>
+                            <div class="input-group">
+                    <span class="input-group-btn">
+                        <span class="btn btn-default btn-file">
+                            Выбрать… <input type="file" id="id_photo" accept="image/jpeg, image/png"
+                                            name="photo"
+                                            data-validation="mime size"
+                                            data-validation-allowing="jpg, png, gif"
+                                            data-validation-max-size="20Mb"
+                                            data-validation-error-msg-size="Вы не можете загружать изображения больше 20Мб"
+                                            data-validation-error-msg-mime="Вы можете загружать только изображения.">
+                        </span>
+                    </span>
+                                <input type="text" autocomplete="off" class="form-control" readonly>
+                            </div>
+                            <img class="mar-bot-10 img-upload" id='id_photoUpload'/>
+                        </div>
+                    </div>
+
+                    <div class="form-group mar-top-10">
+                        <button class="btn btn-primary">Продолжить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="{% static 'js/jquery.maskedinput.js' %}"></script>
     <script src="{% static 'js/jquery-ui.js' %}"></script>
@@ -20,13 +68,57 @@
 
         $('#id_start').datepicker({
             changeMonth: true,
-            changeYear: true
+            changeYear: true,
+            yearRange: "2015:+nn"
         });
 
         $('#id_end').datepicker({
             changeMonth: true,
-            changeYear: true
+            changeYear: true,
+            yearRange: "2015:+nn"
         });
     </script>
 {% endblock %}
 
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $(document).on('change', '.btn-file :file', function () {
+                var input = $(this),
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                input.trigger('fileselect', [label]);
+            });
+
+            $('.btn-file :file').on('fileselect', function (event, label) {
+
+                var input = $(this).parents('.input-group').find(':text'),
+                    log = label;
+
+                if (input.length) {
+                    input.val(log);
+                } else {
+                    if (log) alert(log);
+                }
+
+            });
+
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        var id = '#' + input.id + 'Upload';
+                        console.log(id);
+                        $(id).attr('src', e.target.result);
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            $("#id_photo").change(function () {
+                readURL(this);
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,61 @@
+.text-xs {
+    font-size: 10px;
+}
+
+.passport {
+    padding: 10px;
+    background-color: rgba(205, 194, 238, 0.2);
+}
+
+.passport .text-uppercase {
+    font-weight: bold;
+}
+
+.personal {
+
+    padding: 10px;
+    background-color: rgba(240, 230, 232, 0.2);
+}
+
+.personal p {
+    border-bottom: 1px dotted #a19ca0;
+}
+
+.bor-bot-red {
+    border-bottom: 1px dotted #9c552e;
+}
+
+.pad-r-5 {
+    padding-right: 35px;
+}
+
+.cropped
+{
+    max-height: 172px;
+}
+
+@media (max-width: 568px) {
+    .squared {
+        float: left;
+        position: relative;
+        width: 100%;
+        padding-bottom: 100%;
+        margin: 1.66%;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+}
+
+@media (min-width: 569px) {
+    .squared {
+        float: left;
+        position: relative;
+        width: 50%;
+        padding-bottom: 50%;
+        margin-right: 1.66%;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+}

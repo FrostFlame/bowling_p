@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}
+    Редактирование
+{% endblock %}
+{% block content %}
+    <form enctype="multipart/form-data" method="post" action="{% url 'auth:profile_edit' %}">
+        {% csrf_token %}
+        {{ user_form.as_table}}
+        {{ player_form.as_table }}
+        <button type="submit">Отмена</button>
+        <button type="submit">Сохранить</button>
+    </form>
+{% endblock %}

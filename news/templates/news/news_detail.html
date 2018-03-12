@@ -1,0 +1,28 @@
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ object.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-10">
+    {% if user.is_staff %}
+        <a class="right" href="{% url 'news:news_update' object.id %}">Редактировать</a>
+    {% endif %}
+        <h2>{{ object.title }}</h2>
+        <p class="text-info">{{ object.created }}</p>
+
+
+        {% if object.image %}
+            <div class="col-md-12 mar-top-25">
+                <img class="img-responsive" src="{{ MEDIA_URL }}{{ object.image }}">
+            </div>
+        {% endif %}
+
+        <div class="col-md-12 mar-top-25">
+            {{ object.text |safe }}
+        </div>
+    </div>
+
+{% endblock %}

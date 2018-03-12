@@ -1,0 +1,120 @@
+{% extends user.is_staff|yesno:"base.html,base.html" %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
+
+    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+{% endblock %}
+
+{% block title %}
+    Игра
+{% endblock %}
+
+{% block content %}
+    <h3>{{ game.name }}</h3>
+    {% if request.user.is_staff %}
+        <a class="right" href="{% url 'tournaments:game_update' game.tournament_id game.id %}">Редактировать</a>
+    {% endif %}
+
+
+    <h4 class="mar-top-25">Результаты</h4>
+    {% if request.user.is_staff %}
+        <div class="playerInfo col-md-12" style="border: solid 1px black; border-radius: 3px; padding: 10px">
+
+            <div class="col-md-4"><h5>Игрок</h5></div>
+            <div class="col-md-2"><h5>Очки</h5></div>
+            <div class="col-md-3"><h5>Новое значение</h5></div>
+            <br>
+            <hr>
+            {% for gInf in gameInfo %}
+                <form action="" method="post" name="playersToEdit" onsubmit="updateResults(event)"
+                      class="updateResultsForm">
+                    {% csrf_token %}
+                    <div class="col-md-4">{{ gInf.player }}
+                    </div>
+                    <div class="col-md-2" id="result{{ gInf.pk }}">{{ gInf.result }}</div>
+
+                    <div class="col-md-4">
+                        <input type="hidden" name="info_id" value="{{ gInf.pk }}">
+
+                        <div class="form-group">
+                            <input class="col-md-3 form-control" style="width:50%;" type="text" name="result">
+                        </div>
+
+                    </div>
+                    <input type="submit" name="type" value="Сохранить" class="btn btn-success ">
+                </form>
+                <hr class="mar-top-10">
+
+            {% endfor %}
+        </div>
+    {% else %}
+
+        <table class="table table-bordered" id="results">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Игрок</th>
+                <th>Разряд</th>
+                <th>Город</th>
+                <th>Результат</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for gInf in gameInfo %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ gInf.player }}</td>
+                    <td>{{ gInf.player.category }}</td>
+                    <td>{{ gInf.player.city }}</td>
+                    <td>{{ gInf.result }}</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% endif %}
+
+
+
+
+
+
+
+
+    <script>
+        function updateResults(event) {
+            $.ajax({
+                    url: '{% url 'tournaments:update_game_result' %}',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: $(event.target).serialize(),
+                    success:
+                        function (data) {
+                            if (data['Success']) {
+                                $('#result' + data['id']).text(data['Success']);
+                                $(event.target).find('input[type="text"]').removeClass('error');
+
+                                $(event.target).find('input[type="text"]').addClass('success');
+
+                            } else {
+                                $(event.target).find('input[type="text"]').addClass('error');
+                            }
+                        }
+                }
+            );
+            event.preventDefault();
+        }
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#results').DataTable();
+        });
+    </script>
+
+{% endblock %}

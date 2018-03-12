@@ -1,8 +1,12 @@
+import io
+from PIL import Image
 from django.contrib.auth.models import BaseUserManager, AbstractUser
+from django.core.files.base import ContentFile
+from django.core.files.images import ImageFile
 from django.db import models
 from django.db.models import Q
 
-from accounts.utils import filename
+from accounts.utils import UploadToPathAndRename, add_watermark
 
 SEX_CHOICES = (
     ('0', 'Мужской'),
@@ -10,27 +14,12 @@ SEX_CHOICES = (
 )
 
 
-# CATEGORY_CHOICES = (
-#     ('NONE', 'Нет'),
-#     ('3JUN', '3 юношеский'),
-#     ('2JUN', '2 юношеский'),
-#     ('1JUN', '1 юношеский'),
-#     ('3ADU', '3 взрослый'),
-#     ('2ADU', '2 взрослый'),
-#     ('1ADU', '1 взрослый'),
-#     ('KMS', 'Кандидат в мастера спорта'),
-#     ('MS', 'Мастер спорта'),
-#     ('MSI', 'Мастер спорта международного класса')
-# )
-
-
 class UserManager(BaseUserManager):
-    # todo write docs in russian
-    """Define a model manager for User model with no username field."""
+    """Определяем менеджер для модели User без поля username"""
     use_in_migrations = True
 
     def create_user(self, email, password, **extra_fields):
-        """Create and save a User with the given email and password."""
+        """Создает и сохраняет пользователя с заданными email и паролем"""
         if not email:
             raise ValueError('The given email must be set')
         email = self.normalize_email(email)
@@ -40,7 +29,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, **extra_fields):
-        """Create and save a SuperUser with the given email and password."""
+        """Создает и сохраняет суперюзера с заданными email и паролем"""
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -56,21 +45,20 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    # Remove unused fields
+    # Убираем неиспользуемые поля
     username = None
     first_name = None
     last_name = None
     email_confirmed = models.BooleanField(null=False, default=False)
-    # Using email as username
+    # Вместо username используем email
     email = models.EmailField(unique=True, blank=False)
     USERNAME_FIELD = 'email'
 
     objects = UserManager()
-    REQUIRED_FIELDS = []  # removes email from REQUIRED_FIELDS
+    REQUIRED_FIELDS = []
 
 
 class PlayerManager(models.Manager):
-    # todo rewrite filters
     def get_similar_players(self, primary_player):
         similar_players = PlayerInfo.objects.filter(Q(i_name__icontains=primary_player.i_name) &
                                                     Q(f_name__icontains=primary_player.f_name) &
@@ -81,15 +69,27 @@ class PlayerManager(models.Manager):
 
         return similar_players
 
+    def get_players_by_license_type(self, license_type):
+        if license_type == 'C':
+            players = PlayerInfo.objects.filter(license__iregex='\\d+№0')
+        elif license_type == 'G':
+            players = PlayerInfo.objects.filter(license__iregex='\\d+№1')
+        elif license_type == 'L':
+            players = PlayerInfo.objects.filter(license__iregex='\\d+')
+        else:
+            players = PlayerInfo.objects.all()
+        return players
+
 
 class PlayerInfo(models.Model):
     user = models.OneToOneField(User, null=True, unique=True, related_name="profile")
     license = models.CharField(max_length=20, blank=True, default='Не указана')
-    category = models.ForeignKey('SportCategory')
-    passport = models.ImageField(upload_to=filename)
 
-    # todo add FIAS to database
-    city = models.CharField(max_length=30, default='Не указан', blank=True)
+    category = models.ForeignKey('SportCategory')
+    passport = models.ImageField(upload_to=UploadToPathAndRename('passports/'))
+    avatar = models.ImageField(upload_to=UploadToPathAndRename('avatars/'))
+
+    city = models.ForeignKey('City')
 
     i_name = models.CharField(max_length=50, blank=False)
     f_name = models.CharField(max_length=50, blank=False)
@@ -122,6 +122,14 @@ class PlayerInfo(models.Model):
         self.phone = obj.phone
         self.save()
 
+    def watermark(self):
+        x = add_watermark(self.passport.path, 'static/images/watermark2.png')
+        img_io = io.BytesIO()
+        x.save(img_io, format='png')
+        self.passport.save(self.passport.url,
+                           content=ContentFile(img_io.getvalue()),
+                           save=False)
+
 
 class RegistrationRequestManager(models.Manager):
     def create_request(self, user):
@@ -151,6 +159,13 @@ class RegistrationRequest(models.Model):
 
 class SportCategory(models.Model):
     name = models.CharField(max_length=40)
+
+    def __str__(self):
+        return self.name
+
+
+class City(models.Model):
+    name = models.CharField(max_length=60, default='Не указан')
 
     def __str__(self):
         return self.name

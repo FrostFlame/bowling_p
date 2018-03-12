@@ -1,35 +1,82 @@
-{% extends 'base.html' %}
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
 {% load static %}
+{% load tournament_extras %}
 
 {% block extrahead %}
     <link href="{% static 'css/select2.min.css' %}" rel="stylesheet"/>
     <script src="{% static 'js/select2.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui-timepicker-addon.css' %}">
 {% endblock %}
 
 {% block content %}
-    <div>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <select name='select' class="select-players" name="states[]" multiple="multiple"
-                    style="width: 500px; ">
-                {% for player in selected %}
-                    <option selected
-                            value={{ player.id }}>{{ player.f_name }} {{ player.i_name }} {{ player.o_name }}
+    <div class="col-md-8">
+        <div class="panel">
+
+            <div class="panel-heading">
+                <h3 class="text-center">Создание игры</h3>
+            </div>
+            <div class="panel-body">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="form-group">
+                        <label for="players_select">Игроки</label>
                         <br>
-                    </option>
-                {% endfor %}
-            </select>
-            <input type="submit"/>
-        </form>
+                        <select name='select' id="players_select" class="select-players form-control" name="states[]"
+                                multiple="multiple"
+                                style="width: 400px; ">
+                            {% for player in selected %}
+                                <option selected
+                                        value={{ player.id }}>{{ player.f_name }} {{ player.i_name }} {{ player.o_name }}
+                                    <br>
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary">Создать</button>
+                </form>
+            </div>
+        </div>
     </div>
 
+    <script src="{% static 'js/jquery-ui.js' %}"></script>
+    <script src="{% static 'js/datepicker-ru.js' %}"></script>
+
+    <script src="{% static 'js/jquery-ui-timepicker-addon.js' %}"></script>
 
 
     <script>
-        var passports = new Map();
+        $.timepicker.regional['ru'] = {
+            timeOnlyTitle: 'Выберите время',
+            timeText: 'Время',
+            hourText: 'Часы',
+            minuteText: 'Минуты',
+            secondText: 'Секунды',
+            millisecText: 'Миллисекунды',
+            timezoneText: 'Часовой пояс',
+            currentText: 'Сейчас',
+            closeText: 'Закрыть',
+            timeFormat: 'HH:mm',
+            amNames: ['AM', 'A'],
+            pmNames: ['PM', 'P'],
+            isRTL: false
+        };
+        $.timepicker.setDefaults($.timepicker.regional['ru']);
+
+        $('#id_start').datetimepicker({
+            changeMonth: true,
+            changeYear: true
+        });
+    </script>
+
+
+    <script>
+
+        var points = new Map();
         {% for player in selected %}
-            passports.set('{{ player.id }}', '{{ player.phone }}');
+            points.set('{{ player.id }}', '{% get_player_points player tournament  %}');
         {% endfor %}
 
         function formatState(state) {
@@ -37,7 +84,7 @@
                 return state.text;
             }
             var $state = $(
-                '<span>' + state.text + '<br><small>' + passports.get(state.id) + '</small>' + ' очков</span>'
+                '<span>' + state.text + '<br><small>' + points.get(state.id) + '</small>' + ' очков</span>'
             );
             return $state;
         };

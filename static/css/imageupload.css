@@ -5,6 +5,13 @@
 .btn-file {
     position: relative;
     overflow: hidden;
+    background: white;
+    border: 1px solid #ccc;
+    border-right: 0;
+}
+
+.btn-file:hover {
+    background: #e6e6e6;
 }
 
 .btn-file input[type=file] {
@@ -18,16 +25,18 @@
     filter: alpha(opacity=0);
     opacity: 0;
     outline: none;
-    background: white;
+    background: white !important;
     cursor: inherit;
     display: block;
 }
 
 .bg {
     border-width: 1px !important;
-    padding-bottom: 7px;
+    padding-bottom: 6px;
 }
 
-#img-upload {
+.img-upload {
+    float: right;
+    border-radius: 4px !important;
     width: 100%;
 }

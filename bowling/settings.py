@@ -30,7 +30,7 @@ DEBUG = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ALLOWED_HOSTS = ['*']
-
+LOGIN_URL = reverse_lazy('auth:login')
 LOGIN_REDIRECT_URL = reverse_lazy('bowlingApp:home')
 # Application definition
 
@@ -45,6 +45,11 @@ INSTALLED_APPS = [
     'bowling_app',
     'file_resubmit',
     'tournaments',
+    'news',
+    'rolepermissions',
+    'django_summernote',
+    'dal',
+    'dal_select2'
 ]
 
 MIDDLEWARE = [
@@ -137,7 +142,7 @@ else:
 
 LANGUAGE_CODE = 'Ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -184,3 +189,5 @@ FIXTURE_DIRS = (
 )
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+ROLEPERMISSIONS_MODULE = 'bowling.roles'

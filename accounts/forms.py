@@ -1,28 +1,30 @@
+from dal import autocomplete
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
-
 from django.core.exceptions import ValidationError
 from file_resubmit.admin import AdminResubmitImageWidget
 
-from accounts.models import User, PlayerInfo, SEX_CHOICES, SportCategory
+from accounts.models import User, PlayerInfo, SEX_CHOICES, SportCategory, City
 
 
 class RegisterUserForm(forms.ModelForm):
     email = forms.EmailField(
         label='Email',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Email', 'class': 'form-control'}),
+            attrs={'placeholder': 'Email', 'class': 'form-control', 'data-validation': 'email'}),
     )
     password = forms.CharField(
         label='Пароль',
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'Пароль', 'class': 'form-control'}),
+            attrs={'placeholder': 'Пароль', 'class': 'form-control', 'data-validation': 'strength',
+                   'data-validation-strength': '1'}),
     )
     password2 = forms.CharField(
         label='Повторите пароль',
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'Повторите пароль', 'class': 'form-control'}),
+            attrs={'placeholder': 'Повторите пароль', 'class': 'form-control', 'data-validation': 'confirmation',
+                   'data-validation-confirm': 'password'}),
     )
 
     class Meta:
@@ -68,15 +70,24 @@ class PlayerRegistrationForm(forms.ModelForm):
     i_name = forms.CharField(
         label='Имя',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Имя', 'class': 'form-control'}),
+            attrs={'placeholder': 'Имя', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[а-яёА-ЯЁ]+$'}),
     )
     f_name = forms.CharField(
         label='Фамилия',
         widget=forms.TextInput(
-            attrs={'placeholder': 'Фамилия', 'class': 'form-control'}),
+            attrs={'placeholder': 'Фамилия', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[а-яёА-ЯЁ]+([-][А-ЯЁа-яё]+)?$'}),
     )
     passport = forms.ImageField(
         label='Фотография паспорта',
+        required=True,
+        widget=AdminResubmitImageWidget(
+            attrs={'class': 'form-control'}
+        )
+    )
+    avatar = forms.ImageField(
+        label='Фотография профиля',
         widget=AdminResubmitImageWidget(
             attrs={'class': 'form-control'}
         )
@@ -85,26 +96,28 @@ class PlayerRegistrationForm(forms.ModelForm):
         label='Отчество',
         required=False,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Отчество', 'class': 'form-control'}),
+            attrs={'placeholder': 'Отчество', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[а-яёА-ЯЁ]*$'}),
     )
     sex = forms.ChoiceField(
         label='Пол',
         choices=SEX_CHOICES,
-        required=False,
+        required=True,
         widget=forms.Select(
             attrs={'class': 'form-control'}, )
     )
     phone = forms.CharField(
         label='Номер телефона',
-        required=False,
+        required=True,
         widget=forms.TextInput(
             attrs={'placeholder': 'Номер телефона', 'class': 'form-control'}),
     )
     date_of_birth = forms.DateField(
         label='Дата рождения',
-        required=False,
+        required=True,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Дата рождения', 'class': 'form-control'}),
+            attrs={'placeholder': 'Дата рождения', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})$'}),
     )
     category = forms.ModelChoiceField(
         label='Разряд',
@@ -120,21 +133,54 @@ class PlayerRegistrationForm(forms.ModelForm):
             attrs={'class': 'form-control'}
         )
     )
-    city = forms.CharField(
+    city = forms.ModelChoiceField(
         label='Город',
-        required=False,
-        widget=forms.TextInput(
-            attrs={'class': 'form-control'}
-        )
+        queryset=City.objects.all(),
+        empty_label=None,
+        required=True,
+        widget=autocomplete.ModelSelect2(url='bowlingApp:city-autocomplete',
+                                         attrs={'class': 'form-control'})
     )
 
     class Meta:
         model = PlayerInfo
         exclude = ('user',)
-        widgets = {'passport': AdminResubmitImageWidget}
+        widgets = {'passport': AdminResubmitImageWidget, 'avatar': AdminResubmitImageWidget}
 
     def save(self, commit=True):
         player = super(PlayerRegistrationForm, self).save(commit=False)
         if commit:
             player.save()
         return player
+
+
+class UserEditForm(forms.ModelForm):
+    email = forms.EmailField(
+        label='Email',
+        required=True,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Email', 'class': 'form-control', 'data-validation': 'email'}),
+    )
+
+    class Meta:
+        model = User
+        fields = ('email',)
+
+
+class PlayerEditForm(forms.ModelForm):
+    avatar = forms.ImageField(
+        label='Фотография профиля',
+        widget=AdminResubmitImageWidget(
+            attrs={'class': 'form-control'}
+        )
+    )
+    phone = forms.CharField(
+        label='Номер телефона',
+        required=True,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Номер телефона', 'class': 'form-control'}),
+    )
+
+    class Meta:
+        model = PlayerInfo
+        fields = ('avatar', 'phone',)

@@ -3,6 +3,8 @@
 {% block extrahead %}
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'css/imageupload.css' %}">
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}"/>
 {% endblock %}
 
 {% block title %}
@@ -16,11 +18,23 @@
 
             <div class="panel-heading">
                 <h4 class="text-center">Регистрация</h4>
-
             </div>
 
             <div class="panel-content">
-                <form action="" method="post" enctype="multipart/form-data">
+                <form id="reg_form" action="" method="post" enctype="multipart/form-data">
+                    {{ player_form.media }}
+                    {% for field in reg_form %}
+                        {% for err in field.errors %}
+                            <p class="error">{{ err }}</p>
+                        {% endfor %}
+                    {% endfor %}
+
+                    {% for field in player_form %}
+                        {% for err in field.errors %}
+                            <p class="error">{{ err }}</p>
+                        {% endfor %}
+                    {% endfor %}
+
                     {% csrf_token %}
                     <p>
                         <label for="{{ player_form.i_name.id_for_label }}">{{ player_form.i_name.label }}</label>
@@ -52,47 +66,69 @@
                         <label for="{{ player_form.date_of_birth.id_for_label }}">{{ player_form.date_of_birth.label }}</label>
                         {{ player_form.date_of_birth }}
                     </p>
-
                     <p>
                         <label for="{{ player_form.city.id_for_label }}">{{ player_form.city.label }}</label>
                         {{ player_form.city }}
                     </p>
 
-                     <p>
+                    <p>
                         <label for="{{ player_form.category.id_for_label }}">{{ player_form.category.label }}</label>
                         {{ player_form.category }}
                     </p>
 
-                     <p>
+                    <p>
                         <label for="{{ player_form.license.id_for_label }}">{{ player_form.license.label }}</label>
                         {{ player_form.license }}
                     </p>
 
-                    <label class="">Фотография паспорта</label>
-                    <div class="input-group">
+                    <div class="row form-group">
+                        <div class="col-sm-6">
+                            <label>Фотография паспорта</label>
+                            <div class="input-group">
                                 <span class="input-group-btn">
                                     <span class="btn btn-default btn-file bg">
                                         Выбрать… <input type="file" id="imgInp" accept="image/jpeg, image/png"
-                                                        name="passport" required>
+                                                        name="passport" required data-validation="mime size"
+                                                        data-validation-allowing="jpg, png"
+                                                        data-validation-max-size="20Mb"
+                                                        data-validation-error-msg-size="Вы не можете загружать изображения больше 20Мб"
+                                                        data-validation-error-msg-mime="Вы можете загружать только изображения.">
                                     </span>
                                 </span>
-                        <input type="text" autocomplete="off" class="form-control" readonly>
+                                <input type="text" autocomplete="off" class="form-control" readonly>
+                            </div>
+                            <img class="mar-bot-10 img-upload" id='imgInpUpload'/>
+                        </div>
+
+
+                        <div class="col-sm-6">
+                            <label>Ваша фотография</label>
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <span class="btn btn-default btn-file bg">
+                                        Выбрать… <input type="file" id="imgAvatar" accept="image/jpeg, image/png"
+                                                        name="avatar">
+                                    </span>
+                                </span>
+                                <input type="text" autocomplete="off" class="form-control" readonly>
+                            </div>
+                            <img class="mar-bot-10 img-upload" id='imgAvatarUpload'/>
+                        </div>
                     </div>
-                    <img class="mar-bot-10" id='img-upload'/>
-
-                    {% for field in reg_form %}
-                        {% for err in field.errors %}
-                            <p class="error">{{ err }}</p>
-                        {% endfor %}
-                    {% endfor %}
-
-                    {% for field in player_form %}
-                        {% for err in field.errors %}
-                            <p class="error">{{ err }}</p>
-                        {% endfor %}
-                    {% endfor %}
 
                     <div class="form-group">
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-default" style="border: 1px solid #CCCCCC">
+                                <input type="checkbox" name="options" id="id_agreement" autocomplete="off" required>
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </label>
+                        </div>
+                        {#                        <label for="id_agreement">Agree</label>#}
+                        &nbsp; Я принимаю условия <a href="#" data-toggle="modal" data-target="#agreement-modal"
+                                                     tabindex="-1">Соглашения на обработку персональных данных</a>
+                    </div>
+
+                    <div class="form-group mar-top-10">
                         <button class="btn btn-primary btn-block">Зарегистрироваться</button>
                     </div>
 
@@ -100,11 +136,107 @@
                         <p class="text-center">Уже зарегистрированы? <a href="{% url 'auth:login' %}">Войдите</a>
                         </p>
                     </div>
-
-                </form>
+                    </form>
             </div>
         </div>
     </div>
+
+
+    <!-- RULES MODAL -->
+    <div class="modal fade" id="agreement-modal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-center custom-margin">Соглашение на обработку персональных данных</h4>
+                    <br>
+                    <div class="form-group">
+                        Присоединяясь к настоящему Соглашению и оставляя свои данные на Сайте, (далее – Сайт),
+                        путем заполнения полей формы (регистрации) Пользователь:
+                        <ul>
+                            <li>подтверждает, что все указанные им данные принадлежат лично ему;</li>
+                            <li>подтверждает и признает, что им внимательно в полном объеме прочитано Соглашение и
+                                условия обработки его персональных данных, указываемых им в полях формы
+                                (регистрации), текст соглашения и условия обработки персональных данных ему
+                                понятны; 
+                            </li>
+                            <li>дает согласие на обработку Сайтом предоставляемых в составе информации персональных
+                                данных в целях заключения между ним и Сайтом настоящего Соглашения, а также его
+                                последующего исполнения; 
+                            </li>
+                            <li>дает согласие на передачу своих персональных данных партнерам мероприятий
+                                организатора; 
+                            </li>
+                            <li>дает согласие на получение информационной рассылки о новостях Сайта, в том числе
+                                анонсов статей, размещенных на Сайте и рекламных материалов от партнеров Сайта; 
+                            </li>
+                            <li>выражает согласие с условиями обработки персональных данных.</li>
+                        </ul>
+                        <br>
+                        Пользователь дает свое согласие на обработку его персональных данных, а именно совершение
+                        действий, предусмотренных п. 3 ч. 1 ст. 3 Федерального закона от 27.07.2006 N 152-ФЗ "О
+                        персональных данных", и подтверждает, что, давая такое согласие, он действует свободно,
+                        своей волей и в своем интересе.
+                        <br>
+                        <br>
+                        Согласие Пользователя на обработку персональных данных является конкретным, информированным
+                        и сознательным. 
+                        <br>
+                        <br>
+                        Настоящее согласие Пользователя признается исполненным в простой письменной форме, на
+                        обработку следующих персональных данных: 
+                        <ul>
+                            <li>фамилии, имени, отчества; </li>
+                            <li>года рождения; </li>
+                            <li>места пребывания (город, область); </li>
+                            <li>номерах телефонов; адресах электронной почты (E-mail);</li>
+                            <li>фотографии главной страницы паспорта РФ (хранящейся с добавленным водяным знаком);
+                            </li>
+                        </ul>
+                        <br>
+                        Пользователь, предоставляет Сайту право осуществлять следующие действия (операции) с
+                        персональными данными: сбор и накопление; хранение в течение установленных нормативными
+                        документами сроков хранения отчетности, но не менее трех лет, с момента даты прекращения
+                        пользования услуг Пользователем; уточнение (обновление, изменение); использование;
+                        уничтожение; обезличивание; передача по требованию суда, в т.ч., третьим лицам, с
+                        соблюдением мер, обеспечивающих защиту персональных данных от несанкционированного доступа.
+                        <br>
+                        <br>
+                        Указанное согласие действует бессрочно с момента предоставления данных и может быть отозвано
+                        Вами путем подачи заявления администрации сайта с указанием данных, определенных ст. 14
+                        Закона «О персональных данных». 
+                        <br>
+                        <br>
+                        Отзыв согласия на обработку персональных данных может быть осуществлен путем направления
+                        Пользователем соответствующего распоряжения в простой письменной форме на адрес электронной
+                        почты (E-mail) tatar.bowling@gmail.com. 
+                        <br>
+                        <br>
+                        Сайт не несет ответственности за использование (как правомерное, так и неправомерное)
+                        третьими лицами Информации, размещенной Пользователем на Сайте, включая её воспроизведение и
+                        распространение, осуществленные всеми возможными способами. 
+                        <br>
+                        <br>
+                        Сайт имеет право вносить изменения в настоящее Соглашение. При внесении изменений в
+                        актуальной редакции указывается дата последнего обновления. Новая редакция Соглашения
+                        вступает в силу с момента ее размещения, если иное не предусмотрено новой редакцией
+                        Соглашения. 
+                        <br>
+                        <br>
+                        К настоящему Соглашению и отношениям между пользователем и Сайтом, возникающим в связи с
+                        применением Соглашения, подлежит применению право Российской Федерации.
+                    </div>
+                    <div class="btn btn-block btn-lg btn-default" id="forgot-submit" data-dismiss="modal"
+                         aria-label="Close">Закрыть
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- RULES MODAL -->
 
     <script src="{% static 'js/jquery.maskedinput.js' %}"></script>
     <script src="{% static 'js/jquery-ui.js' %}"></script>
@@ -116,7 +248,8 @@
 
         $('#id_date_of_birth').datepicker({
             changeMonth: true,
-            changeYear: true
+            changeYear: true,
+            yearRange: "1910:+nn"
         });
 
 
@@ -145,7 +278,9 @@
                     var reader = new FileReader();
 
                     reader.onload = function (e) {
-                        $('#img-upload').attr('src', e.target.result);
+                        var id = '#' + input.id + 'Upload';
+                        console.log(id);
+                        $(id).attr('src', e.target.result);
                     }
 
                     reader.readAsDataURL(input.files[0]);
@@ -153,6 +288,10 @@
             }
 
             $("#imgInp").change(function () {
+                readURL(this);
+            });
+
+            $("#imgAvatar").change(function () {
                 readURL(this);
             });
         });
