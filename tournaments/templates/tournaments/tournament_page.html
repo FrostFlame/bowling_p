@@ -67,54 +67,54 @@
         <div class="col-md-12">
             <h3>Статистика</h3>
             {% if games %}
-            <table class="table" id="result-table">
-                <thead>
-                <tr>
-                    <th rowspan="2">#</th>
-                    <th rowspan="2">Игрок</th>
-                    <th colspan="{{ games.count }}" class="text-center">Игры</th>
-                    <th rowspan="2">Город</th>
-                    <th rowspan="2">Сумма</th>
-                    <th rowspan="2">+-200</th>
-                    <th rowspan="2">Сред</th>
-                    <th rowspan="2">Мин. игра</th>
-                    <th rowspan="2">Макс. игра</th>
-                </tr>
-                <tr>
-                    {% for game in games %}
-                        <th>{{ forloop.counter }}</th>
-                    {% endfor %}
-                </tr>
-
-                </thead>
-                <tbody>
-                {% for player in players %}
+                <table class="table" id="result-table">
+                    <thead>
                     <tr>
-
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ player }}</td>
-                        {% for game in games_dict|get_item:player.id %}
-                            <td>{{ game.result }}</td>
+                        <th rowspan="2">#</th>
+                        <th rowspan="2">Игрок</th>
+                        <th colspan="{{ games.count }}" class="text-center">Игры</th>
+                        <th rowspan="2">Город</th>
+                        <th rowspan="2">Сумма</th>
+                        <th rowspan="2">+-200</th>
+                        <th rowspan="2">Сред</th>
+                        <th rowspan="2">Мин. игра</th>
+                        <th rowspan="2">Макс. игра</th>
+                    </tr>
+                    <tr>
+                        {% for game in games %}
+                            <th>{{ forloop.counter }}</th>
                         {% endfor %}
-                        <td>
-                            {% if player.city is not None %}
-                                {{ player.city }}
-                            {% else %}
-                                Не указано
-                            {% endif %}
-                        </td>
-                        <td>{% get_player_points player tournament %}</td>
-                        <td>{% get_player_200_points player tournament %}</td>
-                        <td>{% get_player_avg_points player tournament %}</td>
-                        <td>{% get_player_min_points player tournament %}</td>
-                        <td>{% get_player_max_points player tournament %}</td>
                     </tr>
 
-                {% endfor %}
+                    </thead>
+                    <tbody>
+                    {% for player in players %}
+                        <tr>
+
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ player }}</td>
+                            {% for game in games_dict|get_item:player.id %}
+                                <td>{{ game.result }}</td>
+                            {% endfor %}
+                            <td>
+                                {% if player.city is not None %}
+                                    {{ player.city }}
+                                {% else %}
+                                    Не указано
+                                {% endif %}
+                            </td>
+                            <td>{% get_player_points player tournament %}</td>
+                            <td>{% get_player_200_points player tournament %}</td>
+                            <td>{% get_player_avg_points player tournament %}</td>
+                            <td>{% get_player_min_points player tournament %}</td>
+                            <td>{% get_player_max_points player tournament %}</td>
+                        </tr>
+
+                    {% endfor %}
 
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
             {% else %}
                 <div class="text-center">В данном турнире еще нет игр.</div>
             {% endif %}
@@ -126,7 +126,11 @@
     <script>
         $(document).ready(function () {
 
-            $('#result-table').DataTable();
+            $('#result-table').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Russian.json"
+                }
+            });
 
 
             TableExport.prototype.formatConfig.xlsx.buttonContent = "Экспорт в xlsx";
