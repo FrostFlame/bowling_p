@@ -1,6 +1,5 @@
 from dal import autocomplete
 from django import forms
-from file_resubmit.admin import AdminResubmitImageWidget
 
 from accounts.models import PlayerInfo, SportCategory, SEX_CHOICES, City
 

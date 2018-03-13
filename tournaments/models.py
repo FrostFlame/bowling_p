@@ -35,7 +35,8 @@ class Tournament(models.Model):
     games = models.IntegerField('amount of games in the tournament', default=1)
     photo = models.ImageField(upload_to=filename, blank=True, default=os.path.join('default','tournament_avatar.png'))
     players = models.ManyToManyField(PlayerInfo, through='TournamentMembership')
-    city = models.ForeignKey(City)
+    # Значение по умолчанию - Казань
+    city = models.ForeignKey(City, default=7264)
 
     def __str__(self):
         return self.name
