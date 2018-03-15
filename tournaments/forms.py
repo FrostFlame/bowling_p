@@ -26,7 +26,7 @@ class TournamentCreationForm(forms.ModelForm):
         label='Название',
         widget=forms.TextInput(
             attrs={'placeholder': 'Название', 'class': 'form-control', 'data-validation': 'custom',
-                   'data-validation-regexp': '^[а-яёА-ЯЁa-zA-Z0-9"]+([\s]?[а-яёА-ЯЁa-zA-Z0-9"]+)*$'}
+                   'data-validation-regexp': '^[0-9a-zA-Zа-яёА-ЯЁ",.\\-\s№#\\(\\)\\–]+$'}
         )
     )
 
