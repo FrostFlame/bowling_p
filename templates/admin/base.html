@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
         {% block title %}
-            Title
+            ФСБ РТ
         {% endblock %}
     </title>
 
@@ -81,7 +81,10 @@
         </a>
             <ul class="children collapse" id="sub-item-1">
                 <li><a href="{% url 'tournaments:tournaments_all' %}">
-                    <span class="fa fa-globe">&nbsp;</span> Публичные
+                    <span class="fa fa-globe">&nbsp;</span> Все
+                </a></li>
+                <li><a href="{% url 'tournaments:tournaments_all' %} #public">
+                    <span class="fa fa-unlock">&nbsp;</span> Публичные
                 </a></li>
                 <li><a class="" href="#">
                     <span class="fa fa-soccer-ball-o">&nbsp;</span> Спортивные
