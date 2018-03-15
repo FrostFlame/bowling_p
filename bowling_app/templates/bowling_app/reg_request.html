@@ -192,8 +192,6 @@
                 <div class="modal-body">
                     <h4 class="text-center custom-margin">Объединить игроков?</h4>
                     <br>
-
-                    {#                    todo FIX THIS, add for#}
                     <form action="{% url 'bowlingApp:players_union' %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="created_by_user" value=""
