@@ -1,5 +1,9 @@
 {% extends user.is_staff|yesno:"admin/base.html,base.html" %}
 
+{% block title %}
+    {{ tournament.name}}
+{% endblock %}
+
 {% load tournament_extras %}
 
 {% block extrahead %}
