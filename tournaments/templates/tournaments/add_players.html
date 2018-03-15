@@ -1,6 +1,10 @@
 {% extends user.is_staff|yesno:"admin/base.html,base.html" %}
 {% load static %}
 
+{% block title %}
+    Добавление игроков
+{% endblock %}
+
 {% block extrahead %}
     <link href="{% static 'css/select2.min.css' %}" rel="stylesheet"/>
     <script src="{% static 'js/select2.min.js' %}"></script>
