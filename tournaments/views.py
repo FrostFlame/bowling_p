@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import CreateView, UpdateView, ListView
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView
 
 from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm, GameCreationForm
@@ -22,6 +22,15 @@ class TournamentCreate(CreateView):
     template_name = 'tournaments/tournament_form.html'
     success_url = get_success_url
     form_class = TournamentCreationForm
+
+
+@method_decorator(staff_member_required(), name='dispatch')
+class TournamentDelete(DeleteView):
+    def get_success_url(self):
+        return reverse('tournaments:tournaments_all')
+
+    model = Tournament
+    success_url = get_success_url
 
 
 class TournamentsListView(ListView):
