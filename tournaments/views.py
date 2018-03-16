@@ -40,8 +40,8 @@ class TournamentsListView(ListView):
 
 
 class TournamentView(View):
-    def get(self, request, id):
-        tournament = Tournament.objects.get(id=id)
+    def get(self, request, pk):
+        tournament = Tournament.objects.get(id=pk)
         games = tournament.tournament_games.all().order_by('start')
         # Сортируем игроков по сумме очков, набранных за турнир
         players = tournament.players.all()
@@ -54,6 +54,7 @@ class TournamentView(View):
                 try:
                     player_games_dict[player.id].append(player.player_games.get(game=game))
                 except GameInfo.DoesNotExist:
+                    # Если игрок не участвовал в данной игре, его результат равен 0.
                     gi = GameInfo(result=0)
                     player_games_dict[player.id].append(gi)
 
@@ -66,20 +67,20 @@ class TournamentView(View):
 
 
 class AddPlayersView(View):
-    def get(self, request, id):
-        tournament = Tournament.objects.get(id=id)
+    def get(self, request, pk):
+        tournament = Tournament.objects.get(id=pk)
         players = PlayerInfo.objects.get_players_by_license_type(tournament.type)
         already_selected = tournament.players.all()
         return render(request, 'tournaments/add_players.html',
                       {'tournament': tournament, 'players': players, 'already_selected': already_selected})
 
     # todo change id param name
-    def post(self, request, id):
+    def post(self, request, pk):
         players = request.POST.getlist('select')
         for player in players:
             # todo check id
             TournamentMembership(player=PlayerInfo.objects.get(id=player),
-                                 tournament=Tournament.objects.get(id=id)).save()
+                                 tournament=Tournament.objects.get(id=pk)).save()
         return redirect('tournaments:tournaments_all')
 
 
