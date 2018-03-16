@@ -82,10 +82,10 @@
         </div>
 
         {#        <div class="row">#}
-        <div class="col-md-12">
+        <div class="col-md-12 table-responsive">
             <h3>Статистика</h3>
             {% if games %}
-                <table class="table" id="result-table">
+                <table class="table display nowrap" id="result-table">
                     <thead>
                     <tr>
                         <th rowspan="2">#</th>
@@ -148,6 +148,8 @@
         $(document).ready(function () {
 
             $('#result-table').DataTable({
+                scrollX: true,
+                scrollCollapse: true,
                 "language": {
                     "url": "{% static 'stats/Russian.json' %}"
                 }
