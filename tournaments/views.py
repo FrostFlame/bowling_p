@@ -123,7 +123,7 @@ class GameCreateView(View):
             for player in players:
                 GameInfo(player=PlayerInfo.objects.get(id=player),
                          game=game).save()
-            return redirect(reverse('tournaments:tournament_page', kwargs={'id': tournament.id}))
+            return redirect(reverse('tournaments:tournament_page', kwargs={'pk': tournament.id}))
         else:
             selected = tournament.players.all()
             return render(request, 'tournaments/game_create.html', {
