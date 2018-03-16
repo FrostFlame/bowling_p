@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -7,6 +8,7 @@ from rolepermissions.mixins import HasRoleMixin
 
 from news.forms import NewsCreationForm
 from news.models import News
+from bowling.roles import Editor
 
 
 # todo add doc strings
@@ -14,8 +16,7 @@ class NewsCreateView(HasRoleMixin, CreateView):
     def get_success_url(self):
         return reverse('news:news_view', args=(self.object.id,))
 
-    # todo roles in enum or const
-    allowed_roles = 'redactor'
+    allowed_roles = Editor
     model = News
     template_name = 'news/news_create.html'
     success_url = get_success_url
