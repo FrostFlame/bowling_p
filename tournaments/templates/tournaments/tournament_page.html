@@ -130,12 +130,6 @@
     <script>
         $(document).ready(function () {
 
-            $('#result-table').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Russian.json"
-                }
-            });
-
 
             TableExport.prototype.formatConfig.xlsx.buttonContent = "Экспорт в xlsx";
             TableExport.prototype.formatConfig.csv.buttonContent = "Экспорт в csv";
@@ -152,7 +146,36 @@
             });
 
 
+        })
+        ;
+    </script>
+
+
+
+    <script>
+        $(document).ready(function () {
+            var table = $('#result-table').DataTable({
+                {#scrollX: true,#}
+                paging: false,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Russian.json"
+                }
+            });
+
+            {#$('.select-filter').each(function (i) {#}
+            {##}
+            {#    var id = $(this).attr('id');#}
+            {#    var column = id.split('-')[1];#}
+            {#    $('#' + id).on('keyup', function () {#}
+            {#        table#}
+            {#            .column(column)#}
+            {#            .search(this.value)#}
+            {#            .draw();#}
+            {#    });#}
+            {#{)#}
         });
+
+
     </script>
 
 {% endblock %}

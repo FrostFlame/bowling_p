@@ -43,25 +43,25 @@ class TournamentView(View):
     def get(self, request, id):
         tournament = Tournament.objects.get(id=id)
         games = tournament.tournament_games.all().order_by('start')
-
+        # Сортируем игроков по сумме очков, набранных за турнир
         players = tournament.players.all()
-        gd = defaultdict(list)
+        players = sorted(players, key=tournament.get_player_points, reverse=True)
+
+        player_games_dict = defaultdict(list)
+        # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
         for game in games:
             for player in players:
                 try:
-                    gd[player.id].append(player.player_games.get(game=game))
+                    player_games_dict[player.id].append(player.player_games.get(game=game))
                 except GameInfo.DoesNotExist:
                     gi = GameInfo(result=0)
-                    gd[player.id].append(gi)
-        games_dict = dict()
-        for player in players:
-            games_dict[player.id] = player.player_games.filter(game__in=games).order_by('game__start')
+                    player_games_dict[player.id].append(gi)
 
         return render(request, 'tournaments/tournament_page.html',
                       {'tournament': tournament,
                        'games': games,
                        'players': players,
-                       'games_dict': gd
+                       'games_dict': player_games_dict
                        })
 
 
