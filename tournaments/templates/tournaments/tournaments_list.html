@@ -1,4 +1,8 @@
 {% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+
+{% block title %}
+    Турниры
+{% endblock %}
 {% block content %}
     <h3 class="text-center">Турниры</h3>
 
@@ -22,15 +26,18 @@
                                       id="form{{ tournament.id }}"
                                       onsubmit="return ConfirmDelete()"
                                       class="badge no-padding">
+                                    {% csrf_token %}
                                     <button class="badge no-border" type="submit"><i
                                             class="glyphicon glyphicon-remove"></i></button>
                                 </form>
                             {% endif %}
-                            <span class="square" style="background-image:url('{{ MEDIA_URL }}{{ tournament.photo }}');"></span>
+                            <span class="square"
+                                  style="background-image:url('{{ MEDIA_URL }}{{ tournament.photo }}');"></span>
                             <h4 class="list-group-item-heading" id="c${complex.id?c}">{{ tournament.name }}</h4>
                             <br>
-                            <p class="list-group-item-text">город: Казань</p>
-                            <p class="list-group-item-text mar-top-10">{{ tournament.start|date:"d.m.Y" }} – {{ tournament.end|date:"d.m.Y" }}</p>
+                            <p class="list-group-item-text">город: {{ tournament.city }}</p>
+                            <p class="list-group-item-text mar-top-10">{{ tournament.start|date:"d.m.Y" }}
+                                – {{ tournament.end|date:"d.m.Y" }}</p>
                         </a>
                     </li>
 

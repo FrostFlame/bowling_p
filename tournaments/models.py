@@ -11,6 +11,8 @@ from accounts.models import PlayerInfo, City
 
 
 # todo enum
+
+
 class TournamentType(DjangoChoices):
     # choices
     CLUB_LICENSE = ChoiceItem('C', 'Только для обладателей клубной лицензии')
@@ -31,36 +33,46 @@ class Tournament(models.Model):
     type = models.CharField(max_length=1, choices=TournamentType.choices)
     team_type = models.ForeignKey('TeamType')
     games = models.IntegerField('amount of games in the tournament', default=1)
-    photo = models.ImageField(upload_to=filename, blank=True)
+    photo = models.ImageField(upload_to=filename, blank=True, default=os.path.join('default','tournament_avatar.png'))
     players = models.ManyToManyField(PlayerInfo, through='TournamentMembership')
-    city = models.ForeignKey(City)
+    # Значение по умолчанию - Казань
+    city = models.ForeignKey(City, default=7264)
 
     def __str__(self):
         return self.name
 
     def get_player_points(self, player):
         """
-        Возвращает сумму очков, набранную игроком за весь турнир
+        Возвращает сумму очков, набранную игроком за весь турнир.
+        Если игр нет, возвращает 0.
         """
         games = Game.objects.filter(tournament=self)
         info = GameInfo.objects.filter(game__in=games, player=player)
-        return info.aggregate(Sum('result'))['result__sum']
+
+        points = info.aggregate(Sum('result'))['result__sum']
+        return points if points else 0
 
     def get_player_max_points(self, player):
         """
-        Возвращает максимальное количество очков, которые игрок набрал в рамках игр данного турнира
+        Возвращает максимальное количество очков, которые игрок набрал в рамках игр данного турнира.
+        Если игр нет, возвращает 0.
         """
         games = Game.objects.filter(tournament=self)
         info = GameInfo.objects.filter(game__in=games, player=player)
-        return info.aggregate(Max('result'))['result__max']
+
+        max_points = info.aggregate(Max('result'))['result__max']
+        return max_points if max_points else 0
 
     def get_player_min_points(self, player):
         """
-        Возвращает минимальное количество очков, которые игрок набрал в рамках игр данного турнира
+        Возвращает минимальное количество очков, которые игрок набрал в рамках игр данного турнира.
+        Если игр нет, возвращает 0.
         """
         games = Game.objects.filter(tournament=self)
+        # todo add get_min_result method
         info = GameInfo.objects.filter(game__in=games, player=player)
-        return info.aggregate(Min('result'))['result__min']
+        min_points = info.aggregate(Min('result'))['result__min']
+        return min_points if min_points else 0
 
 
 class TournamentMembership(models.Model):

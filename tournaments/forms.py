@@ -12,6 +12,7 @@ class TournamentCreationForm(forms.ModelForm):
         fields = ('name', 'start', 'end', 'description', 'type', 'team_type', 'city', 'games', 'photo')
 
     photo = forms.ImageField(
+        required=False,
         label='Изображение',
         widget=AdminResubmitImageWidget(
             attrs={'class': 'form-control', 'data-validation': 'mime size', 'data-validation-allowing': 'jpg, png, gif',
@@ -25,12 +26,13 @@ class TournamentCreationForm(forms.ModelForm):
         label='Название',
         widget=forms.TextInput(
             attrs={'placeholder': 'Название', 'class': 'form-control', 'data-validation': 'custom',
-                   'data-validation-regexp': '^[а-яёА-ЯЁa-zA-Z0-9"]+([\s]?[а-яёА-ЯЁa-zA-Z0-9"]+)*$'}
+                   'data-validation-regexp': '^[0-9a-zA-Zа-яёА-ЯЁ",.\\-\s№#\\(\\)\\–]+$'}
         )
     )
 
     description = forms.CharField(
         label="Описание",
+        required=False,
         widget=forms.Textarea(
             attrs={'class': 'form-control', 'rows': '4'}
         )

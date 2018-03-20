@@ -52,7 +52,8 @@
             </div>
         </div>
         <div class="col-sm-4 mar-top-75 cropped">
-            <span class="squared" style="background-image:url('{{ MEDIA_URL }}{{ reg_request.user.profile.avatar }}');"></span>
+            <span class="squared"
+                  style="background-image:url('{{ MEDIA_URL }}{{ reg_request.user.profile.avatar }}');"></span>
         </div>
     </div>
 
@@ -84,44 +85,56 @@
 
     {% if similar_players %}
         <div class="similar ov-hidden mar-top-25">
-            <h4 class="text-center">Похожие игроки:</h4>
-            {% for sim_player in similar_players %}
-                <div class="col-md-6 mar-top-10">
-                    <div class="passport">
-                        <p class="bor-bot-red"><span class="text-xs pad-r-5">Фамилия </span> <span
-                                class="text-uppercase"> {{ sim_player.f_name }}</span></p>
+            <div class="row">
+                <h4 class="text-center">Похожие игроки:</h4>
+                {% for sim_player in similar_players %}
+                    <div class="col-md-12">
+                        <div class="col-md-6 mar-top-10">
+                            <div class="passport">
+                                <p class="bor-bot-red"><span class="text-xs pad-r-5">Фамилия </span> <span
+                                        class="text-uppercase"> {{ sim_player.f_name }}</span></p>
 
-                        <p class="bor-bot-red"><span
-                                class="text-xs pad-r-5">Имя &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
-                            <span
-                                    class="text-uppercase"> {{ sim_player.i_name }}</span></p>
-                        <p class="bor-bot-red"><span class="text-xs pad-r-5">Отчество</span> <span
-                                class="text-uppercase"> {{ sim_player.o_name }}</span></p>
+                                <p class="bor-bot-red"><span
+                                        class="text-xs pad-r-5">Имя &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
+                                    <span
+                                            class="text-uppercase"> {{ sim_player.i_name }}</span></p>
+                                <p class="bor-bot-red"><span class="text-xs pad-r-5">Отчество</span> <span
+                                        class="text-uppercase"> {{ sim_player.o_name }}</span></p>
 
-                        <p class="bor-bot-red"><span
-                                class="text-xs pad-r-5">Пол &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
-                            <span
-                                    class="text-uppercase"> {{ sim_player.get_sex_display|slice:":3" }}.</span></p>
+                                <p class="bor-bot-red"><span
+                                        class="text-xs pad-r-5">Пол &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
+                                    <span
+                                            class="text-uppercase"> {{ sim_player.get_sex_display|slice:":3" }}.</span>
+                                </p>
 
-                        <p class="bor-bot-red"><span class="text-xs">Дата рождения &nbsp;</span> <span
-                                class="text-uppercase"> {{ sim_player.date_of_birth|date:"d.m.Y" }}</span></p>
+                                <p class="bor-bot-red"><span class="text-xs">Дата рождения &nbsp;</span> <span
+                                        class="text-uppercase"> {{ sim_player.date_of_birth|date:"d.m.Y" }}</span></p>
 
-                        <p class="bor-bot-red"><span class="text-xs pad-r-5">Город &nbsp; &nbsp; &nbsp; </span> <span
-                                class="text-uppercase"> {{ sim_player.city }}</span></p>
+                                <p class="bor-bot-red"><span class="text-xs pad-r-5">Город &nbsp; &nbsp; &nbsp; </span>
+                                    <span
+                                            class="text-uppercase"> {{ sim_player.city }}</span></p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mar-top-10">
+                            <div class="personal">
+                                <p><span
+                                        class="small pad-r-5">Разряд: &nbsp; &nbsp;&nbsp;</span>{{ sim_player.category }}
+                                </p>
+                                <p><span class="small pad-r-5">Лицензия:</span>{{ sim_player.license }}</p>
+                                <p><span class="small pad-r-5">Телефон: </span>{{ sim_player.phone }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mar-top-10">
+                                <a href="#" class="btn btn-warning" data-toggle="modal" data-target="#join-modal"
+                   tabindex="0" onclick="putJoinValues({{ reg_request.user.profile.id }}, {{ sim_player.id }}, {{ reg_request.id }})">Объединить</a>
+                            </div>
+                        </div>
+                        <hr>
                     </div>
-                </div>
-
-                <div class="col-md-6 mar-top-10">
-                    <div class="personal">
-                        <p><span class="small pad-r-5">Разряд: &nbsp; &nbsp;&nbsp;</span>{{ sim_player.category }}</p>
-                        <p><span class="small pad-r-5">Лицензия:</span>{{ sim_player.license }}</p>
-                        <p><span class="small pad-r-5">Телефон: </span>{{ sim_player.phone }}</p>
-                        <p><span
-                                class="small pad-r-5">Email: &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</span>{{ .email }}
-                        </p>
-                    </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     {% endif %}
 
@@ -130,13 +143,8 @@
         <form method="post">
             {% csrf_token %}
             <input type="hidden" name="request_id" value="{{ reg_request.id }}">
-            {% if similar_players %}
-                <a href="#" class="btn btn-warning" data-toggle="modal" data-target="#join-modal"
-                   tabindex="-1">Объединить</a>
-            {% endif %}
             <button class="btn btn-success" type="submit" value="Accept" name="status">Принять заявку</button>
-            <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#reject-modal"
-               tabindex="-1">Отклонить</a>
+            <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#reject-modal">Отклонить</a>
         </form>
     </div>
 
@@ -151,6 +159,7 @@
                 <div class="modal-body">
                     <h4 class="text-center custom-margin">Отказ в регистрации</h4>
                     <br>
+
                     <form method="post">
                         {% csrf_token %}
                         <div class="form-group">
@@ -183,13 +192,12 @@
                 <div class="modal-body">
                     <h4 class="text-center custom-margin">Объединить игроков?</h4>
                     <br>
-
-{#                    todo FIX THIS, add for#}
                     <form action="{% url 'bowlingApp:players_union' %}" method="post">
                         {% csrf_token %}
-                        <input type="hidden" name="created_by_user" value="{{ reg_request.user.profile.id }}">
-                        <input type="hidden" name="created_by_staff" value="{{ sim_player.id }}">
-                        <input type="hidden" name="request_id" value="{{ reg_request.id }}">
+                        <input type="hidden" name="created_by_user" value=""
+                               id="profile_id">
+                        <input type="hidden" name="created_by_staff" value="" id="sim_player_id">
+                        <input type="hidden" name="request_id" value="" id="reg_request_id">
                         <button class="btn btn-block btn-lg btn-success" type="submit">
                             Объединить
                         </button>
@@ -201,4 +209,14 @@
     <!-- JOIN REQUEST MODAL -->
 
 
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function putJoinValues(user_id, player_id, request_id) {
+            $('#profile_id').val(user_id);
+            $('#sim_player_id').val(player_id);
+            $('#reg_request_id').val(request_id);
+        }
+    </script>
 {% endblock %}

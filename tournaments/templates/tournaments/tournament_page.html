@@ -1,19 +1,23 @@
 {% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ tournament.name }}
+{% endblock %}
 
 {% load tournament_extras %}
 
 {% block extrahead %}
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'stats/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'stats/tableexport.min.css' %}">
 
-    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+    <script src="{% static 'stats/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'stats/dataTables.bootstrap.min.js' %}"></script>
 
     {# tableexport.js staff #}
-    <script lang="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.12.2/xlsx.core.min.js"></script>
-    <script src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.0.0/js/tableexport.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.0.0/css/tableexport.min.css">
-
+    <script lang="javascript" src="{% static 'stats/xlsx.core.min.js' %}"></script>
+    <script src="{% static 'stats/FileSaver.min.js' %}"></script>
+    <script src="{% static 'stats/tableexport.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -28,95 +32,128 @@
 
             <p>{{ tournament.description }}</p>
         </div>
-        <div class="col-md-4 mar-top-10">
-            <img class="img-rounded" style="width: 100%;" src="{{ MEDIA_URL }}{{ tournament.photo }}"/>
-        </div>
 
-        <div class="col-md-4 mar-top-10">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    Параметры
-                </div>
-                <div class="panel-body">
-                    <p>Дата: {{ tournament.start|date:"d.m.Y" }} – {{ tournament.end|date:"d.m.Y" }}</p>
-                    <p>Город: Москва</p>
-                    <p>Тип турнира: {{ tournament.get_type_display }}</p>
-                    <p>Тип команд: {{ tournament.team_type }}</p>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-md-4 mar-top-10">
-            <div class="list-group">
-                <span class="list-group-item list-group-item-action"><b>Список игр</b></span>
-                {% for game in games %}
-                    <a href="{% url 'tournaments:tournament_game_info' tournament.pk game.pk %}"
-                       class="list-group-item list-group-item-action">{{ game.name }}</a>
-                {% endfor %}
-
-                {% if user.is_staff %}
-                    <a href="{% url 'tournaments:game_create' tournament.id %}"
-                       class="list-group-item list-group-item-success">Добавить
-                        игру</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
         <div class="col-md-12">
+            <div class="bound">
+                <div class="button-border">
+                    <div class="info-btn btn btn-sm btn-block text-right" data-toggle="collapse" data-target="#collapseInfo">
+                    </div>
+                </div>
+
+                <div class="info-block collapse in" id="collapseInfo" style="max-height: none">
+                    <div class="row">
+                        <div class="col-md-4 mar-top-10">
+                            <img class="img-rounded" style="width: 100%;" src="{{ MEDIA_URL }}{{ tournament.photo }}"/>
+                        </div>
+
+                        <div class="col-md-4 mar-top-10">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Параметры
+                                </div>
+                                <div class="panel-body">
+                                    <p>Дата: {{ tournament.start|date:"d.m.Y" }} – {{ tournament.end|date:"d.m.Y" }}</p>
+                                    <p>Город: {{ tournament.city }}</p>
+                                    <p>Тип турнира: {{ tournament.get_type_display }}</p>
+                                    <p>Тип команд: {{ tournament.team_type }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mar-top-10">
+                            <div class="list-group">
+                                <span class="list-group-item list-group-item-action"><b>Список игр</b></span>
+                                {% for game in games %}
+                                    <a href="{% url 'tournaments:tournament_game_info' tournament.pk game.pk %}"
+                                       class="list-group-item list-group-item-action">{{ game.name }}</a>
+                                {% endfor %}
+
+                                {% if user.is_staff %}
+                                    <a href="{% url 'tournaments:game_create' tournament.id %}"
+                                       class="list-group-item list-group-item-success">Добавить
+                                        игру</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {#        <div class="row">#}
+        <div class="col-md-12 table-responsive">
             <h3>Статистика</h3>
-            <table class="table" id="result-table">
-                <thead>
-                <tr>
-                    <th rowspan="2">#</th>
-                    <th rowspan="2">Игрок</th>
-                    <th colspan="{{ games.count }}" class="text-center">Игры</th>
-                    <th rowspan="2">Город</th>
-                    <th rowspan="2">Сумма</th>
-                    <th rowspan="2">+-200</th>
-                    <th rowspan="2">Сред</th>
-                    <th rowspan="2">Мин. игра</th>
-                    <th rowspan="2">Макс. игра</th>
-                </tr>
-                <tr>
-                    {% for game in games %}
-                        <th>{{ forloop.counter }}</th>
-                    {% endfor %}
-
-                </tr>
-                </thead>
-                <tbody>
-                {% for player in players %}
+            {% if games %}
+                <table class="table display nowrap" id="result-table">
+                    <thead>
                     <tr>
-
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ player }}</td>
-                        {% for game in games_dict|get_item:player.id %}
-                            <td>{{ game.result }}</td>
+                        <th rowspan="2">#</th>
+                        <th rowspan="2">Игрок</th>
+                        <th colspan="{{ games.count }}" class="text-center">Игры</th>
+                        <th rowspan="2">Город</th>
+                        <th rowspan="2">Сумма</th>
+                        <th rowspan="2">+-200</th>
+                        <th rowspan="2">Сред</th>
+                        <th rowspan="2">Мин. игра</th>
+                        <th rowspan="2">Макс. игра</th>
+                    </tr>
+                    <tr>
+                        {% for game in games %}
+                            <th>{{ forloop.counter }}</th>
                         {% endfor %}
-                        <td>{{ player.city }}</td>
-                        <td>{% get_player_points player tournament %}</td>
-                        <td>{% get_player_200_points player tournament %}</td>
-                        <td>{% get_player_avg_points player tournament %}</td>
-                        <td>{% get_player_min_points player tournament %}</td>
-                        <td>{% get_player_max_points player tournament %}</td>
                     </tr>
 
-                {% endfor %}
+                    </thead>
+                    <tbody>
+                    {% for player in players %}
+                        <tr>
+
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ player }}</td>
+                            {% for game in games_dict|get_item:player.id %}
+                                <td>{{ game.result }}</td>
+                            {% endfor %}
+                            <td>
+                                {% if player.city is not None %}
+                                    {{ player.city }}
+                                {% else %}
+                                    Не указано
+                                {% endif %}
+                            </td>
+                            <td>{% get_player_points player tournament %}</td>
+                            <td>{% get_player_200_points player tournament %}</td>
+                            <td>{% get_player_avg_points player tournament %}</td>
+                            <td>{% get_player_min_points player tournament %}</td>
+                            <td>{% get_player_max_points player tournament %}</td>
+                        </tr>
+
+                    {% endfor %}
 
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="text-center">В данном турнире еще нет игр.</div>
+            {% endif %}
         </div>
-    </div>
+        {#        </div>#}
+    </div> <!-- row -->
 
 
+{% endblock %}
 
+{% block scripts %}
     <script>
         $(document).ready(function () {
 
-            $('#result-table').DataTable();
+            $('#result-table').DataTable({
+                scrollX: true,
+                scrollCollapse: true,
+                "language": {
+                    "url": "{% static 'stats/Russian.json' %}"
+                }
+            });
 
 
             TableExport.prototype.formatConfig.xlsx.buttonContent = "Экспорт в xlsx";
@@ -136,5 +173,4 @@
 
         });
     </script>
-
 {% endblock %}

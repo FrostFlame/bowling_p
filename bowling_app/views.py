@@ -10,9 +10,9 @@ from django.views import View
 from django.views.generic import CreateView
 
 from accounts.models import RegistrationRequest, PlayerInfo
-from bowling_app.forms import StaffPlayerRegister
+from bowling_app.forms import StaffPlayerRegister, EventCreationForm
+from bowling_app.models import Event
 from news.models import News
-
 
 class RegistrationRequestsView(View):
     def get(self, request):
@@ -135,4 +135,16 @@ class PlayerBlockUnblock(View):
         player.user.is_active= not player.user.is_active
         player.user.save()
         return redirect(reverse('bowlingApp:player',kwargs={'id':id}))
+
+class EventAddView (CreateView):
+    model = Event
+    template_name = "bowling_app/event_add.html"
+    success_url = '/'
+    form_class = EventCreationForm
+
+    @method_decorator(staff_member_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(EventAddView, self).dispatch(request, *args, **kwargs)
+
+
 

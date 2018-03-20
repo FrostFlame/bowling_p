@@ -1,4 +1,6 @@
 import io
+
+import os
 from PIL import Image
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.core.files.base import ContentFile
@@ -87,7 +89,7 @@ class PlayerInfo(models.Model):
 
     category = models.ForeignKey('SportCategory')
     passport = models.ImageField(upload_to=UploadToPathAndRename('passports/'))
-    avatar = models.ImageField(upload_to=UploadToPathAndRename('avatars/'))
+    avatar = models.ImageField(upload_to=UploadToPathAndRename('avatars/'),default=os.path.join('default','player_avatar.png'))
 
     city = models.ForeignKey('City')
 

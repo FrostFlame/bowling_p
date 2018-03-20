@@ -87,6 +87,7 @@ class PlayerRegistrationForm(forms.ModelForm):
         )
     )
     avatar = forms.ImageField(
+        required=False,
         label='Фотография профиля',
         widget=AdminResubmitImageWidget(
             attrs={'class': 'form-control'}

@@ -1,6 +1,10 @@
 {% extends user.is_staff|yesno:"admin/base.html,base.html" %}
 {% load static %}
 
+{% block title %}
+    Создание турнира
+{% endblock %}
+
 {% block extrahead %}
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'css/imageupload.css' %}">

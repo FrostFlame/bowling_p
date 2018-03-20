@@ -3,8 +3,10 @@
 from __future__ import unicode_literals
 
 import datetime
-from django.db import migrations, models
+
 import django.db.models.deletion
+from django.db import migrations, models
+
 import tournaments.models
 
 
@@ -52,7 +54,6 @@ class Migration(migrations.Migration):
                 ('type', models.CharField(choices=[('C', 'Только для обладателей клубной лицензии'), ('G', 'Только для обладателей игровой лицензии'), ('L', 'Для обладателей любой лицензии'), ('P', 'Публичный')], max_length=1)),
                 ('games', models.IntegerField(default=1, verbose_name='amount of games in the tournament')),
                 ('photo', models.ImageField(blank=True, upload_to=tournaments.models.filename)),
-                ('city', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounts.City')),
             ],
         ),
         migrations.CreateModel(
