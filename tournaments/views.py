@@ -40,46 +40,47 @@ class TournamentsListView(ListView):
 
 
 class TournamentView(View):
-    def get(self, request, id):
-        tournament = Tournament.objects.get(id=id)
+    def get(self, request, pk):
+        tournament = Tournament.objects.get(id=pk)
         games = tournament.tournament_games.all().order_by('start')
-
+        # Сортируем игроков по сумме очков, набранных за турнир
         players = tournament.players.all()
-        gd = defaultdict(list)
+        players = sorted(players, key=tournament.get_player_points, reverse=True)
+
+        player_games_dict = defaultdict(list)
+        # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
         for game in games:
             for player in players:
                 try:
-                    gd[player.id].append(player.player_games.get(game=game))
+                    player_games_dict[player.id].append(player.player_games.get(game=game))
                 except GameInfo.DoesNotExist:
+                    # Если игрок не участвовал в данной игре, его результат равен 0.
                     gi = GameInfo(result=0)
-                    gd[player.id].append(gi)
-        games_dict = dict()
-        for player in players:
-            games_dict[player.id] = player.player_games.filter(game__in=games).order_by('game__start')
+                    player_games_dict[player.id].append(gi)
 
         return render(request, 'tournaments/tournament_page.html',
                       {'tournament': tournament,
                        'games': games,
                        'players': players,
-                       'games_dict': gd
+                       'games_dict': player_games_dict
                        })
 
 
 class AddPlayersView(View):
-    def get(self, request, id):
-        tournament = Tournament.objects.get(id=id)
+    def get(self, request, pk):
+        tournament = Tournament.objects.get(id=pk)
         players = PlayerInfo.objects.get_players_by_license_type(tournament.type)
         already_selected = tournament.players.all()
         return render(request, 'tournaments/add_players.html',
                       {'tournament': tournament, 'players': players, 'already_selected': already_selected})
 
     # todo change id param name
-    def post(self, request, id):
+    def post(self, request, pk):
         players = request.POST.getlist('select')
         for player in players:
             # todo check id
             TournamentMembership(player=PlayerInfo.objects.get(id=player),
-                                 tournament=Tournament.objects.get(id=id)).save()
+                                 tournament=Tournament.objects.get(id=pk)).save()
         return redirect('tournaments:tournaments_all')
 
 
@@ -122,7 +123,7 @@ class GameCreateView(View):
             for player in players:
                 GameInfo(player=PlayerInfo.objects.get(id=player),
                          game=game).save()
-            return redirect(reverse('tournaments:tournament_page', kwargs={'id': tournament.id}))
+            return redirect(reverse('tournaments:tournament_page', kwargs={'pk': tournament.id}))
         else:
             selected = tournament.players.all()
             return render(request, 'tournaments/game_create.html', {

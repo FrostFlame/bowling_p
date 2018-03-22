@@ -1,23 +1,23 @@
 {% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load static %}
 
 {% block title %}
-    {{ tournament.name}}
+    {{ tournament.name }}
 {% endblock %}
 
 {% load tournament_extras %}
 
 {% block extrahead %}
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'stats/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'stats/tableexport.min.css' %}">
 
-    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+    <script src="{% static 'stats/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'stats/dataTables.bootstrap.min.js' %}"></script>
 
     {# tableexport.js staff #}
-    <script lang="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.12.2/xlsx.core.min.js"></script>
-    <script src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.0.0/js/tableexport.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.0.0/css/tableexport.min.css">
-
+    <script lang="javascript" src="{% static 'stats/xlsx.core.min.js' %}"></script>
+    <script src="{% static 'stats/FileSaver.min.js' %}"></script>
+    <script src="{% static 'stats/tableexport.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -32,46 +32,60 @@
 
             <p>{{ tournament.description }}</p>
         </div>
-        <div class="col-md-4 mar-top-10">
-            <img class="img-rounded" style="width: 100%;" src="{{ MEDIA_URL }}{{ tournament.photo }}"/>
-        </div>
 
-        <div class="col-md-4 mar-top-10">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    Параметры
-                </div>
-                <div class="panel-body">
-                    <p>Дата: {{ tournament.start|date:"d.m.Y" }} – {{ tournament.end|date:"d.m.Y" }}</p>
-                    <p>Город: Москва</p>
-                    <p>Тип турнира: {{ tournament.get_type_display }}</p>
-                    <p>Тип команд: {{ tournament.team_type }}</p>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-md-4 mar-top-10">
-            <div class="list-group">
-                <span class="list-group-item list-group-item-action"><b>Список игр</b></span>
-                {% for game in games %}
-                    <a href="{% url 'tournaments:tournament_game_info' tournament.pk game.pk %}"
-                       class="list-group-item list-group-item-action">{{ game.name }}</a>
-                {% endfor %}
-
-                {% if user.is_staff %}
-                    <a href="{% url 'tournaments:game_create' tournament.id %}"
-                       class="list-group-item list-group-item-success">Добавить
-                        игру</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
         <div class="col-md-12">
+            <div class="bound">
+                <div class="button-border">
+                    <div class="info-btn btn btn-sm btn-block text-right" data-toggle="collapse" data-target="#collapseInfo">
+                    </div>
+                </div>
+
+                <div class="info-block collapse in" id="collapseInfo" style="max-height: none">
+                    <div class="row">
+                        <div class="col-md-4 mar-top-10">
+                            <img class="img-rounded" style="width: 100%;" src="{{ MEDIA_URL }}{{ tournament.photo }}"/>
+                        </div>
+
+                        <div class="col-md-4 mar-top-10">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Параметры
+                                </div>
+                                <div class="panel-body">
+                                    <p>Дата: {{ tournament.start|date:"d.m.Y" }} – {{ tournament.end|date:"d.m.Y" }}</p>
+                                    <p>Город: {{ tournament.city }}</p>
+                                    <p>Тип турнира: {{ tournament.get_type_display }}</p>
+                                    <p>Тип команд: {{ tournament.team_type }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mar-top-10">
+                            <div class="list-group">
+                                <span class="list-group-item list-group-item-action"><b>Список игр</b></span>
+                                {% for game in games %}
+                                    <a href="{% url 'tournaments:tournament_game_info' tournament.pk game.pk %}"
+                                       class="list-group-item list-group-item-action">{{ game.name }}</a>
+                                {% endfor %}
+
+                                {% if user.is_staff %}
+                                    <a href="{% url 'tournaments:game_create' tournament.id %}"
+                                       class="list-group-item list-group-item-success">Добавить
+                                        игру</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {#        <div class="row">#}
+        <div class="col-md-12 table-responsive">
             <h3>Статистика</h3>
             {% if games %}
-                <table class="table" id="result-table">
+                <table class="table display nowrap" id="result-table">
                     <thead>
                     <tr>
                         <th rowspan="2">#</th>
@@ -123,16 +137,21 @@
                 <div class="text-center">В данном турнире еще нет игр.</div>
             {% endif %}
         </div>
-    </div>
+        {#        </div>#}
+    </div> <!-- row -->
 
 
+{% endblock %}
 
+{% block scripts %}
     <script>
         $(document).ready(function () {
 
             $('#result-table').DataTable({
+                scrollX: true,
+                scrollCollapse: true,
                 "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Russian.json"
+                    "url": "{% static 'stats/Russian.json' %}"
                 }
             });
 
@@ -154,5 +173,4 @@
 
         });
     </script>
-
 {% endblock %}
