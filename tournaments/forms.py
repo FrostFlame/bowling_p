@@ -62,10 +62,10 @@ class TournamentCreationForm(forms.ModelForm):
         )
     )
 
-    type = forms.ChoiceField(
+    type = forms.ModelChoiceField(
         label='Тип турнира',
-        choices=TournamentType.choices,
-        required=False,
+        queryset=TournamentType.objects.all(),
+        empty_label=None,
         widget=forms.Select(
             attrs={'class': 'form-control'}
         )
