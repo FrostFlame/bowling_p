@@ -10,15 +10,16 @@ from djchoices import DjangoChoices, ChoiceItem
 from accounts.models import PlayerInfo, City
 
 
-
 def filename(instance, filename):
     return os.path.join('tournaments', get_random_string(length=32) + '.' + filename.split('.')[-1])
+
 
 class TournamentType(models.Model):
     name = models.CharField(max_length=60)
 
     def __str__(self):
         return self.name
+
 
 class Tournament(models.Model):
     name = models.CharField(max_length=40)
