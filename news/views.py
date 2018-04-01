@@ -40,11 +40,10 @@ class AllNewsView(ListView):
     class-based view for news list
 
     queryset - uses News class method to get all objects' only titles and images
-    paginate_by - paginates by 10 items per page
     """
 
     def get_queryset(self):
-        return News.ordered_by_creation(amount=10, page=int(self.request.GET['page']))
+        return News.ordered_by_creation(amount=10, page=int(self.kwargs['page']))
 
     template_name = 'news/news_list.html'
     context_object_name = 'news'
