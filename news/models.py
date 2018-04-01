@@ -9,3 +9,12 @@ class News(models.Model):
     text = models.TextField(max_length=500)
     created = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to=UploadToPathAndRename('news/'))
+
+    @classmethod
+    def ordered_by_creation(cls, amount=0, reversed=True):
+        if amount == 0:
+            amount = News.objects.count()
+        if not reversed:
+            return News.objects.order_by('created').values('title', 'image')[:amount]
+        else:
+            return News.objects.order_by('-created')[:amount]
