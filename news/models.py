@@ -11,10 +11,11 @@ class News(models.Model):
     image = models.ImageField(upload_to=UploadToPathAndRename('news/'))
 
     @classmethod
-    def ordered_by_creation(cls, amount=0, reversed=True):
+    def ordered_by_creation(cls, amount=0, reversed=True, page=1):
         if amount == 0:
             amount = News.objects.count()
         if not reversed:
-            return News.objects.order_by('created').values('title', 'image')[:amount]
+            return News.objects.order_by('created').values('id', 'title', 'image')[(page - 1) * amount:page * amount]
         else:
-            return News.objects.order_by('-created')[:amount]
+            x = News.objects.order_by('-created').values('id', 'title', 'image')[(page - 1) * amount:page * amount]
+            return x

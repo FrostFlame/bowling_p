@@ -42,8 +42,10 @@ class AllNewsView(ListView):
     queryset - uses News class method to get all objects' only titles and images
     paginate_by - paginates by 10 items per page
     """
-    queryset = News.ordered_by_creation()
-    paginate_by = 10
+
+    def get_queryset(self):
+        return News.ordered_by_creation(amount=10, page=int(self.request.GET['page']))
+
     template_name = 'news/news_list.html'
     context_object_name = 'news'
 
@@ -54,6 +56,7 @@ class NewsUpdate(HasRoleMixin, UpdateView):
 
     allowed_roles - list of roles that has permission to create news
     """
+
     def get_success_url(self):
         return reverse('news:news_view', args=(self.object.id,))
 
