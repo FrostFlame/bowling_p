@@ -10,19 +10,15 @@ from djchoices import DjangoChoices, ChoiceItem
 from accounts.models import PlayerInfo, City
 
 
-# todo enum
-
-
-class TournamentType(DjangoChoices):
-    # choices
-    CLUB_LICENSE = ChoiceItem('C', 'Только для обладателей клубной лицензии')
-    GAME_LICENSE = ChoiceItem('G', 'Только для обладателей игровой лицензии')
-    ANY_LICENSE = ChoiceItem('L', 'Для обладателей любой лицензии')
-    PUBLIC = ChoiceItem('P', "Публичный")
-
-
 def filename(instance, filename):
     return os.path.join('tournaments', get_random_string(length=32) + '.' + filename.split('.')[-1])
+
+
+class TournamentType(models.Model):
+    name = models.CharField(max_length=60)
+
+    def __str__(self):
+        return self.name
 
 
 class Tournament(models.Model):
@@ -30,7 +26,7 @@ class Tournament(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField()
     description = models.TextField(max_length=500, blank=True, default='')
-    type = models.CharField(max_length=1, choices=TournamentType.choices)
+    type = models.ForeignKey(TournamentType)
     team_type = models.ForeignKey('TeamType')
     games = models.IntegerField('amount of games in the tournament', default=1)
     photo = models.ImageField(upload_to=filename, blank=True, default=os.path.join('default','tournament_avatar.png'))

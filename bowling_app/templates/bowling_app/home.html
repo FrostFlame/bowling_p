@@ -23,7 +23,7 @@
                     </a>
                 {% endfor %}
                 {% if news_count > 3 %}
-                    <button class="btn btn-block btn-lg btn-default" onclick="window.location.href='{% url 'news:news_list' %}'">Перейти ко всем новостям</button>
+                    <button class="btn btn-block btn-lg btn-default" onclick="window.location.href='{% url 'news:news_list' 1 %}'">Перейти ко всем новостям</button>
                 {% endif %}
 
             {% else %}

@@ -14,6 +14,7 @@ from bowling_app.forms import StaffPlayerRegister, EventCreationForm
 from bowling_app.models import Event
 from news.models import News
 
+
 class RegistrationRequestsView(View):
     def get(self, request):
         if request.user.is_staff:
@@ -120,23 +121,25 @@ class PlayersListView(View):
 class PlayerProfileView(View):
     def get(self, request, id):
         player = PlayerInfo.objects.get(pk=id)
-        return render(request, 'bowling_app/player.html', {'player':player})
+        return render(request, 'bowling_app/player.html', {'player': player})
 
 
 class HomePage(View):
     def get(self, request):
         news_count = News.objects.count()
-        return render(request, 'bowling_app/home.html', {'news': News.objects.order_by('-created')[:3],
+        return render(request, 'bowling_app/home.html', {'news': News.ordered_by_creation(3),
                                                          'news_count': news_count})
 
-class PlayerBlockUnblock(View):
-    def post(self,request,id):
-        player = get_object_or_404(PlayerInfo,pk=id)
-        player.user.is_active= not player.user.is_active
-        player.user.save()
-        return redirect(reverse('bowlingApp:player',kwargs={'id':id}))
 
-class EventAddView (CreateView):
+class PlayerBlockUnblock(View):
+    def post(self, request, id):
+        player = get_object_or_404(PlayerInfo, pk=id)
+        player.user.is_active = not player.user.is_active
+        player.user.save()
+        return redirect(reverse('bowlingApp:player', kwargs={'id': id}))
+
+
+class EventAddView(CreateView):
     model = Event
     template_name = "bowling_app/event_add.html"
     success_url = '/'
@@ -145,6 +148,3 @@ class EventAddView (CreateView):
     @method_decorator(staff_member_required)
     def dispatch(self, request, *args, **kwargs):
         return super(EventAddView, self).dispatch(request, *args, **kwargs)
-
-
-

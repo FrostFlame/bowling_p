@@ -15,6 +15,11 @@ from tournaments.models import Tournament, TournamentMembership, Game, GameInfo
 
 @method_decorator(staff_member_required(), name='dispatch')
 class TournamentCreate(CreateView):
+    """
+    class-based view для создания турнира
+    перенаправляет на страницу добавления игроков созданного турнира
+    """
+
     def get_success_url(self):
         return reverse('tournaments:tournament_add_players', args=(self.object.id,))
 
@@ -26,6 +31,10 @@ class TournamentCreate(CreateView):
 
 @method_decorator(staff_member_required(), name='dispatch')
 class TournamentDelete(DeleteView):
+    """
+    class-based view для удаления турнира
+    """
+
     def get_success_url(self):
         return reverse('tournaments:tournaments_all')
 
@@ -34,12 +43,19 @@ class TournamentDelete(DeleteView):
 
 
 class TournamentsListView(ListView):
+    """
+    class-based view для отображения спискка турниров
+    """
     queryset = Tournament.objects.all()
     context_object_name = 'tournaments'
     template_name = 'tournaments/tournaments_list.html'
 
 
 class TournamentView(View):
+    """
+    class-based view для страницы турнира
+    """
+
     def get(self, request, pk):
         tournament = Tournament.objects.get(id=pk)
         games = tournament.tournament_games.all().order_by('start')
@@ -67,6 +83,10 @@ class TournamentView(View):
 
 
 class AddPlayersView(View):
+    """
+    class-based view для страницы добавления игроков к турниру
+    """
+
     def get(self, request, pk):
         tournament = Tournament.objects.get(id=pk)
         players = PlayerInfo.objects.get_players_by_license_type(tournament.type)
@@ -86,8 +106,12 @@ class AddPlayersView(View):
 
 @method_decorator(staff_member_required(), name='dispatch')
 class TournamentUpdate(UpdateView):
+    """
+    class-based view для редактирования информации о турнире
+    """
+
     def get_success_url(self):
-        return reverse('tournaments:tournament_page', args=(self.object.id,))
+        return reverse('tournaments:tournament_add_players', args=(self.object.id,))
 
     model = Tournament
     template_name = 'tournaments/tournament_form.html'
@@ -96,6 +120,10 @@ class TournamentUpdate(UpdateView):
 
 
 class TournamentGameInfo(View):
+    """
+    class-based view для отображения информации о конкретной игре турнира
+    """
+
     def get(self, request, tournament_pk, game_pk):
         game = get_object_or_404(Game, pk=game_pk)
         gameInfo = GameInfo.objects.filter(game=game)
@@ -103,6 +131,11 @@ class TournamentGameInfo(View):
 
 
 class GameCreateView(View):
+    """
+    class-based view для создания игры турнира
+    после создаия перенаправляет на страницу турнира
+    """
+
     def get(self, request, pk):
         tournament = Tournament.objects.get(pk=pk)
         selected = tournament.players.all()
@@ -133,6 +166,10 @@ class GameCreateView(View):
 
 
 class GameUpdateView(View):
+    """
+    class-based view для редактирования информации о конкретной игре турнира
+    """
+
     @method_decorator(staff_member_required)
     def dispatch(self, request, *args, **kwargs):
         return super(GameUpdateView, self).dispatch(request, *args, **kwargs)
