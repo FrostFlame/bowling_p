@@ -1,7 +1,14 @@
 {% extends user.is_staff|yesno:"admin/base.html,base.html" %}
 
+{% load static %}
+
 {% block title %}
     Новости
+{% endblock %}
+
+{% block extrahead %}
+    <script src="{% static 'js/jquery.simplePagination.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/simplePagination.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -16,7 +23,7 @@
             <div class="list-group mar-top-25">
                 <ul id="itemsUL" class="list-unstyled">
                     {% for post in news %}
-                        <li>
+                        <li class="mar-top-10">
                             <a href="{% url 'news:news_view' post.id %}"
                                class="list-group-item ov-hidden"
                                id="post{{ post.id }}">
@@ -31,6 +38,7 @@
                     {% endfor %}
                 </ul>
             </div>
+            <div class="pag"></div>
         {% else %}
             <p class="text-center mar-top-125">Новостей пока нет</p>
         {% endif %}
@@ -58,4 +66,19 @@
         {% endif %}
     </div>
 
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('.pag').pagination({
+            items: {{ total }},
+            currentPage: {{ page }},
+            itemsOnPage: 10,
+            cssStyle: 'light-theme',
+            nextText: 'Вперед',
+            prevText: 'Назад',
+            hrefTextSuffix: '',
+            hrefTextPrefix: ''
+        })
+    </script>
 {% endblock %}

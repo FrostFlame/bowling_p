@@ -42,10 +42,23 @@ class AllNewsView(ListView):
     queryset - uses News class method to get all objects' only titles and images
     """
 
+    def get_page(self):
+        page = 1
+        if 'page' in self.kwargs:
+            page = int(self.kwargs['page'])
+        return page
+
     def get_queryset(self):
-        return News.ordered_by_creation(amount=10, page=int(self.kwargs['page']))
+        return News.ordered_by_creation(amount=10, page=self.get_page())
 
     template_name = 'news/news_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total'] = News.objects.count()
+        context['page'] = self.get_page()
+        return context
+
     context_object_name = 'news'
 
 
