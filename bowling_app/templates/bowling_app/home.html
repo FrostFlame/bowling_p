@@ -13,17 +13,17 @@
             {% if news %}
                 {% for post in news %}
                     <a href="{% url 'news:news_view' post.id %}"
-                       class="list-group-item ov-hidden"
+                       class="list-group-item ov-hidden mar-bot-10 box-shadow"
                        id="post{{ post.id }}">
 
                         <span class="square"
                               style="background-image:url('{{ MEDIA_URL }}{{ post.image }}');"></span>
-                        <h4 class="list-group-item-heading" id="c${complex.id?c}">{{ post.title }}</h4>
-                        <br>
+                        <p class="list-group-item-heading" id="c${complex.id?c}">{{ post.title }}</p>
+                        <p style="position: absolute; bottom: 0; right: 12px; color: #8C8C8C;">{{ post.created|date:"j M" }} {{ post.created|time }}</p>
                     </a>
                 {% endfor %}
                 {% if news_count > 3 %}
-                    <button class="btn btn-block btn-lg btn-default" onclick="window.location.href='{% url 'news:news_list' 1 %}'">Перейти ко всем новостям</button>
+                    <button class="btn btn-block btn-default box-shadow" onclick="window.location.href='{% url 'news:news_list' 1 %}'">Перейти ко всем новостям</button>
                 {% endif %}
 
             {% else %}

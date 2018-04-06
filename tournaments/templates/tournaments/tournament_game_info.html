@@ -57,7 +57,7 @@
         </div>
     {% else %}
 
-        <table class="table table-bordered" id="results">
+        <table class="table table-bordered" id="results" style="width: 100%;">
             <thead>
             <tr>
                 <th>#</th>
@@ -70,11 +70,11 @@
             <tbody>
             {% for gInf in gameInfo %}
                 <tr>
-                    <td>{{ forloop.counter }}</td>
+                    <td style="text-align: center">{{ forloop.counter }}</td>
                     <td>{{ gInf.player }}</td>
-                    <td>{{ gInf.player.category }}</td>
+                    <td style="text-align: center">{{ gInf.player.category }}</td>
                     <td>{{ gInf.player.city }}</td>
-                    <td>{{ gInf.result }}</td>
+                    <td style="text-align: center">{{ gInf.result }}</td>
                 </tr>
             {% endfor %}
 
@@ -118,7 +118,15 @@
 
     <script>
         $(document).ready(function () {
-            $('#results').DataTable();
+            $('#results').DataTable({
+                scrollX: true,
+                "bPaginate": false,
+                scrollCollapse: true,
+                "language": {
+                    "url": "{% static 'stats/Russian.json' %}"
+                },
+                "info": false
+            });
         });
     </script>
 
