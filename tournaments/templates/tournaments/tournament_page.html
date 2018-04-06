@@ -24,68 +24,41 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h3>{{ tournament.name }}</h3>
-            {% if user.is_staff %}
-                <a class="right" href="{% url 'tournaments:tournament_update' tournament.id %}"><i
-                        class="fas fa-pencil-alt"></i> редактировать</a>
-            {% endif %}
-
-            <p>{{ tournament.description }}</p>
-        </div>
-
-
-        <div class="col-md-12">
-            <div class="bound">
-                <div class="button-border">
-                    <div class="info-btn btn btn-sm btn-block text-right" data-toggle="collapse" data-target="#collapseInfo">
+            <div class="bg-w box-shadow pad-10 ov-hidden">
+                <div class="row">
+                    <div class="col-md-3 mar-top-10">
+                        <img class="" style="width: 100%;" src="{{ MEDIA_URL }}{{ tournament.photo }}"/>
                     </div>
-                </div>
 
-                <div class="info-block collapse in" id="collapseInfo" style="max-height: none">
-                    <div class="row">
-                        <div class="col-md-4 mar-top-10">
-                            <img class="img-rounded" style="width: 100%;" src="{{ MEDIA_URL }}{{ tournament.photo }}"/>
-                        </div>
-
-                        <div class="col-md-4 mar-top-10">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    Параметры
-                                </div>
-                                <div class="panel-body">
-                                    <p>Дата: {{ tournament.start|date:"d.m.Y" }} – {{ tournament.end|date:"d.m.Y" }}</p>
-                                    <p>Город: {{ tournament.city }}</p>
-                                    <p>Тип турнира: {{ tournament.get_type_display }}</p>
-                                    <p>Тип команд: {{ tournament.team_type }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 mar-top-10">
-                            <div class="list-group">
-                                <span class="list-group-item list-group-item-action"><b>Список игр</b></span>
-                                {% for game in games %}
-                                    <a href="{% url 'tournaments:tournament_game_info' tournament.pk game.pk %}"
-                                       class="list-group-item list-group-item-action">{{ game.name }}</a>
-                                {% endfor %}
-
-                                {% if user.is_staff %}
-                                    <a href="{% url 'tournaments:game_create' tournament.id %}"
-                                       class="list-group-item list-group-item-success">Добавить
-                                        игру</a>
-                                {% endif %}
-                            </div>
-                        </div>
+                    <div class="col-md-9">
+                        <h3 class="mar-top-10">{{ tournament.name }}</h3>
+                        <h4 class="color-grey">{{ tournament.city }}| {{ tournament.type }} | {{ tournament.team_type }}
+                            | {{ tournament.start|date:"d.m.Y" }} – {{ tournament.end|date:"d.m.Y" }}|</h4>
+                        <p>{{ tournament.description }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        {#        <div class="row">#}
+        <div class="col-md-12 mar-top-10 mar-l-3">
+            <div class="list-group list-group-horizontal">
+                <span class="list-group-item list-group-item-action"><b>Игры</b></span>
+                {% for game in games %}
+                    <a href="{% url 'tournaments:tournament_game_info' tournament.pk game.pk %}"
+                       class="list-group-item list-group-item-action">{{ game.name }}</a>
+                {% endfor %}
+
+                {% if user.is_staff %}
+                    <a href="{% url 'tournaments:game_create' tournament.id %}"
+                       class="list-group-item list-group-item-success">Добавить</a>
+                {% endif %}
+            </div>
+        </div>
+
         <div class="col-md-12 table-responsive">
             <h3>Статистика</h3>
             {% if games %}
-                <table class="table display nowrap" id="result-table">
+                <table class="table display nowrap table-hover" id="result-table" style="width: 100%;">
                     <thead>
                     <tr>
                         <th rowspan="2">#</th>
@@ -110,7 +83,7 @@
                         <tr>
 
                             <td>{{ forloop.counter }}</td>
-                            <td>{{ player }}</td>
+                            <td style="text-align: left">{{ player }}</td>
                             {% for game in games_dict|get_item:player.id %}
                                 <td>{{ game.result }}</td>
                             {% endfor %}
@@ -137,7 +110,11 @@
                 <div class="text-center">В данном турнире еще нет игр.</div>
             {% endif %}
         </div>
-        {#        </div>#}
+
+        {% if user.is_staff %}
+            <a class="right" href="{% url 'tournaments:tournament_update' tournament.id %}"><i
+                    class="fas fa-pencil-alt"></i> редактировать</a>
+        {% endif %}
     </div> <!-- row -->
 
 
@@ -145,16 +122,17 @@
 
 {% block scripts %}
     <script>
-        $(document).ready(function () {
 
+        $(document).ready(function () {
             $('#result-table').DataTable({
                 scrollX: true,
+                "bPaginate": false,
                 scrollCollapse: true,
                 "language": {
                     "url": "{% static 'stats/Russian.json' %}"
-                }
+                },
+                "info": false
             });
-
 
             TableExport.prototype.formatConfig.xlsx.buttonContent = "Экспорт в xlsx";
             TableExport.prototype.formatConfig.csv.buttonContent = "Экспорт в csv";
@@ -167,7 +145,7 @@
                 position: 'bottom',                         // (top, bottom), position of the caption element relative to table, (default: 'bottom')
                 ignoreRows: null,                           // (Number, Number[]), row indices to exclude from the exported file(s) (default: null)
                 ignoreCols: null,                           // (Number, Number[]), column indices to exclude from the exported file(s) (default: null)
-                trimWhitespace: false,
+                trimWhitespace: false
             });
 
 

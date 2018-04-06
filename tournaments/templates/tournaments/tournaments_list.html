@@ -18,7 +18,7 @@
                 {% for tournament in tournaments %}
                     <li class="mar-top-10">
                         <a href="{% url 'tournaments:tournament_page' tournament.id %}"
-                           class="list-group-item ov-hidden"
+                           class="list-group-item box-shadow ov-hidden"
                            id="tournament{{ tournament.id }}">
 
                             {% if user.is_staff %}
