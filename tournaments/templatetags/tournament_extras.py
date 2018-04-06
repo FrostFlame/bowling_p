@@ -33,7 +33,7 @@ def get_player_200_points(player, tournament):
 @register.filter
 def get_item(dictionary, key):
     """
-    Получение элемента из словаря
+    Получение элемента из словаря по его ключу
 
     Args:
         dictionary (dict): Словарь, из которого необходимо получить элемент

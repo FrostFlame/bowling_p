@@ -27,7 +27,6 @@ class Tournament(models.Model):
     description = models.TextField(max_length=500, blank=True, default='')
     type = models.ForeignKey(TournamentType)
     team_type = models.ForeignKey('TeamType')
-    games = models.IntegerField('amount of games in the tournament', default=1)
     photo = models.ImageField(upload_to=filename, blank=True, default=os.path.join('default','tournament_avatar.png'))
     players = models.ManyToManyField(PlayerInfo, through='TournamentMembership')
     # Значение по умолчанию - Казань
