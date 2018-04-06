@@ -3,8 +3,6 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import django.db.models.deletion
-import tournaments.models
 
 
 class Migration(migrations.Migration):
@@ -21,14 +19,5 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=60)),
             ],
         ),
-        migrations.AlterField(
-            model_name='tournament',
-            name='photo',
-            field=models.ImageField(blank=True, default='default\\tournament_avatar.png', upload_to=tournaments.models.filename),
-        ),
-        migrations.AlterField(
-            model_name='tournament',
-            name='type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tournaments.TournamentType'),
-        ),
+
     ]
