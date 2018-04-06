@@ -5,7 +5,6 @@ from django.db import models
 # Create your models here.
 from django.db.models import Sum, Max, Min
 from django.utils.crypto import get_random_string
-from djchoices import DjangoChoices, ChoiceItem
 
 from accounts.models import PlayerInfo, City
 
@@ -69,6 +68,9 @@ class Tournament(models.Model):
         info = GameInfo.objects.filter(game__in=games, player=player)
         min_points = info.aggregate(Min('result'))['result__min']
         return min_points if min_points else 0
+
+    def get_games_count(self):
+        return self.tournament_games.count()
 
 
 class TournamentMembership(models.Model):

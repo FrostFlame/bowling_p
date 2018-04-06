@@ -26,7 +26,7 @@ def get_player_avg_points(player, tournament):
 @register.simple_tag
 def get_player_200_points(player, tournament):
     player_points = tournament.get_player_points(player)
-    result = player_points - (tournament.games * 200) if player_points else 0
+    result = player_points - (tournament.get_games_count() * 200) if player_points else 0
     return f'{round(result,2)}'
 
 
