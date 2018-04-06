@@ -103,6 +103,12 @@
                 </a></li>
             </ul>
         </li>
+
+{#    todo создать отдельное приложение для мероприятий#}
+{#        <li {% if request.resolver_match.url_name|first_part == 'events' %}class="active"{% endif %}>#}
+{#            <a href="{% url 'news:news_list' page=1 %}"><em class="fa fa-birthday-cake">&nbsp;</em> Мероприятия</a></li>#}
+
+        <li class="parent {% if request.resolver_match.url_name|first_part == 'tournaments' %}active{% endif %}">
         <li {% if request.resolver_match.url_name|first_part == 'albums' %}class="active"{% endif %}><a
                 href="#albums"><em class="fa fa-picture-o">&nbsp;</em> Альбомы</a></li>
         <li {% if request.resolver_match.url_name == 'stats' %}class="active"{% endif %}><a href="#stats"><em

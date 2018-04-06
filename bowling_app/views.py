@@ -4,7 +4,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import get_template
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView
@@ -80,7 +80,7 @@ class RequestHandlingView(View):
 class PlayerCreate(CreateView):
     model = PlayerInfo
     template_name = "bowling_app/player_form.html"
-    success_url = '/'
+    success_url = reverse_lazy('bowlingApp:players_list')
     form_class = StaffPlayerRegister
 
     @method_decorator(staff_member_required)
@@ -148,3 +148,10 @@ class EventAddView(CreateView):
     @method_decorator(staff_member_required)
     def dispatch(self, request, *args, **kwargs):
         return super(EventAddView, self).dispatch(request, *args, **kwargs)
+
+
+class Calendar(View):
+    def get(self, request):
+        news_count = News.objects.count()
+        return render(request, 'bowling_app/calendar.html', {'news': News.ordered_by_creation(3),
+                                                         'news_count': news_count})

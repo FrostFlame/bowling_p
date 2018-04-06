@@ -7,9 +7,7 @@
 
 {% block extrahead %}
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
-    <link rel="stylesheet" href="{% static 'css/imageupload.css' %}">
-    <link rel="stylesheet" type="text/css"
-          href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/jquery-ui-timepicker-addon.css' %}">
 {% endblock %}
 
 
@@ -17,15 +15,37 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-    <button type="submit">Добавить</button>
+        <button type="submit">Добавить</button>
     </form>
+{% endblock %}
 
-    <script src="{% static 'js/jquery.maskedinput.js' %}"></script>
+{% block scripts %}
+
     <script src="{% static 'js/jquery-ui.js' %}"></script>
     <script src="{% static 'js/datepicker-ru.js' %}"></script>
+    <script src="{% static 'js/jquery-ui-timepicker-addon.js' %}"></script>
 
     <script>
-     $('#id_date').datepicker({
+
+
+        $.timepicker.regional['ru'] = {
+            timeOnlyTitle: 'Выберите время',
+            timeText: 'Время',
+            hourText: 'Часы',
+            minuteText: 'Минуты',
+            secondText: 'Секунды',
+            millisecText: 'Миллисекунды',
+            timezoneText: 'Часовой пояс',
+            currentText: 'Сейчас',
+            closeText: 'Закрыть',
+            timeFormat: 'HH:mm',
+            amNames: ['AM', 'A'],
+            pmNames: ['PM', 'P'],
+            isRTL: false
+        };
+        $.timepicker.setDefaults($.timepicker.regional['ru']);
+
+        $('#id_date').datetimepicker({
             changeMonth: true,
             changeYear: true,
             yearRange: "2015:+nn"

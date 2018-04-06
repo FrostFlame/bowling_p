@@ -25,12 +25,6 @@ class StaffPlayerRegister(forms.ModelForm):
             attrs={'placeholder': 'Фамилия', 'class': 'form-control', 'data-validation': 'custom',
                    'data-validation-regexp': '^[a-zA-Zа-яА-Я]+$'}),
     )
-    # avatar = forms.ImageField(
-    #     label='Аватар',
-    #     widget=AdminResubmitImageWidget(
-    #         attrs={'class': 'form-control'}
-    #     )
-    # )
     sex = forms.ChoiceField(
         label='Пол',
         choices=SEX_CHOICES,
@@ -75,6 +69,7 @@ class StaffPlayerRegister(forms.ModelForm):
     )
 
     class Meta:
+        # fields = ()
         model = PlayerInfo
         exclude = ('user', 'passport', 'avatar')
 
@@ -84,8 +79,8 @@ class StaffPlayerRegister(forms.ModelForm):
             player.save()
         return player
 
-class EventCreationForm (forms.ModelForm):
 
+class EventCreationForm (forms.ModelForm):
     name = forms.CharField(
         label='Название',
         widget=forms.TextInput(
