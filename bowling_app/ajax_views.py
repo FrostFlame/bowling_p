@@ -8,7 +8,7 @@ class CityAutocomplete(autocomplete.Select2QuerySetView):
         return item.name
 
     def get_queryset(self):
-        qs = City.objects.all()
+        qs = City.objects.all().order_by('pk')
 
         if self.q:
             qs = qs.filter(name__istartswith=self.q)
