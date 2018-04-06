@@ -1,10 +1,8 @@
 import io
-
 import os
-from PIL import Image
+
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.core.files.base import ContentFile
-from django.core.files.images import ImageFile
 from django.db import models
 from django.db.models import Q
 
@@ -51,6 +49,7 @@ class User(AbstractUser):
     username = None
     first_name = None
     last_name = None
+    is_photographer = models.BooleanField(default=False)
     email_confirmed = models.BooleanField(null=False, default=False)
     # Вместо username используем email
     email = models.EmailField(unique=True, blank=False)
