@@ -36,7 +36,13 @@ class RegisterUserView(View):
             player_instance = player.save()
             player_instance.watermark()
             player_instance.save()
-            send_activation_mail(request, player_instance)
+
+            # отправка письма на регистрацию в отдельном потоке
+            import threading
+            t = threading.Thread(target=send_activation_mail, args=(request, player_instance), kwargs={})
+            t.setDaemon(True)
+            t.start()
+
             email = user.email
             return render(request, 'accounts/confirm_email.html',
                           {'email': email})

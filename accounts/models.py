@@ -1,10 +1,8 @@
 import io
-
 import os
-from PIL import Image
+
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.core.files.base import ContentFile
-from django.core.files.images import ImageFile
 from django.db import models
 from django.db.models import Q
 
@@ -51,6 +49,7 @@ class User(AbstractUser):
     username = None
     first_name = None
     last_name = None
+    is_photographer = models.BooleanField(default=False)
     email_confirmed = models.BooleanField(null=False, default=False)
     # Вместо username используем email
     email = models.EmailField(unique=True, blank=False)
@@ -62,12 +61,24 @@ class User(AbstractUser):
 
 class PlayerManager(models.Manager):
     def get_similar_players(self, primary_player):
-        similar_players = PlayerInfo.objects.filter(Q(i_name__icontains=primary_player.i_name) &
-                                                    Q(f_name__icontains=primary_player.f_name) &
-                                                    Q(o_name__icontains=primary_player.o_name) &
-                                                    Q(date_of_birth__exact=primary_player.date_of_birth) &
-                                                    ~Q(pk=primary_player.pk) &
-                                                    Q(user=None))
+        """
+        Находит игроков, регистрационные данные которого совпадают с принимаемым.
+
+        Args:
+            primary_player (PlayerInfo): игрок, по которому находим похожих.
+
+        Returns:
+            Если имеются похожие игроки, то возвращает их queryset, иначе возвращает None.
+        """
+        try:
+            similar_players = PlayerInfo.objects.filter(Q(i_name__icontains=primary_player.i_name) &
+                                                        Q(f_name__icontains=primary_player.f_name) &
+                                                        Q(o_name__icontains=primary_player.o_name) &
+                                                        Q(date_of_birth__exact=primary_player.date_of_birth) &
+                                                        ~Q(pk=primary_player.pk) &
+                                                        Q(user=None))
+        except PlayerInfo.DoesNotExist:
+            similar_players = None
 
         return similar_players
 
@@ -81,13 +92,6 @@ class PlayerManager(models.Manager):
 
 class PlayerInfo(models.Model):
     user = models.OneToOneField(User, null=True, unique=True, related_name="profile")
-    license = models.CharField(max_length=20, blank=True, default='Не указана')
-
-    category = models.ForeignKey('SportCategory')
-    passport = models.ImageField(upload_to=UploadToPathAndRename('passports/'))
-    avatar = models.ImageField(upload_to=UploadToPathAndRename('avatars/'),default=os.path.join('default','player_avatar.png'))
-
-    city = models.ForeignKey('City')
 
     i_name = models.CharField(max_length=50, blank=False)
     f_name = models.CharField(max_length=50, blank=False)
@@ -96,6 +100,14 @@ class PlayerInfo(models.Model):
     date_of_birth = models.DateField(null=True)
     sex = models.CharField(max_length=1, choices=SEX_CHOICES, default='0')
     phone = models.CharField(max_length=15, blank=True, default='Не указан')
+
+    city = models.ForeignKey('City')
+    category = models.ForeignKey('SportCategory')
+    license = models.CharField(max_length=20, blank=True, default='Не указана')
+
+    passport = models.ImageField(upload_to=UploadToPathAndRename('passports/'))
+    avatar = models.ImageField(upload_to=UploadToPathAndRename('avatars/'),
+                               default=os.path.join('default', 'player_avatar.png'))
 
     objects = PlayerManager()
 

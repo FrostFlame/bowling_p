@@ -39,33 +39,34 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span></button>
-            <a class="navbar-brand" href="{% url 'bowlingApp:home' %}"><img src="{% static 'images/logo2.png' %}" style="width: 150px" alt=""></a>
+            <a class="navbar-brand" href="{% url 'bowlingApp:home' %}"><img src="{% static 'images/logo12.png' %}"
+                                                                            style="width: 190px" alt=""></a>
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
                     <em class="fa fa-bell"></em><span class="label label-danger">5</span>
                 </a>
                     <ul class="dropdown-menu dropdown-alerts">
-                        <li><a href="#">
-                            <div><em class="fa fa-envelope"></em> 1 New Message
-                                <span class="pull-right text-muted small">3 mins ago</span></div>
+                        <li><a href="{% url 'bowlingApp:bowling_manage_registration' %}">
+                            <div><em class="fa fa-envelope"></em> 1 Заявка на регистрацию</div>
                         </a></li>
                         <li class="divider"></li>
                         <li><a href="#">
-                            <div><em class="fa fa-heart"></em> 12 New Likes
-                                <span class="pull-right text-muted small">4 mins ago</span></div>
-                        </a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">
-                            <div><em class="fa fa-user"></em> 5 New Followers
-                                <span class="pull-right text-muted small">4 mins ago</span></div>
+                            <div><em class="fa fa-heart"></em> 12 Заявок на турнир</div>
                         </a></li>
                     </ul>
                 </li>
 
-                <li class="dropdown"><a title="Выход" class="dropdown-toggle count-info" href="{% url 'auth:logout' %}">
-                    <em class="fa fa-power-off fa-lg"></em>
-                </a>
-                </li>
+                {% if user.is_authenticated %}
+                    <li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <em class="fa fa-user"></em>
+                    </a>
+                        <ul class="dropdown-menu dropdown-alerts-small">
+                            <li><a href="{% url 'auth:logout' %}">
+                                <div><em class="fa fa-power-off"></em> &nbsp; &nbsp;Выход</div>
+                            </a></li>
+                        </ul>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div><!-- /.container-fluid -->
@@ -80,10 +81,10 @@
             <a href="{% url 'news:news_list' page=1 %}"><em class="fa fa-newspaper-o">&nbsp;</em> Новости</a></li>
         <li class="parent {% if request.resolver_match.url_name|first_part == 'tournaments' %}active{% endif %}">
             <a data-toggle="collapse" href="#sub-item-1">
-            <em class="fa fa-trophy">&nbsp;</em> Турниры <span data-toggle="collapse" href="#sub-item-1"
-                                                               class="icon pull-right"><em
-                class="fa fa-plus"></em></span>
-        </a>
+                <em class="fa fa-trophy">&nbsp;</em> Турниры <span data-toggle="collapse" href="#sub-item-1"
+                                                                   class="icon pull-right"><em
+                    class="fa fa-plus"></em></span>
+            </a>
             <ul class="children collapse" id="sub-item-1">
                 <li><a href="{% url 'tournaments:tournaments_all' %}">
                     <span class="fa fa-globe">&nbsp;</span> Все
@@ -102,12 +103,24 @@
                 </a></li>
             </ul>
         </li>
-        <li {% if request.resolver_match.url_name|first_part == 'albums' %}class="active"{% endif %}><a href="#albums"><em class="fa fa-picture-o">&nbsp;</em> Альбомы</a></li>
-        <li {% if request.resolver_match.url_name == 'stats' %}class="active"{% endif %}><a href="#stats"><em class="fa fa-bar-chart-o">&nbsp;</em> Статистика</a></li>
-        <li {% if request.resolver_match.url_name == 'calendar' %}class="active"{% endif %}><a href="#calendar"><em class="fa fa-calendar">&nbsp;</em> Календарь</a></li>
-        <li {% if request.resolver_match.url_name == 'bowling_manage_registration' %}class="active"{% endif %}><a href="{% url 'bowlingApp:bowling_manage_registration' %}"><em class="fa fa-bell-o">&nbsp;</em> Заявки</a>
+
+{#    todo создать отдельное приложение для мероприятий#}
+        {#        <li {% if request.resolver_match.namespace == 'events' %}class="active"{% endif %}>#}
+        {#            <a href="{% url 'events:list' page=1 %}"><em class="fa fa-birthday-cake">&nbsp;</em> Мероприятия</a></li>#}
+
+        <li class="parent {% if request.resolver_match.url_name|first_part == 'tournaments' %}active{% endif %}">
+        <li {% if request.resolver_match.url_name|first_part == 'albums' %}class="active"{% endif %}><a
+                href="{% url 'album:albums_list' %}"><em class="fa fa-picture-o">&nbsp;</em> Альбомы</a></li>
+        <li {% if request.resolver_match.url_name == 'stats' %}class="active"{% endif %}><a href="#stats"><em
+                class="fa fa-bar-chart-o">&nbsp;</em> Статистика</a></li>
+        <li {% if request.resolver_match.url_name == 'calendar' %}class="active"{% endif %}><a href="#calendar"><em
+                class="fa fa-calendar">&nbsp;</em> Календарь</a></li>
+        <li {% if request.resolver_match.url_name == 'bowling_manage_registration' %}class="active"{% endif %}><a
+                href="{% url 'bowlingApp:bowling_manage_registration' %}"><em class="fa fa-bell-o">&nbsp;</em>
+            Заявки</a>
         </li>
-        <li {% if request.resolver_match.url_name|first_part == 'players' or request.resolver_match.url_name|first_part == 'player' %}class="active"{% endif %}><a href="{% url 'bowlingApp:players_list' %}"><em class="fa fa-users">&nbsp;</em> Игроки</a></li>
+        <li {% if request.resolver_match.url_name|first_part == 'players' or request.resolver_match.url_name|first_part == 'player' %}class="active"{% endif %}>
+            <a href="{% url 'bowlingApp:players_list' %}"><em class="fa fa-users">&nbsp;</em> Игроки</a></li>
 
     </ul>
 

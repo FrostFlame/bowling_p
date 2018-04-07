@@ -96,16 +96,35 @@ class AddPlayersView(View):
 
     def get(self, request, pk):
         tournament = Tournament.objects.get(id=pk)
-        players = PlayerInfo.objects.get_players_by_license_type(tournament.type)
         already_selected = tournament.players.all()
+        players = PlayerInfo.objects.get_players_by_license_type(tournament.type).exclude(pk__in=already_selected)
+
         return render(request, 'tournaments/add_players.html',
                       {'tournament': tournament, 'players': players, 'already_selected': already_selected})
 
     def post(self, request, pk):
-        players = request.POST.getlist('select')
-        for player in players:
-            TournamentMembership(player=PlayerInfo.objects.get(id=player),
-                                 tournament=Tournament.objects.get(id=pk)).save()
+        tournament = Tournament.objects.get(id=pk)
+        # Обновленный список игроков, который пришел от пользователя
+        players_pks = request.POST.getlist('select')
+
+        # Список первичных ключей игроков, которые находятся в бд
+        tournament_players_pks = list(tournament.players.values_list('id', flat=True))
+
+        # tournament.players.clear()
+
+        # Удаление игроков
+        for tournament_players_pk in tournament_players_pks:
+            if tournament_players_pk not in players_pks:
+                player = get_object_or_404(PlayerInfo, pk=tournament_players_pk)
+                TournamentMembership.objects.get(player=player,
+                                                 tournament=tournament).delete()
+        # Добавление новых игроков
+        for player_pk in players_pks:
+            if player_pk not in tournament_players_pks:
+                player = get_object_or_404(PlayerInfo, pk=player_pk)
+                TournamentMembership.objects.get_or_create(player=player,
+                                                           tournament=tournament)
+
         return redirect('tournaments:tournaments_all')
 
 

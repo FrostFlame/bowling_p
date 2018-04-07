@@ -5,7 +5,6 @@ from django.db import models
 # Create your models here.
 from django.db.models import Sum, Max, Min
 from django.utils.crypto import get_random_string
-from djchoices import DjangoChoices, ChoiceItem
 
 from accounts.models import PlayerInfo, City
 
@@ -28,11 +27,10 @@ class Tournament(models.Model):
     description = models.TextField(max_length=500, blank=True, default='')
     type = models.ForeignKey(TournamentType)
     team_type = models.ForeignKey('TeamType')
-    games = models.IntegerField('amount of games in the tournament', default=1)
-    photo = models.ImageField(upload_to=filename, blank=True, default=os.path.join('default','tournament_avatar.png'))
+    photo = models.ImageField(upload_to=filename, blank=True, default=os.path.join('default', 'tournament_avatar.png'))
     players = models.ManyToManyField(PlayerInfo, through='TournamentMembership')
     # Значение по умолчанию - Казань
-    city = models.ForeignKey(City, default=7264)
+    city = models.ForeignKey(City, default=5139)
 
     def __str__(self):
         return self.name
@@ -84,6 +82,10 @@ class Tournament(models.Model):
         else:
             tournaments = Tournament.objects.all()
         return tournaments
+
+    def get_games_count(self):
+        return self.tournament_games.count()
+
 
 class TournamentMembership(models.Model):
     player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE)

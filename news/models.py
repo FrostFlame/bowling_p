@@ -15,6 +15,6 @@ class News(models.Model):
         if amount == 0:
             amount = News.objects.count()
         if not reversed:
-            return News.objects.order_by('created').values('id', 'title', 'image')[(page - 1) * amount:page * amount]
+            return News.objects.order_by('created').values('id', 'title', 'image', 'created')[(page - 1) * amount:page * amount]
         else:
-            return News.objects.order_by('-created').values('id', 'title', 'image')[(page - 1) * amount:page * amount]
+            return News.objects.order_by('-created').values('id', 'title', 'image', 'created')[(page - 1) * amount:page * amount]

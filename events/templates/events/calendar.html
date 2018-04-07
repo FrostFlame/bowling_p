@@ -1,0 +1,26 @@
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load  static %}
+
+{% block title %}
+    Календарь мероприятий
+{% endblock %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+
+{% endblock %}
+
+
+{% block content %}
+    календарь
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/jquery-ui.js' %}"></script>
+
+    <script>
+
+
+
+    </script>
+{% endblock %}

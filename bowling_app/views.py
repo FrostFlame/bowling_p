@@ -4,14 +4,13 @@ from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import get_template
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView
 
 from accounts.models import RegistrationRequest, PlayerInfo
-from bowling_app.forms import StaffPlayerRegister, EventCreationForm
-from bowling_app.models import Event
+from bowling_app.forms import StaffPlayerRegister
 from news.models import News
 
 
@@ -80,7 +79,7 @@ class RequestHandlingView(View):
 class PlayerCreate(CreateView):
     model = PlayerInfo
     template_name = "bowling_app/player_form.html"
-    success_url = '/'
+    success_url = reverse_lazy('bowlingApp:players_list')
     form_class = StaffPlayerRegister
 
     @method_decorator(staff_member_required)
@@ -127,8 +126,7 @@ class PlayerProfileView(View):
 class HomePage(View):
     def get(self, request):
         news_count = News.objects.count()
-        return render(request, 'bowling_app/home.html', {'news': News.ordered_by_creation(3),
-                                                         'news_count': news_count})
+        return render(request, 'bowling_app/home.html', {'news': News.ordered_by_creation(3),'news_count': news_count})
 
 
 class PlayerBlockUnblock(View):
@@ -137,14 +135,3 @@ class PlayerBlockUnblock(View):
         player.user.is_active = not player.user.is_active
         player.user.save()
         return redirect(reverse('bowlingApp:player', kwargs={'id': id}))
-
-
-class EventAddView(CreateView):
-    model = Event
-    template_name = "bowling_app/event_add.html"
-    success_url = '/'
-    form_class = EventCreationForm
-
-    @method_decorator(staff_member_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super(EventAddView, self).dispatch(request, *args, **kwargs)
