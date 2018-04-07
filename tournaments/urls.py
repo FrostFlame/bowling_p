@@ -16,6 +16,7 @@ urlpatterns = [
         TournamentGameInfo.as_view(), name='tournament_game_info'),
     url(r'^(?P<tournament_pk>\d+)/game/(?P<game_pk>\d+)/edit$',
         GameUpdateView.as_view(), name='game_update'),
+    url(r'^(?P<pk>\d+)/request$', send_participation_request, name='send_request'),
 
     # Ajax
     url(r'^ajax/update_results', GameResultUpdate.as_view(), name='update_game_result'),

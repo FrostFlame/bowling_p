@@ -166,6 +166,9 @@ class RegistrationRequest(models.Model):
 
     objects = RegistrationRequestManager()
 
+    def is_registration_request(self):
+        return True
+
 
 class SportCategory(models.Model):
     name = models.CharField(max_length=40)

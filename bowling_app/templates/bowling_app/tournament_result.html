@@ -1,0 +1,22 @@
+<style>
+    .header {
+        background-color: #8e99aa;
+        height: 300px;
+    }
+
+    .title {
+        color: white;
+    }
+</style>
+
+<div class="header">
+    <h2 class="title">Федерация спортивного боулинга Республики Татарстан</h2>
+</div>
+
+{% if status is 1 %}
+    <h1>Поздравляем! Ваша заявка на участие в турнире принята!</h1>
+{% endif %}
+
+{% if status is 2 %}
+    К сожалению, ваша заявка на участие в турнире отклонена.
+{% endif %}
