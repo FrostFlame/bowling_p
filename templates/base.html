@@ -85,13 +85,13 @@
                 <li><a href="{% url 'tournaments:tournaments_all' %}">
                     <span class="fa fa-globe">&nbsp;</span> Все
                 </a></li>
-                <li><a href="{% url 'tournaments:tournaments_all' tournament_type='public'%}">
+                <li><a href="{% url 'tournaments:tournaments_all' tournament_type='public' %}">
                     <span class="fa fa-unlock">&nbsp;</span> Публичные
                 </a></li>
-                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='sport'%}">
+                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='sport' %}">
                     <span class="fa fa-soccer-ball-o">&nbsp;</span> Спортивные
                 </a></li>
-                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='commercial'%}">
+                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='commercial' %}">
                     <span class="fa fa-money">&nbsp;</span> Коммерческие
                 </a></li>
             </ul>
@@ -100,7 +100,8 @@
                 href="{% url 'album:albums_list' %}"><em class="fa fa-picture-o">&nbsp;</em> Альбомы</a></li>
         <li {% if request.resolver_match.url_name == 'stats' %}class="active"{% endif %}><a href="#stats"><em
                 class="fa fa-bar-chart-o">&nbsp;</em> Статистика</a></li>
-        <li {% if request.resolver_match.url_name == 'calendar' %}class="active"{% endif %}><a href="#calendar"><em
+        <li {% if request.resolver_match.url_name == 'calendar' %}class="active"{% endif %}><a
+                href="{% url 'calendar' %}"><em
                 class="fa fa-calendar">&nbsp;</em> Календарь</a></li>
     </ul>
 </div><!--/.sidebar-->

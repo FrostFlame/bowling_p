@@ -6,21 +6,74 @@
 {% endblock %}
 
 {% block extrahead %}
-    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link rel='stylesheet' type='text/css' href="{% static 'css/fullcalendar.min.css' %}"/>
+    <script type='text/javascript' src="{% static 'js/moment.min.js' %}"></script>
+    <script type='text/javascript' src="{% static 'js/fullcalendar.min.js' %}"></script>
+    <script src="{% static '/js/locale/ru.js' %}"></script>
 
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.css">
+    <script src="http://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.js"></script>
 {% endblock %}
 
 
 {% block content %}
-    календарь
+    <h3>Календарь</h3>
+
+    <div id="calendar1"></div>
+
+
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% static 'js/jquery-ui.js' %}"></script>
-
     <script>
+        $(document).ready(function () {
+
+            $('#calendar1').fullCalendar({
+                locale: 'ru',
+                editable: true,
+                displayEventTime: true,
+                timeFormat: 'H:mm',
+                eventLimit: true, // allow "more" link when too many events
+                events: [
+                    {% for event in events %}
+                        {
+                            title: "{{ event.name}}",
+                            start: "{{ event.date|date:'Y-m-d' }}T{{ event.date|date:'h:i' }}:00",
+                            color: '#0f9516',
+                            allDay: false,
+                            description: '{{ event.description }}'
+                        },
+                    {% endfor %}
+
+                    {% for tournament in tournaments %}
+                        {
+                            title: "{{ tournament.name }}",
+                            start: "{{ tournament.start|date:'Y-m-d' }}T{{ tournament.start|date:'h:i' }}:00",
+                            end: "{{ tournament.end|date:'Y-m-d' }}T{{ tournament.end|date:'h:i' }}:00",
+                            color: '#702d89',
+                            description: "{{ tournament.city }}<br>{{ tournament.description }}",
+                            allDay: false
+                        },
+                    {% endfor %}
+                ],
+                eventRender: function (event, element) {
+                    var content = '<h5>' + event.title + '</h3>' +
+                        '<p>' + event.description + '</p>';
+
+                    element.qtip({
+                        content: content,
+                        style: {
+                            classes: 'qtip-light'
+                        }
+                    })
+                }
+            });
+
+            {% for tournament in tournaments %}
+                console.log('{{ tournament.city }}');
+            {% endfor %}
 
 
-
+        });
     </script>
 {% endblock %}

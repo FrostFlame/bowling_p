@@ -13,6 +13,7 @@ from events.forms import EventCreationForm
 from events.models import Event
 
 from news.models import News
+from tournaments.models import Tournament
 
 
 class EventView(DetailView):
@@ -44,7 +45,7 @@ class AllEventsView(ListView):
 class EventAddView(CreateView):
     model = Event
     template_name = "events/event_add.html"
-    success_url = reverse_lazy('events:list')
+    success_url = reverse_lazy('events:list', kwargs={'page': 1})
     form_class = EventCreationForm
 
     @method_decorator(staff_member_required)
@@ -63,8 +64,9 @@ class EventUpdate(HasRoleMixin, UpdateView):
     form_class = EventCreationForm
 
 
-class Calendar(View):
+class CalendarView(View):
     def get(self, request):
-        news_count = Event.objects.count()
+        events = Event.objects.all()
+        tournaments = Tournament.objects.all()
         return render(request, 'events/calendar.html',
-                      {'events': News.ordered_by_creation(3), 'events_count': news_count})
+                      {'events': events, 'tournaments': tournaments})

@@ -18,6 +18,8 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 
+from events import views
+
 urlpatterns = [
                   url(r'^admin/', admin.site.urls),
                   url(r'^account/', include('accounts.urls', namespace='auth')),
@@ -26,6 +28,7 @@ urlpatterns = [
                   url(r'^news/', include('news.urls', namespace='news')),
                   url(r'^album/', include('albums.urls', namespace='album')),
                   url(r'^events/', include('events.urls', namespace='events')),
+                  url(r'^calendar/', views.CalendarView.as_view(), name='calendar'),
                   # summernote
                   url(r'^summernote/', include('django_summernote.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
