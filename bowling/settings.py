@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'bowling_app',
+    'events',
     'file_resubmit',
     'tournaments',
     'news',

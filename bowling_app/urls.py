@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from bowling_app.ajax_views import CityAutocomplete
 from bowling_app.views import RegistrationRequestsView, RequestHandlingView, PlayerCreate, HomePage, PlayersUnionView, \
-    PlayersListView, PlayerProfileView, PlayerBlockUnblock, EventAddView
+    PlayersListView, PlayerProfileView, PlayerBlockUnblock
 
 urlpatterns = [
     # todo переименовать url name в нормальный вид
@@ -14,7 +14,6 @@ urlpatterns = [
     url(r'manage/player/(?P<id>\d+)$', PlayerProfileView.as_view(), name="player"),
     url(r'manage/player/(?P<id>\d+)/activity$', PlayerBlockUnblock.as_view(), name="player_activity"),
     url(r'^$', HomePage.as_view(), name='home'),
-    url(r'manage/event/add$', EventAddView.as_view(), name="event_add"),
     # Ajax
     url(r'^ajax/city-autocomplete', CityAutocomplete.as_view(), name='city-autocomplete')
 ]

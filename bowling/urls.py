@@ -26,6 +26,7 @@ urlpatterns = [
                   url(r'^', include('bowling_app.urls', namespace="bowlingApp")),
                   url(r'^tournaments/', include('tournaments.urls', namespace='tournaments')),
                   url(r'^news/', include('news.urls', namespace='news')),
+                  url(r'^events/', include('events.urls', namespace='events')),
 
                   # summernote
                   url(r'^summernote/', include('django_summernote.urls')),

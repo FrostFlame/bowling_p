@@ -1,0 +1,80 @@
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+
+{% load static %}
+
+{% block title %}
+    Мероприятия
+{% endblock %}
+
+{% block extrahead %}
+    <script src="{% static 'js/jquery.simplePagination.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/simplePagination.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h3 class="text-center">Мероприятия</h3>
+    <div class="col-md-12">
+        {% if user.is_staff %}
+            <div class="cretate ov-hidden">
+                <a href="{% url 'events:create' %}" class="right">Создать мероприятие</a>
+            </div>
+        {% endif %}
+
+        {% if events %}
+            <div class="list-group mar-top-25">
+                <ul id="itemsUL" class="list-unstyled">
+                    {% for event in events %}
+                        <li class="mar-top-10">
+                            <a href="{% url 'events:view' event.id %}" class="list-group-item ov-hidden"
+                               id="post{{ event.id }}">
+                                <h4 class="list-group-item-heading" id="c${complex.id?c}">{{ event.name }}</h4>
+                                <p>{{ event.date }}</p>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="pag"></div>
+        {% else %}
+            <p class="text-center mar-top-125">Мероприятий пока нет</p>
+        {% endif %}
+
+
+
+        {% if is_paginated %}
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+            {% else %}
+                <span>&laquo;</span>
+            {% endif %}
+            {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <span>{{ i }} <span class="sr-only"></span></span>
+                {% else %}
+                    <a href="?page={{ i }}">{{ i }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+            {% else %}
+                <span>&raquo;</span>
+            {% endif %}
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('.pag').pagination({
+            items: {{ total }},
+            currentPage: {{ page }},
+            itemsOnPage: 2,
+            cssStyle: 'light-theme',
+            nextText: 'Вперед',
+            prevText: 'Назад',
+            hrefTextSuffix: '',
+            hrefTextPrefix: ''
+        })
+    </script>
+{% endblock %}
