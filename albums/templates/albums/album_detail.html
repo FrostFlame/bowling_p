@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
+    <!--suppress ALL -->
     <a href="{% url 'album:albums_list' %}">Ко всем альбомам</a>
     <h1>{{ album.name }}</h1>
     <p>{{ album.created_at }}</p>
-    {% if request.user.is_staff %}
+    {% if request.user.is_staff or request.user.is_photographer %}
         <div id="save_images" enctype="multipart/form-data">
             <form  method="post">
                 {% csrf_token %}
@@ -11,6 +12,14 @@
                 <button type="submit">Добавить изображение</button>
             </form>
         </div>
+
+        <form method="get" action="{% url 'album:edit_album' album.id %}">
+            <button type="submit">Редактировать</button>
+        </form>
+        <form method="post" action="{% url 'album:delete_album' album.id %}">
+            {% csrf_token %}
+            <button type="submit">Удалить</button>
+        </form>
      {% endif %}
 
       <table id="gallery" class="table table-bordered">
@@ -22,7 +31,12 @@
           <tbody id="photos_table_body">
             {% for photo in photos %}
               <tr>
-                <td><img src="{{ MEDIA_URL }}{{ photo.image.name }}"></td>
+                <td id="photo_{{ photo.id }}">
+                    <img src="{{ MEDIA_URL }}{{ photo.image.name }}">
+                    {% if request.user.is_staff or request.user.is_photographer %}
+                        <button id="{{ photo.id }}" class="photoDeleteButton">Удалить</button>
+                    {% endif %}
+                </td>
               </tr>
             {% endfor %}
           </tbody>
@@ -32,11 +46,15 @@
         $("#save_images").submit(function (event) {
             event.preventDefault();
             var formdata = new FormData();
+            var is_staff={{ request.user.is_staff|yesno:"true,false" }}
+            var is_photographer={{ request.user.is_photographer|yesno:"true,false" }}
+
             formdata.append('csrfmiddlewaretoken', '{{ csrf_token }}');
 
             for (var i = 0; i < $('#id_image')[0].files.length; i++) {
                 formdata.append('images',$('#id_image')[0].files[i])
             }
+
 
             $.ajax({
                 type:'POST',
@@ -48,9 +66,14 @@
                 processData: false,
                 success: function (data) {
                     for (var i = 0; i < data.new_photos.length; i++) {
-                        $('#photos_table_body').append(
-                            '<tr><td><img src="{{ MEDIA_URL }}'+data.new_photos[i]+'"></td></tr>'
-                        )
+                            var appentHtml=""
+                            if (is_staff || is_photographer) {
+                                appentHtml='<tr><td id="photo_'+ data.photos_id[data.new_photos[i]] +'"><img src="{{ MEDIA_URL }}' + data.new_photos[i] + '"><button id="'+data.photos_id[data.new_photos[i]]+'" class="photoDeleteButton">Удалить</button></td></tr>'
+                            }else {
+                                appentHtml='<tr><td id="photo_'+ data.photos_id[data.new_photos[i]] +'"><img src="{{ MEDIA_URL }}' + data.new_photos[i] + '"></td></tr>'
+                            }
+                            $("#photos_table_body").append(appentHtml)
+
                     }
                 },
                 error: function (error) {
@@ -58,6 +81,30 @@
                 }
             });
         });
+
+        $(document).on('click','.photoDeleteButton',function (event) {
+            console.log("sdasdasd")
+            event.preventDefault();
+            var photo_id=this.id;
+            var album_id={{ album.id }}
+            var formdata = new FormData();
+            formdata.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            $.ajax({
+                type:'POST',
+                url: '/album/'+album_id+'/photo/'+photo_id+'/delete',
+                data: formdata,
+                async: true,
+                cache: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                processData: false,
+                success: function (data) {
+                    if (data=="ok"){
+                        $("#photo_"+photo_id).css("display","None")
+                    }
+                }
+            });
+        })
 
 
     </script>

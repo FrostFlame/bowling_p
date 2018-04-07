@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content  %}
-    {% if request.user.is_staff %}
+    {% if request.user.is_staff or request.user.is_photographer %}
         <a href="{% url 'album:add_album' %}">Создать альбом</a>
     {% endif %}
     <hr/>
