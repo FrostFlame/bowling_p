@@ -20,7 +20,7 @@ def get_player_min_points(player, tournament):
 
 @register.simple_tag
 def get_player_avg_points(player, tournament):
-    return f'{round(tournament.get_player_points(player) / tournament.games,2)}'
+    return f'{round(tournament.get_player_points(player) / tournament.get_games_count(),2)}'
 
 
 @register.simple_tag
