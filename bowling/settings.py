@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'rolepermissions',
     'django_summernote',
     'dal',
-    'dal_select2'
+    'dal_select2',
+    'albums'
 ]
 
 MIDDLEWARE = [

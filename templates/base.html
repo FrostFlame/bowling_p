@@ -97,7 +97,7 @@
             </ul>
         </li>
         <li {% if request.resolver_match.url_name|first_part == 'albums' %}class="active"{% endif %}><a
-                href="#albums"><em class="fa fa-picture-o">&nbsp;</em> Альбомы</a></li>
+                href="{% url 'album:albums_list' %}"><em class="fa fa-picture-o">&nbsp;</em> Альбомы</a></li>
         <li {% if request.resolver_match.url_name == 'stats' %}class="active"{% endif %}><a href="#stats"><em
                 class="fa fa-bar-chart-o">&nbsp;</em> Статистика</a></li>
         <li {% if request.resolver_match.url_name == 'calendar' %}class="active"{% endif %}><a href="#calendar"><em

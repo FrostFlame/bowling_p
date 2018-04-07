@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content  %}
+    {% if request.user.is_staff %}
+        <a href="{% url 'album:add_album' %}">Создать альбом</a>
+    {% endif %}
+    <hr/>
+    {% for album in object_list %}
+        <a href="{% url 'album:album_detail' album.id %}">{{ album.name }}</a>
+        <hr/>
+    {% endfor %}
+{% endblock %}

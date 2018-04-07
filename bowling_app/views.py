@@ -127,8 +127,7 @@ class PlayerProfileView(View):
 class HomePage(View):
     def get(self, request):
         news_count = News.objects.count()
-        return render(request, 'bowling_app/home.html', {'news': News.ordered_by_creation(3),
-                                                         'news_count': news_count})
+        return render(request, 'bowling_app/home.html', {'news': News.ordered_by_creation(3),'news_count': news_count})
 
 
 class PlayerBlockUnblock(View):

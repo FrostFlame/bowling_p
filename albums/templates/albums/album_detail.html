@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+    <a href="{% url 'album:albums_list' %}">Ко всем альбомам</a>
+    <h1>{{ album.name }}</h1>
+    <p>{{ album.created_at }}</p>
+    {% if request.user.is_staff %}
+        <div id="save_images" enctype="multipart/form-data">
+            <form  method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Добавить изображение</button>
+            </form>
+        </div>
+     {% endif %}
+
+      <table id="gallery" class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Фотографии альбома</th>
+            </tr>
+          </thead>
+          <tbody id="photos_table_body">
+            {% for photo in photos %}
+              <tr>
+                <td><img src="{{ MEDIA_URL }}{{ photo.image.name }}"></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+
+    <script type="text/javascript">
+        $("#save_images").submit(function (event) {
+            event.preventDefault();
+            var formdata = new FormData();
+            formdata.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+            for (var i = 0; i < $('#id_image')[0].files.length; i++) {
+                formdata.append('images',$('#id_image')[0].files[i])
+            }
+
+            $.ajax({
+                type:'POST',
+                data: formdata,
+                async: true,
+                cache: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                processData: false,
+                success: function (data) {
+                    for (var i = 0; i < data.new_photos.length; i++) {
+                        $('#photos_table_body').append(
+                            '<tr><td><img src="{{ MEDIA_URL }}'+data.new_photos[i]+'"></td></tr>'
+                        )
+                    }
+                },
+                error: function (error) {
+                    alert(error)
+                }
+            });
+        });
+
+
+    </script>
+{% endblock %}

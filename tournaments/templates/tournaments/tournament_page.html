@@ -115,6 +115,9 @@
             <a class="right" href="{% url 'tournaments:tournament_update' tournament.id %}"><i
                     class="fas fa-pencil-alt"></i> редактировать</a>
         {% endif %}
+        {% if tournament.album %}
+            <a href="{% url 'album:album_detail' tournament.album.id %}">К альбому турнира</a>
+        {% endif %}
     </div> <!-- row -->
 
 
