@@ -51,7 +51,7 @@
                             start: "{{ tournament.start|date:'Y-m-d' }}T{{ tournament.start|date:'h:i' }}:00",
                             end: "{{ tournament.end|date:'Y-m-d' }}T{{ tournament.end|date:'h:i' }}:00",
                             color: '#702d89',
-                            description: "{{ tournament.city }}<br>{{ tournament.description }}",
+                            description: "Город: {{ tournament.city }}<br>{{ tournament.description }}<br>Тип: {{ tournament.type }}, {{ tournament.team_type }}",
                             allDay: false
                         },
                     {% endfor %}
@@ -64,6 +64,11 @@
                         content: content,
                         style: {
                             classes: 'qtip-light'
+                        },
+                        position: {
+                            my: 'top center',  // Position my top left...
+                            at: 'bottom center', // at the bottom right of...
+                            target: element // my target
                         }
                     })
                 }
