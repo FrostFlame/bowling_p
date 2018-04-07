@@ -1,0 +1,124 @@
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load static %}
+
+{% block title %}
+    Заявка №{{ tournament_request.id }}
+{% endblock %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/reg-request.css' %}">
+    <link rel="stylesheet" href="{% static 'css/imageviewer.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="cont ov-hidden">
+        <h3 class="text-center">Заявка</h3>
+        <div class="col-lg-3 col-md-12 mar-top-25">
+            <div class="passport">
+                <p class="bor-bot-red"><span class="text-xs pad-r-5">Фамилия </span> <span
+                        class="text-uppercase"> {{ tournament_request.user.profile.f_name }}</span></p>
+
+                <p class="bor-bot-red"><span class="text-xs pad-r-5">Имя &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span> <span
+                        class="text-uppercase"> {{ tournament_request.user.profile.i_name }}</span></p>
+                <p class="bor-bot-red"><span class="text-xs pad-r-5">Отчество</span> <span
+                        class="text-uppercase"> {{ tournament_request.user.profile.o_name }}</span></p>
+
+                <p class="bor-bot-red"><span class="text-xs pad-r-5">Пол &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span> <span
+                        class="text-uppercase"> {{ tournament_request.user.profile.get_sex_display|slice:":3" }}.</span>
+                </p>
+
+                <p class="bor-bot-red"><span class="text-xs pad-r-5">Город &nbsp; &nbsp; &nbsp; </span> <span
+                        class="text-uppercase"> {{ tournament_request.user.profile.city }}</span></p>
+            </div>
+        </div>
+
+        <div class="col-sm-8">
+            <div class="personal mar-top-75">
+                <p><span
+                        class="small pad-r-5">Разряд: &nbsp; &nbsp;&nbsp;</span>{{ tournament_request.user.profile.category }}
+                </p>
+                <p><span class="small pad-r-5">Лицензия:</span>{{ tournament_request.user.profile.license }}</p>
+                <p><span class="small pad-r-5">Телефон: </span>{{ tournament_request.user.profile.phone }}</p>
+                <p><span
+                        class="small pad-r-5">Email: &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</span>{{ tournament_request.user.email }}
+                </p>
+            </div>
+        </div>
+        <div class="col-sm-4 mar-top-75 cropped">
+            <span class="squared"
+                  style="background-image:url('{{ MEDIA_URL }}{{ tournament_request.user.profile.avatar }}');"></span>
+        </div>
+
+
+        <div class="col-sm-8">
+            <div class="personal mar-top-75">
+                <p><span
+                        class="small pad-r-5">Название: &nbsp; &nbsp;&nbsp;</span>{{ tournament_request.tournament.name }}
+                </p>
+                <p><span class="small pad-r-5">Описание:</span>{{ tournament_request.tournament.description }}</p>
+                <p><span class="small pad-r-5">Начало: </span>{{ tournament_request.tournament.start }}</p>
+                <p><span
+                        class="small pad-r-5">Конец: &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</span>{{ tournament_request.tournament.end }}
+                </p>
+                <p><span class="small pad-r-5">Город: </span>{{ tournament_request.tournament.city }}</p>
+                <p><span class="small pad-r-5">Тип: </span>{{ tournament_request.tournament.type }}</p>
+                <p><span class="small pad-r-5">Тип команд: </span>{{ tournament_request.tournament.team_type }}</p>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="col-md-12 mar-top-25 mar-bot-10">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="request_id" value="{{ tournament_request.id }}">
+            <button class="btn btn-success" type="submit" value="Accept" name="status">Принять заявку</button>
+            <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#reject-modal">Отклонить</a>
+        </form>
+    </div>
+
+    <!-- REJECT REQUEST MODAL -->
+    <div class="modal fade" id="reject-modal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-center custom-margin">Отказ в участии в турнире</h4>
+                    <br>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <h5>Укажите причину
+                                отказа. {{ tournament_request.user.profile.i_name }} {{ tournament_request.user.profile.f_name }}
+                                получит письмо, в котором будет сказано, почему его заявка не была принята.</h5>
+                            <label for="reason" class="sr-only">Причина отказа</label>
+                            <textarea name="" class="form-control" id="id_reason" cols="30" rows="5"
+                                      placeholder="Напишите причину отказа в регистрации или оставьте это поле пустым."></textarea>
+                        </div>
+                        <button class="btn btn-block btn-lg btn-danger" type="submit" value="Decline" name="status">
+                            Отклонить заявку
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- REJECT REQUEST MODAL -->
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function putJoinValues(user_id, player_id, request_id) {
+            $('#profile_id').val(user_id);
+            $('#sim_player_id').val(player_id);
+            $('#handling_tournament_request_request_id').val(request_id);
+        }
+    </script>
+{% endblock %}

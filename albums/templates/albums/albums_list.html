@@ -1,4 +1,5 @@
-{% extends 'base.html' %}
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load  static %}
 {% block content  %}
     {% if request.user.is_staff or request.user.is_photographer %}
         <a href="{% url 'album:add_album' %}">Создать альбом</a>

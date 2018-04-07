@@ -6,7 +6,7 @@ from django.db import models
 from django.db.models import Sum, Max, Min
 from django.utils.crypto import get_random_string
 
-from accounts.models import PlayerInfo, City
+from accounts.models import PlayerInfo, City, User
 
 
 def filename(instance, filename):
@@ -27,7 +27,7 @@ class Tournament(models.Model):
     description = models.TextField(max_length=500, blank=True, default='')
     type = models.ForeignKey(TournamentType)
     team_type = models.ForeignKey('TeamType')
-    photo = models.ImageField(upload_to=filename, blank=True, default=os.path.join('default','tournament_avatar.png'))
+    photo = models.ImageField(upload_to=filename, blank=True, default=os.path.join('default', 'tournament_avatar.png'))
     players = models.ManyToManyField(PlayerInfo, through='TournamentMembership')
     # Значение по умолчанию - Казань
     city = models.ForeignKey(City, default=5139)
@@ -68,6 +68,21 @@ class Tournament(models.Model):
         min_points = info.aggregate(Min('result'))['result__min']
         return min_points if min_points else 0
 
+    @classmethod
+    def get_by_type(clf, tournament_type):
+        """
+        Возвращает queryset с турнирами нужного типа
+        """
+        if tournament_type == 'sport':
+            tournaments = Tournament.objects.filter(type__name='Спортивный')
+        elif tournament_type == 'commercial':
+            tournaments = Tournament.objects.filter(type__name='Коммерческий')
+        elif tournament_type == 'public':
+            tournaments = Tournament.objects.filter(type__name='Публичный')
+        else:
+            tournaments = Tournament.objects.all()
+        return tournaments
+
     def get_games_count(self):
         return self.tournament_games.count()
 
@@ -98,3 +113,33 @@ class GameInfo(models.Model):
     player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE, related_name='player_games')
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='game_players')
     result = models.IntegerField(default=0)
+
+
+class TournamentRequestManager(models.Manager):
+    def create_request(self, user, tournament):
+        request = self.create(user=user, tournament=tournament)
+        return request
+
+    def get_active_requests(self):
+        return super().get_queryset().filter(status=TournamentRequest.IN_PROGRESS)
+
+
+class TournamentRequest(models.Model):
+    IN_PROGRESS = 0
+    ACCEPTED = 1
+    DECLINED = 2
+
+    REQUEST_STATUS = (
+        (IN_PROGRESS, "In progress"),
+        (ACCEPTED, "Accepted"),
+        (DECLINED, "Declined")
+    )
+
+    tournament = models.ForeignKey(Tournament)
+    user = models.ForeignKey(User)
+    status = models.CharField(max_length=1, choices=REQUEST_STATUS, default=IN_PROGRESS)
+
+    objects = TournamentRequestManager()
+
+    def is_tournament_request(self):
+        return True

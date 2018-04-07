@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
 from django.urls import reverse
@@ -10,7 +11,7 @@ from django.views.generic import CreateView, UpdateView, ListView, DeleteView
 
 from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm, GameCreationForm
-from tournaments.models import Tournament, TournamentMembership, Game, GameInfo
+from tournaments.models import Tournament, TournamentMembership, Game, GameInfo, TournamentRequest
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -46,6 +47,13 @@ class TournamentsListView(ListView):
     """
     class-based view для отображения спискка турниров
     """
+
+    def get_queryset(self):
+        tournament_type = 'all'
+        if 'tournament_type' in self.kwargs:
+            tournament_type = self.kwargs['tournament_type']
+        return Tournament.get_by_type(tournament_type)
+
     queryset = Tournament.objects.all()
     context_object_name = 'tournaments'
     template_name = 'tournaments/tournaments_list.html'
@@ -74,11 +82,16 @@ class TournamentView(View):
                     gi = GameInfo(result=0)
                     player_games_dict[player.id].append(gi)
 
+        tournament_request = False
+        if not request.user.is_staff:
+            tournament_request = TournamentRequest.objects.filter(user=request.user, tournament=tournament).exists()
+
         return render(request, 'tournaments/tournament_page.html',
                       {'tournament': tournament,
                        'games': games,
                        'players': players,
-                       'games_dict': player_games_dict
+                       'games_dict': player_games_dict,
+                       'tournament_request': tournament_request
                        })
 
 
@@ -221,3 +234,13 @@ class GameUpdateView(View):
                 GameInfo.objects.create(player=player, game=game)
 
             return redirect('tournaments:tournaments_all')
+
+
+def send_participation_request(request, pk):
+    user = request.user
+    tournament = Tournament.objects.get(id=pk)
+    if TournamentRequest.objects.filter(user=user, tournament=tournament).exists():
+        TournamentRequest.objects.get(user=user, tournament=tournament).delete()
+    else:
+        TournamentRequest.objects.create_request(user=user, tournament=tournament)
+    return redirect(reverse('tournaments:tournament_page', kwargs={'pk': tournament.id}))
