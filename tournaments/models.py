@@ -70,6 +70,20 @@ class Tournament(models.Model):
         min_points = info.aggregate(Min('result'))['result__min']
         return min_points if min_points else 0
 
+    @classmethod
+    def get_by_type(clf, tournament_type):
+        """
+        Возвращает queryset с турнирами нужного типа
+        """
+        if tournament_type == 'sport':
+            tournaments = Tournament.objects.filter(type__name='Спортивный')
+        elif tournament_type == 'commercial':
+            tournaments = Tournament.objects.filter(type__name='Коммерческий')
+        elif tournament_type == 'public':
+            tournaments = Tournament.objects.filter(type__name='Публичный')
+        else:
+            tournaments = Tournament.objects.all()
+        return tournaments
 
 class TournamentMembership(models.Model):
     player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE)

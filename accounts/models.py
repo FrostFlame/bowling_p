@@ -72,14 +72,10 @@ class PlayerManager(models.Manager):
         return similar_players
 
     def get_players_by_license_type(self, license_type):
-        if license_type == 'C':
-            players = PlayerInfo.objects.filter(license__iregex='\\d+№0')
-        elif license_type == 'G':
-            players = PlayerInfo.objects.filter(license__iregex='\\d+№1')
-        elif license_type == 'L':
-            players = PlayerInfo.objects.filter(license__iregex='\\d+')
+        if license_type.name == 'Спортивный':
+            players = PlayerInfo.objects.filter(license__iregex='\\d+').values('id', 'f_name', 'i_name', 'o_name')
         else:
-            players = PlayerInfo.objects.all()
+            players = PlayerInfo.objects.all().values('id', 'f_name', 'i_name', 'o_name')
         return players
 
 

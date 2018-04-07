@@ -46,6 +46,13 @@ class TournamentsListView(ListView):
     """
     class-based view для отображения спискка турниров
     """
+
+    def get_queryset(self):
+        tournament_type = 'all'
+        if 'tournament_type' in self.kwargs:
+            tournament_type = self.kwargs['tournament_type']
+        return Tournament.get_by_type(tournament_type)
+
     queryset = Tournament.objects.all()
     context_object_name = 'tournaments'
     template_name = 'tournaments/tournaments_list.html'
@@ -94,11 +101,9 @@ class AddPlayersView(View):
         return render(request, 'tournaments/add_players.html',
                       {'tournament': tournament, 'players': players, 'already_selected': already_selected})
 
-    # todo change id param name
     def post(self, request, pk):
         players = request.POST.getlist('select')
         for player in players:
-            # todo check id
             TournamentMembership(player=PlayerInfo.objects.get(id=player),
                                  tournament=Tournament.objects.get(id=pk)).save()
         return redirect('tournaments:tournaments_all')

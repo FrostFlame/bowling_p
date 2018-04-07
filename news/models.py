@@ -17,5 +17,4 @@ class News(models.Model):
         if not reversed:
             return News.objects.order_by('created').values('id', 'title', 'image')[(page - 1) * amount:page * amount]
         else:
-            x = News.objects.order_by('-created').values('id', 'title', 'image')[(page - 1) * amount:page * amount]
-            return x
+            return News.objects.order_by('-created').values('id', 'title', 'image')[(page - 1) * amount:page * amount]
