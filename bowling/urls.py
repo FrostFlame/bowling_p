@@ -25,7 +25,7 @@ urlpatterns = [
                   url(r'^tournaments/', include('tournaments.urls', namespace='tournaments')),
                   url(r'^news/', include('news.urls', namespace='news')),
                   url(r'^album/', include('albums.urls', namespace='album')),
-                  # url(r'^events/', include('events.urls', namespace='events')),
+                  url(r'^events/', include('events.urls', namespace='events')),
                   # summernote
                   url(r'^summernote/', include('django_summernote.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

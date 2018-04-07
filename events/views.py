@@ -28,7 +28,7 @@ class AllEventsView(ListView):
         return page
 
     def get_queryset(self):
-        return Event.ordered_by_creation(amount=2, page=self.get_page())
+        return Event.ordered_by_creation(amount=20, page=self.get_page())
 
     template_name = 'events/events_list.html'
 

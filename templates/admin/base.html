@@ -89,13 +89,13 @@
                 <li><a href="{% url 'tournaments:tournaments_all' %}">
                     <span class="fa fa-globe">&nbsp;</span> Все
                 </a></li>
-                <li><a href="{% url 'tournaments:tournaments_all' tournament_type='public'%} ">
+                <li><a href="{% url 'tournaments:tournaments_all' tournament_type='public' %} ">
                     <span class="fa fa-unlock">&nbsp;</span> Публичные
                 </a></li>
-                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='sport'%} ">
+                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='sport' %} ">
                     <span class="fa fa-soccer-ball-o">&nbsp;</span> Спортивные
                 </a></li>
-                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='commercial'%} ">
+                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='commercial' %} ">
                     <span class="fa fa-money">&nbsp;</span> Коммерческие
                 </a></li>
                 <li><a class="" href="{% url 'tournaments:tournaments_create' %}">
@@ -104,9 +104,8 @@
             </ul>
         </li>
 
-{#    todo создать отдельное приложение для мероприятий#}
-        {#        <li {% if request.resolver_match.namespace == 'events' %}class="active"{% endif %}>#}
-        {#            <a href="{% url 'events:list' page=1 %}"><em class="fa fa-birthday-cake">&nbsp;</em> Мероприятия</a></li>#}
+        <li {% if request.resolver_match.namespace == 'events' %}class="active"{% endif %}>
+            <a href="{% url 'events:list' page=1 %}"><em class="fa fa-birthday-cake">&nbsp;</em> Мероприятия</a></li>
 
         <li class="parent {% if request.resolver_match.url_name|first_part == 'tournaments' %}active{% endif %}">
         <li {% if request.resolver_match.url_name|first_part == 'albums' %}class="active"{% endif %}><a
@@ -124,9 +123,6 @@
 
     </ul>
 
-
-    {#        <li><a href="#"><em class="fa fa-power-off">&nbsp;</em> Logout</a></li>#}
-    </ul>
 </div><!--/.sidebar-->
 
 {#================================ CONTENT =======================================================#}
