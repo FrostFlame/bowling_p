@@ -84,7 +84,7 @@ class TournamentView(View):
 
         tournament_request = False
         if not request.user.is_staff:
-            tournament_request = TournamentRequest.objects.filter(user=request.user.profile, tournament=tournament).exists()
+            tournament_request = TournamentRequest.objects.filter(user=request.user, tournament=tournament).exists()
 
         return render(request, 'tournaments/tournament_page.html',
                       {'tournament': tournament,
@@ -237,7 +237,7 @@ class GameUpdateView(View):
 
 
 def send_participation_request(request, pk):
-    user = request.user.profile
+    user = request.user
     tournament = Tournament.objects.get(id=pk)
     if TournamentRequest.objects.filter(user=user, tournament=tournament).exists():
         TournamentRequest.objects.get(user=user, tournament=tournament).delete()

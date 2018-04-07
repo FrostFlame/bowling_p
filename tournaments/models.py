@@ -6,7 +6,7 @@ from django.db import models
 from django.db.models import Sum, Max, Min
 from django.utils.crypto import get_random_string
 
-from accounts.models import PlayerInfo, City
+from accounts.models import PlayerInfo, City, User
 
 
 def filename(instance, filename):
@@ -136,7 +136,10 @@ class TournamentRequest(models.Model):
     )
 
     tournament = models.ForeignKey(Tournament)
-    user = models.ForeignKey(PlayerInfo)
+    user = models.ForeignKey(User)
     status = models.CharField(max_length=1, choices=REQUEST_STATUS, default=IN_PROGRESS)
 
     objects = TournamentRequestManager()
+
+    def is_tournament_request(self):
+        return True

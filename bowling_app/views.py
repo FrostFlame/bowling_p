@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMultiAlternatives
@@ -9,22 +11,25 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView
 
-from accounts.models import RegistrationRequest, PlayerInfo
+from accounts.models import RegistrationRequest, PlayerInfo, User
 from bowling_app.forms import StaffPlayerRegister
 from news.models import News
+from tournaments.models import TournamentRequest, TournamentMembership
 
 
-class RegistrationRequestsView(View):
+class RequestsView(View):
     def get(self, request):
         if request.user.is_staff:
-            requests = RegistrationRequest.objects.get_active_requests()
+            registration_requests = RegistrationRequest.objects.get_active_requests()
+            tournaments_requests = TournamentRequest.objects.get_active_requests()
+            requests = chain(registration_requests, tournaments_requests)
             return render(request, 'bowling_app/registration_requests.html',
                           {'requests': requests})
         else:
             return HttpResponse("Access Denied", status=403)
 
 
-class RequestHandlingView(View):
+class RegistrationRequestHandlingView(View):
     def post(self, request, id):
         if request.user.is_staff:
             status = None
@@ -126,7 +131,7 @@ class PlayerProfileView(View):
 class HomePage(View):
     def get(self, request):
         news_count = News.objects.count()
-        return render(request, 'bowling_app/home.html', {'news': News.ordered_by_creation(3),'news_count': news_count})
+        return render(request, 'bowling_app/home.html', {'news': News.ordered_by_creation(3), 'news_count': news_count})
 
 
 class PlayerBlockUnblock(View):
@@ -135,3 +140,50 @@ class PlayerBlockUnblock(View):
         player.user.is_active = not player.user.is_active
         player.user.save()
         return redirect(reverse('bowlingApp:player', kwargs={'id': id}))
+
+
+class TournamentRequestHandlingView(View):
+    def post(self, request, id):
+        if request.user.is_staff:
+            status = None
+            if request.POST['status'] == "Accept":
+                status = TournamentRequest.ACCEPTED
+            elif request.POST['status'] == "Decline":
+                status = TournamentRequest.DECLINED
+
+            if status is not None:
+                # Obtain request's id from url parameters
+                request_id = id
+                # Change current request's status to obtained from request
+                tournament_request = TournamentRequest.objects.get(id=request_id)
+                tournament_request.status = status
+                tournament_request.save()
+
+                if status == TournamentRequest.ACCEPTED:
+                    tournament_membership = TournamentMembership(
+                        player=User.objects.get(id=tournament_request.user.pk).profile,
+                        tournament=tournament_request.tournament)
+                    tournament_membership.save()
+
+                domain = get_current_site(request).domain
+                mail_subject = 'Подача заявки на участие в турнире на %s' % (domain)
+                ctx = {'status': status,
+                       'domain': domain, }
+
+                message = get_template('bowling_app/tournament_result.html').render(ctx)
+                to_email = tournament_request.user.email
+                email = EmailMultiAlternatives(mail_subject, message, 'tatar.bowling@gmail.com', [to_email])
+                email.attach_alternative(message, "text/html")
+                email.send()
+                return redirect(reverse('bowlingApp:bowling_manage_registration'))
+
+            return redirect(reverse('bowlingApp:bowling_manage_registration'))
+        else:
+            return HttpResponse("Access Denied", status=403)
+
+    def get(self, request, id):
+        if request.user.is_staff:
+            reg_request = TournamentRequest.objects.get(pk=id)
+            return render(request, 'bowling_app/tournament_request.html',
+                          {"tournament_request": reg_request,
+                           })
