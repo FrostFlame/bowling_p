@@ -13,12 +13,10 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
-from django.contrib import admin
 from django.conf import settings
+from django.conf.urls import url, include
 from django.conf.urls.static import static
-
-from accounts import views
+from django.contrib import admin
 
 urlpatterns = [
                   url(r'^admin/', admin.site.urls),
@@ -27,6 +25,7 @@ urlpatterns = [
                   url(r'^tournaments/', include('tournaments.urls', namespace='tournaments')),
                   url(r'^news/', include('news.urls', namespace='news')),
                   url(r'^album/', include('albums.urls', namespace='album')),
+                  # url(r'^events/', include('events.urls', namespace='events')),
                   # summernote
                   url(r'^summernote/', include('django_summernote.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

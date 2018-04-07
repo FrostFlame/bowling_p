@@ -1,0 +1,20 @@
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ object.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-10">
+        {% if user.is_staff %}
+            <a class="right" href="{% url 'events:update' object.id %}">Редактировать</a>
+        {% endif %}
+        <h2>{{ object.name }}</h2>
+        <p>{{ object.description }}</p>
+        <p class="text-info">{{ object.date }}</p>
+
+
+    </div>
+
+{% endblock %}

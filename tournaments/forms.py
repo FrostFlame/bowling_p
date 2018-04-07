@@ -9,7 +9,7 @@ from tournaments.models import Tournament, TournamentType, TeamType, Game
 class TournamentCreationForm(forms.ModelForm):
     class Meta:
         model = Tournament
-        fields = ('name', 'start', 'end', 'description', 'type', 'team_type', 'city', 'games', 'photo')
+        fields = ('name', 'start', 'end', 'description', 'type', 'team_type', 'city', 'photo')
 
     photo = forms.ImageField(
         required=False,
@@ -38,13 +38,6 @@ class TournamentCreationForm(forms.ModelForm):
         )
     )
 
-    games = forms.CharField(
-        label='Количество игр',
-        initial='6',
-        widget=forms.NumberInput(
-            attrs={'class': 'form-control', 'min': '1', 'max': '99'}
-        )
-    )
 
     start = forms.DateTimeField(
         label='Начало',
