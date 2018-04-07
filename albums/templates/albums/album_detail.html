@@ -1,4 +1,5 @@
-{% extends 'base.html' %}
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load  static %}
 {% block content %}
     <a href="{% url 'album:albums_list' %}">Ко всем альбомам</a>
     <h1>{{ album.name }}</h1>
