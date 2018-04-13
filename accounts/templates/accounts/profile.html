@@ -3,9 +3,25 @@
     Профиль игрока
 {% endblock %}
 {% block content %}
-    <form method="get" action="{% url 'auth:profile_edit' %}">
-        <button type="submit">Редактировать</button>
-    </form>
-    <img src="{{ MEDIA_URL }}{{ player.avatar }}" alt="Аватар">
-    <p>{{ player.user.email }}</p>
+    <div class="col-md-3 mar-top-25">
+        <img src="{{ MEDIA_URL }}{{ player.avatar }}" alt="Фотография профиля" class="img-responsive img-rounded">
+    </div>
+
+    <div class="col-md-7">
+        <h3>{{ player.f_name }} {{ player.i_name }} {{ player.o_name }}</h3>
+        <p>Email: {{ player.user.email }}</p>
+        <p>Дата рождения: {{ player.date_of_birth }}</p>
+        <p>Пол: {{ player.get_sex_display }}</p>
+        <p>Телефон: {{ player.phone }}</p>
+        <p>Разряд: {{ player.category }}</p>
+        <p>Лицензия: {{ player.license }}</p>
+    </div>
+
+    <div class="col-md-2">
+        <form method="get" action="{% url 'auth:profile_edit' %}">
+            <button class="btn btn-primary" type="submit">Редактировать</button>
+        </form>
+    </div>
+
+
 {% endblock %}
