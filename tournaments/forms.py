@@ -38,7 +38,6 @@ class TournamentCreationForm(forms.ModelForm):
         )
     )
 
-
     start = forms.DateTimeField(
         label='Начало',
         widget=forms.TextInput(
@@ -50,7 +49,7 @@ class TournamentCreationForm(forms.ModelForm):
     end = forms.DateTimeField(
         label='Конец',
         widget=forms.TextInput(
-            attrs={'class': 'form-control', 'data-validation': 'custom',
+            attrs={'class': 'form-control', 'data-validation': 'custom, compare',
                    'data-validation-regexp': '^(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})$'}
         )
     )
