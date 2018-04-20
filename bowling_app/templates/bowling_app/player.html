@@ -10,12 +10,12 @@
     <h3 class="mar-top-25">{{ player }}</h3>
 
     <div class="col-md-8">
-
         <p>Пол: {{ player.get_sex_display }}</p>
         <p>Город: {{ player.city }}</p>
         <p>Дата рождения: {{ player.date_of_birth }}</p>
         <p>Email: {{ player.user.email }}</p>
         <p>Телефон: {{ player.phone }}</p>
+        <a class="btn btn-warning" href="#edit_modal" data-toggle="modal">Редактировать</a>
     </div>
 
     <div class="col-sm-4 mar-top-75 cropped">
@@ -23,15 +23,43 @@
               style="background-image:url('{{ MEDIA_URL }}{{ reg_request.user.profile.avatar }}');"></span>
     </div>
     {% if player.user is not None %}
-    <div class="col-md-12">
-        <form method="post" action="{% url 'bowlingApp:player_activity' player.id %}">
-            {% csrf_token %}
-            {% if player.user.is_active %}
-                <button class="btn btn-danger" type="submit">Заблокировать</button>
-            {% elif not player.user.is_active %}
-                <button class="btn btn-warning" type="submit">Разблокировать</button>
-            {% endif %}
-        </form>
-    </div>
+        <div class="col-md-12 mar-top-25">
+            <form method="post" action="{% url 'bowlingApp:player_activity' player.id %}">
+                {% csrf_token %}
+                {% if player.user.is_active %}
+                    <button class="btn btn-danger" type="submit">Заблокировать</button>
+                {% elif not player.user.is_active %}
+                    <button class="btn btn-warning" type="submit">Разблокировать</button>
+                {% endif %}
+            </form>
+        </div>
     {% endif %}
+
+    <!-- EDIT INFO MODAL -->
+    <div class="modal fade" id="edit_modal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header no-border pad-b-0">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                </div>§
+                <div class="modal-body pad-t-0">
+                    <h4 class="text-center custom-margin">Редактирование информации</h4>
+                    <br>
+                    <form class="form">
+                        <div class="form-group">
+                            <label class="">Label</label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="">Label</label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="btn btn-block btn-primary">Сохранить</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- EDIT INFO MODAL -->
 {% endblock %}

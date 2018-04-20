@@ -1489,3 +1489,11 @@ ul.nostyle i {
 .mar-l-3 {
     margin-left: 3px;
 }
+
+.pad-t-0 {
+    padding-top: 0;
+}
+
+.pad-b-0 {
+    padding-bottom: 0;
+}
