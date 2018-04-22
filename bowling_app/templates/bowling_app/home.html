@@ -23,7 +23,9 @@
                     </a>
                 {% endfor %}
                 {% if news_count > 3 %}
-                    <button class="btn btn-block btn-default box-shadow" onclick="window.location.href='{% url 'news:news_list' 1 %}'">Перейти ко всем новостям</button>
+                    <button class="btn btn-block btn-default box-shadow"
+                            onclick="window.location.href='{% url 'news:news_list' 1 %}'">Перейти ко всем новостям
+                    </button>
                 {% endif %}
 
             {% else %}
@@ -32,7 +34,28 @@
         </div>
 
         <div class="col-md-6">
-            <h4>Здесь будет список ближайших турниров</h4>
+            {% if tournaments %}
+                {% for tournament in tournaments %}
+                    <a href="{% url 'tournaments:tournament_page' tournament.id %}"
+                       class="list-group-item ov-hidden mar-bot-10 box-shadow"
+                       id="post{{ post.id }}">
+
+                        <span class="square"
+                              style="background-image:url('{{ MEDIA_URL }}{{ tournament.photo }}');"></span>
+                        <p class="list-group-item-heading" id="c${complex.id?c}">{{ tournament.name }}</p>
+                        <p style="position: absolute; bottom: 0; right: 12px; color: #8C8C8C;">{{ tournament.start|date:"j M" }} {{ tournament.start|time }}</p>
+                    </a>
+                {% endfor %}
+                {% if tournaments_count > 3 %}
+                    <button class="btn btn-block btn-default box-shadow"
+                            onclick="window.location.href='{% url 'tournaments:tournaments_all' 1 %}'">Перейти ко всем
+                        турнирам
+                    </button>
+                {% endif %}
+
+            {% else %}
+                <h4>Здесь будет список ближайших турниров</h4>
+            {% endif %}
         </div>
     </div>
 

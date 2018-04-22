@@ -86,6 +86,17 @@ class Tournament(models.Model):
     def get_games_count(self):
         return self.tournament_games.count()
 
+    @classmethod
+    def ordered_by_creation(cls, amount=0, reversed=True, page=1):
+        if amount == 0:
+            amount = Tournament.objects.count()
+        if not reversed:
+            return Tournament.objects.order_by('start').values('id', 'name', 'photo', 'start')[
+                   (page - 1) * amount:page * amount]
+        else:
+            return Tournament.objects.order_by('-start').values('id', 'name', 'photo', 'start')[
+                   (page - 1) * amount:page * amount]
+
 
 class TournamentMembership(models.Model):
     player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE)

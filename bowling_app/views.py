@@ -15,7 +15,7 @@ from django.views.generic import CreateView
 from accounts.models import RegistrationRequest, PlayerInfo, User
 from bowling_app.forms import StaffPlayerRegister, PlayerSearchForm
 from news.models import News
-from tournaments.models import TournamentRequest, TournamentMembership
+from tournaments.models import TournamentRequest, TournamentMembership, Tournament
 
 
 class RequestsView(View):
@@ -138,7 +138,10 @@ class PlayerProfileView(View):
 class HomePage(View):
     def get(self, request):
         news_count = News.objects.count()
-        return render(request, 'bowling_app/home.html', {'news': News.ordered_by_creation(3), 'news_count': news_count})
+        tournaments_count = Tournament.objects.count()
+        return render(request, 'bowling_app/home.html',
+                      {'news': News.ordered_by_creation(3), 'tournaments': Tournament.ordered_by_creation(3),
+                       'news_count': news_count, 'tournaments_count': tournaments_count})
 
 
 class PlayerBlockUnblock(View):
