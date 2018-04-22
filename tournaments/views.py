@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
 from django.urls import reverse
@@ -55,7 +56,7 @@ class TournamentsListView(ListView,FormView):
             tournament_type = self.kwargs['tournament_type']
         tournaments = Tournament.get_by_type(tournament_type)
         if form.is_valid():
-            return tournaments.filter(name__icontains=form.cleaned_data['name'])
+            return tournaments.filter(Q(name__icontains=form.cleaned_data['search_field']) | Q(city__name__icontains=form.cleaned_data['search_field']) )
         else:
             return tournaments
 

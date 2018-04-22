@@ -117,18 +117,10 @@ class GameCreationForm(forms.ModelForm):
         exclude = ('tournament', 'players')
 
 class TournamentSearchForm(forms.Form):
-    name = forms.CharField(
-            label='Название',
+    search_field = forms.CharField(
+            label='',
             required=False,
             widget=forms.TextInput(
-                attrs={'class': 'form-control'}
+                attrs={'placeholder': 'Введите название турнира или город','class': 'form-control'}
             )
         )
-    city = forms.ModelChoiceField(
-        label='Город',
-        queryset=City.objects.all(),
-        empty_label=None,
-        required=False,
-        widget=autocomplete.ModelSelect2(url='bowlingApp:city-autocomplete',
-                                         attrs={'class': 'form-control'})
-    )
