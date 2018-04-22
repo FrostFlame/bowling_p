@@ -115,3 +115,12 @@ class GameCreationForm(forms.ModelForm):
     class Meta:
         model = Game
         exclude = ('tournament', 'players')
+
+class TournamentSearchForm(forms.Form):
+    name = forms.CharField(
+            label='',
+            required=False,
+            widget=forms.TextInput(
+                attrs={'placeholder': 'Название туринира','class': 'form-control'}
+            )
+        )

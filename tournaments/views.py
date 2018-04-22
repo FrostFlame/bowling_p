@@ -1,16 +1,16 @@
 from collections import defaultdict
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView, UpdateView, ListView, DeleteView
+from django.views.generic import FormView
 
 from accounts.models import PlayerInfo
-from tournaments.forms import TournamentCreationForm, GameCreationForm
+from tournaments.forms import TournamentCreationForm, GameCreationForm, TournamentSearchForm
 from tournaments.models import Tournament, TournamentMembership, Game, GameInfo, TournamentRequest
 
 
@@ -43,20 +43,26 @@ class TournamentDelete(DeleteView):
     success_url = get_success_url
 
 
-class TournamentsListView(ListView):
+class TournamentsListView(ListView,FormView):
     """
     class-based view для отображения спискка турниров
     """
 
     def get_queryset(self):
         tournament_type = 'all'
+        form = self.form_class(self.request.GET)
         if 'tournament_type' in self.kwargs:
             tournament_type = self.kwargs['tournament_type']
-        return Tournament.get_by_type(tournament_type)
+        tournaments = Tournament.get_by_type(tournament_type)
+        if form.is_valid():
+            return tournaments.filter(name__icontains=form.cleaned_data['name'])
+        else:
+            return tournaments
 
     queryset = Tournament.objects.all()
     context_object_name = 'tournaments'
     template_name = 'tournaments/tournaments_list.html'
+    form_class = TournamentSearchForm
 
 
 class TournamentView(View):

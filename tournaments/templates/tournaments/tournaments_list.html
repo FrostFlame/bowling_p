@@ -11,6 +11,10 @@
             <a href="{% url 'tournaments:tournaments_create' %}" class="right">Создать турнир</a>
         </div>
     {% endif %}
+    <form method="get">
+        {{ form.as_p }}
+        <button type="submit">Искать</button>
+    </form>
 
     {% if tournaments %}
         <div class="list-group mar-top-25">
