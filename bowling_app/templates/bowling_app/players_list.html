@@ -13,7 +13,7 @@
                 <a class="right" href="{% url 'bowlingApp:player_create' %}">Добавить игрока</a>
             {% endif %}
         </div>
-        <form method="get" action="{% url 'bowlingApp:searched_players_list' %}">
+        <form method="get">
             {{ search_form.as_p }}
             <button type="submit">Искать</button>
         </form>

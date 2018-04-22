@@ -119,25 +119,14 @@ class PlayersUnionView(View):
 class PlayersListView(View):
     # @method_decorator(staff_member_required())
     def get(self, request):
-        players = PlayerInfo.objects.all()
-        search_form = PlayerSearchForm()
-        return render(request, 'bowling_app/players_list.html', {"players": players,'search_form':search_form})
-
-
-class PlayerSearchResultView(View):
-    def get(self, request):
-        fullName = request.GET.get('name',None)
+        fullName = request.GET.get('name', None)
         players = PlayerInfo.objects.all()
         if fullName:
             for term in fullName.split():
-                players = players.filter(Q(f_name__icontains=term) | Q(i_name__icontains=term) | Q(o_name__icontains=term))
-        else:
-            players=None
+                players = players.filter(
+                    Q(f_name__icontains=term) | Q(i_name__icontains=term) | Q(o_name__icontains=term))
         search_form = PlayerSearchForm()
-        return render(request, 'bowling_app/players_list.html', {"players": players,'search_form':search_form})
-
-
-
+        return render(request, 'bowling_app/players_list.html', {"players": players, 'search_form': search_form})
 
 
 class PlayerProfileView(View):
