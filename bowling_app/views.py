@@ -3,6 +3,7 @@ from itertools import chain
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMultiAlternatives
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import get_template
@@ -12,7 +13,7 @@ from django.views import View
 from django.views.generic import CreateView
 
 from accounts.models import RegistrationRequest, PlayerInfo, User
-from bowling_app.forms import StaffPlayerRegister
+from bowling_app.forms import StaffPlayerRegister, PlayerSearchForm
 from news.models import News
 from tournaments.models import TournamentRequest, TournamentMembership
 
@@ -119,7 +120,24 @@ class PlayersListView(View):
     # @method_decorator(staff_member_required())
     def get(self, request):
         players = PlayerInfo.objects.all()
-        return render(request, 'bowling_app/players_list.html', {"players": players})
+        search_form = PlayerSearchForm()
+        return render(request, 'bowling_app/players_list.html', {"players": players,'search_form':search_form})
+
+
+class PlayerSearchResultView(View):
+    def get(self, request):
+        fullName = request.GET.get('name',None)
+        players = PlayerInfo.objects.all()
+        if fullName:
+            for term in fullName.split():
+                players = players.filter(Q(f_name__icontains=term) | Q(i_name__icontains=term) | Q(o_name__icontains=term))
+        else:
+            players=None
+        search_form = PlayerSearchForm()
+        return render(request, 'bowling_app/players_list.html', {"players": players,'search_form':search_form})
+
+
+
 
 
 class PlayerProfileView(View):

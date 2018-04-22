@@ -114,6 +114,9 @@ class PlayerInfo(models.Model):
     def __str__(self):
         return f'{self.f_name} {self.i_name} {self.o_name}'
 
+    def fullName_lower(self):
+        return '{0} {1} {2}'.format(self.f_name.lower(),self.i_name.lower(),self.o_name.lower())
+
     def update(self, obj):
         # Объединяет игрока созданного ранее модератором и игрока, который зарегистрирован пользователем
 

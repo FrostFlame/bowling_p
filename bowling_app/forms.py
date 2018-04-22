@@ -78,3 +78,11 @@ class StaffPlayerRegister(forms.ModelForm):
             player.save()
         return player
 
+class PlayerSearchForm(forms.Form):
+    name = forms.CharField(
+            label='',
+            required=False,
+            widget=forms.TextInput(
+                attrs={'placeholder': 'ФИО игрока','class': 'form-control'}
+            )
+        )
