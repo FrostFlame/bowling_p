@@ -77,8 +77,8 @@ class Tournament(models.Model):
             tournaments = Tournament.objects.filter(type__name='Спортивный')
         elif tournament_type == 'commercial':
             tournaments = Tournament.objects.filter(type__name='Коммерческий')
-        elif tournament_type == 'public':
-            tournaments = Tournament.objects.filter(type__name='Публичный')
+        # elif tournament_type == 'public':
+        #     tournaments = Tournament.objects.filter(type__name='Публичный')
         else:
             tournaments = Tournament.objects.all()
         return tournaments
