@@ -118,9 +118,17 @@ class GameCreationForm(forms.ModelForm):
 
 class TournamentSearchForm(forms.Form):
     name = forms.CharField(
-            label='',
+            label='Название',
             required=False,
             widget=forms.TextInput(
-                attrs={'placeholder': 'Название туринира','class': 'form-control'}
+                attrs={'class': 'form-control'}
             )
         )
+    city = forms.ModelChoiceField(
+        label='Город',
+        queryset=City.objects.all(),
+        empty_label=None,
+        required=False,
+        widget=autocomplete.ModelSelect2(url='bowlingApp:city-autocomplete',
+                                         attrs={'class': 'form-control'})
+    )

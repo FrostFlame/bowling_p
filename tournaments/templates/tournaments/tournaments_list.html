@@ -1,8 +1,10 @@
 {% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load static %}
 
 {% block title %}
     Турниры
 {% endblock %}
+
 {% block content %}
     <h3 class="text-center">Турниры</h3>
 
@@ -59,3 +61,5 @@
         }
     </script>
 {% endblock %}
+
+
