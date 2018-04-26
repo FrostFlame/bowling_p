@@ -1,12 +1,25 @@
 {% extends user.is_staff|yesno:"admin/base.html,base.html" %}
 {% load  static %}
 {% block content  %}
+    <h3 class="text-center">Альбомы</h3>
     {% if request.user.is_staff or request.user.is_photographer %}
-        <a href="{% url 'album:add_album' %}">Создать альбом</a>
+        <a href="{% url 'album:add_album' %}" class="right">Создать альбом</a>
+        <br>
     {% endif %}
-    <hr/>
-    {% for album in object_list %}
-        <a href="{% url 'album:album_detail' album.id %}">{{ album.name }}</a>
-        <hr/>
-    {% endfor %}
+
+    <ul id="itemsUL" class="list-unstyled">
+        {% for album in object_list %}
+            <li class="mar-top-10 col-md-6">
+                <a href="{% url 'album:album_detail' album.id %}"
+                   class="list-group-item ov-hidden"
+                   id="post{{ album.id }}">
+
+            <span class="square"
+                  style="background-image:url('{{ MEDIA_URL }}{{ album.cover }}');"></span>
+                    <h4>{{ album.name }}</h4>
+                    <h5 class="list-group-item-heading" id="c${complex.id?c}">{{ album.tournament.name}}</h5>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

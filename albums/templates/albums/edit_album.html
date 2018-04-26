@@ -1,9 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <a href="{% url 'album:album_detail' album_id %}">Вернуться к альбому</a>
+    <h3>Редактирование альбома</h3>
     <form method="post" action="{% url 'album:edit_album' album_id %}">
         {% csrf_token %}
         {{ form.as_p }}
-    <button type="submit">Сохранить</button>
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+    </form>
+
+
+    {#    todo add confirm delete#}
+    <form class="mar-top-75" method="post" action="{% url 'album:delete_album' album_id %}">
+        {% csrf_token %}
+        <button class="btn btn-danger right mar-bot-10" type="submit">Удалить альбом</button>
     </form>
 {% endblock %}
