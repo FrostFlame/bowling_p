@@ -13,9 +13,12 @@
             <a href="{% url 'tournaments:tournaments_create' %}" class="right">Создать турнир</a>
         </div>
     {% endif %}
-    <form method="get">
-        {{ form.as_p }}
-        <button type="submit">Искать</button>
+    <form method="get" id="search_form">
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1" onclick="$('#search_form').submit()"><i class="fa fa-search"></i></span>
+            {{ form.search_field }}
+        </div>
+
     </form>
 
     {% if tournaments %}

@@ -22,7 +22,7 @@
 
 {% block content %}
 
-    <div class="row">
+    <div class="row mar-bot-10">
         <div class="col-md-12">
             <div class="bg-w box-shadow pad-10 ov-hidden">
                 <div class="row">
@@ -40,6 +40,14 @@
             </div>
         </div>
 
+        <div class="col-md-12 mar-top-10">
+            {% if tournament.album %}
+                <a class="btn btn-default box-shadow" href="{% url 'album:album_detail' tournament.album.id %}"> <i
+                        class="fa fa-photo"></i> Посмотреть
+                    альбом</a>
+            {% endif %}
+        </div>
+
         <div class="col-md-12 mar-top-10 mar-l-3">
             <div class="list-group list-group-horizontal">
                 <span class="list-group-item list-group-item-action"><b>Игры</b></span>
@@ -54,6 +62,19 @@
                 {% endif %}
             </div>
         </div>
+
+        {% if not user.is_staff %}
+            <div class="col-md-12">
+                {% if not tournament_request %}
+                    <a class="btn btn-success" style="width: 200px"
+                       href="{% url 'tournaments:send_request' tournament.id %}">Подать заявку</a>
+
+                {% else %}
+                    <a class="btn btn-default box-shadow" style="width: 200px"
+                       href="{% url 'tournaments:send_request' tournament.id %}">Отклонить заявку</a>
+                {% endif %}
+            </div>
+        {% endif %}
 
         <div class="col-md-12 table-responsive">
             <h3>Статистика</h3>
@@ -113,19 +134,7 @@
 
         {% if user.is_staff %}
             <a class="right" href="{% url 'tournaments:tournament_update' tournament.id %}"><i
-                    class="fas fa-pencil-alt"></i> редактировать</a>
-        {% endif %}
-        {% if not user.is_staff %}
-            <a class="right" href="{% url 'tournaments:send_request' tournament.id %}"><i
-                    class="fas fa-pencil-alt"></i>
-                {% if not tournament_request %}
-                    Подать заявку</a>
-                {% else %}
-                    Отклонить</a>
-                {% endif %}
-        {% endif %}
-        {% if tournament.album %}
-            <a href="{% url 'album:album_detail' tournament.album.id %}">К альбому турнира</a>
+                    class="fa fa-pencil"></i> Редактировать</a>
         {% endif %}
     </div> <!-- row -->
 

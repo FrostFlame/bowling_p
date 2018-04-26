@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="col-md-8">
+    <div class="col-md-12">
         <h3 class="text-center">Игроки</h3>
 
         <div class="ov-hidden">
@@ -13,9 +13,11 @@
                 <a class="right" href="{% url 'bowlingApp:player_create' %}">Добавить игрока</a>
             {% endif %}
         </div>
-        <form method="get">
-            {{ search_form.as_p }}
-            <button type="submit">Искать</button>
+        <form method="get" id="search_form">
+            <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1" onclick="$('#search_form').submit()"><i class="fa fa-search"></i></span>
+            {{ search_form.name }}
+        </div>
         </form>
         <div class="list-group mar-top-25">
             {% if players %}
@@ -26,7 +28,9 @@
                 </a>
             {% endfor %}
             {% else %}
-                <p>Ничего не найдено :( <a href="{% url 'bowlingApp:players_list' %}">показать весь список</a></p>
+                <p>Ничего не найдено :(
+                    <br>
+                    <a href="{% url 'bowlingApp:players_list' %}">показать весь список</a></p>
             {% endif %}
         </div>
 

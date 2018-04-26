@@ -11,11 +11,12 @@
 {% endblock %}
 
 {% block content %}
-    <div class="col-md-10">
+    <div class="col-md-12">
+    <h3>Добавление новости</h3>
         <form action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p |safe }}
-            <button class="btn btn-primary">Добавить</button>
+            <button class="btn btn-primary mar-bot-10">Добавить</button>
         </form>
     </div>
 {% endblock %}
