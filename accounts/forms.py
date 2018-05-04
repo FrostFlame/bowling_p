@@ -169,19 +169,68 @@ class UserEditForm(forms.ModelForm):
 
 
 class PlayerEditForm(forms.ModelForm):
-    avatar = forms.ImageField(
-        label='Фотография профиля',
-        widget=AdminResubmitImageWidget(
-            attrs={'class': 'form-control'}
-        )
+    i_name = forms.CharField(
+        label='Имя',
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Имя', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[а-яёА-ЯЁ]+$'}),
+    )
+    f_name = forms.CharField(
+        label='Фамилия',
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Фамилия', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[а-яёА-ЯЁ]+([-][А-ЯЁа-яё]+)?$'}),
+    )
+    o_name = forms.CharField(
+        label='Отчество',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Отчество', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^[а-яёА-ЯЁ]*$'}),
+    )
+    sex = forms.ChoiceField(
+        label='Пол',
+        choices=SEX_CHOICES,
+        required=True,
+        widget=forms.Select(
+            attrs={'class': 'form-control'}, )
     )
     phone = forms.CharField(
         label='Номер телефона',
-        required=True,
+        required=False,
         widget=forms.TextInput(
             attrs={'placeholder': 'Номер телефона', 'class': 'form-control'}),
+    )
+    date_of_birth = forms.DateField(
+        label='Дата рождения',
+        required=True,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Дата рождения', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})$'}),
+    )
+    category = forms.ModelChoiceField(
+        label='Разряд',
+        queryset=SportCategory.objects.all(),
+        empty_label=None,
+        widget=forms.Select(
+            attrs={'class': 'form-control'}, )
+    )
+    license = forms.CharField(
+        label='Номер лицензии',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    city = forms.ModelChoiceField(
+        label='Город',
+        queryset=City.objects.all(),
+        empty_label=None,
+        required=True,
+        widget=autocomplete.ModelSelect2(url='bowlingApp:city-autocomplete',
+                                         attrs={'class': 'form-control'})
     )
 
     class Meta:
         model = PlayerInfo
-        fields = ('avatar', 'phone',)
+        exclude = ('user', 'passport', 'avatar')

@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView
 
+from accounts.forms import PlayerEditForm
 from accounts.models import RegistrationRequest, PlayerInfo, User
 from bowling_app.forms import StaffPlayerRegister, PlayerSearchForm
 from news.models import News
@@ -130,9 +131,36 @@ class PlayersListView(View):
 
 
 class PlayerProfileView(View):
-    def get(self, request, id):
-        player = PlayerInfo.objects.get(pk=id)
-        return render(request, 'bowling_app/player.html', {'player': player})
+
+    def get(self, request, pk):
+        player = get_object_or_404(PlayerInfo, pk=pk)
+
+        if request.user.is_staff:
+            user = User.objects.get(email=request.user)
+            player_form = PlayerEditForm(instance=player)
+
+            ctx = {
+                'player': player,
+                'user_form': user,
+                'player_form': player_form
+            }
+            return render(request, 'bowling_app/player.html', ctx)
+        else:
+            ctx = {
+                'player': player
+            }
+            return render(request, 'bowling_app/player.html', ctx)
+
+    def post(self, request, pk):
+        player = get_object_or_404(PlayerInfo, pk=pk)
+        player_form = PlayerEditForm(request.POST, instance=player)
+        if player_form.is_valid():
+            player = player_form.save(commit=False)
+            player.save()
+            print(player)
+            return redirect(reverse('bowlingApp:player', kwargs={'pk': player.pk}))
+        else:
+            return HttpResponse(player_form.errors)
 
 
 class HomePage(View):

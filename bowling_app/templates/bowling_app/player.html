@@ -1,4 +1,11 @@
 {% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}"/>
+{% endblock %}
 
 {% block title %}
     Игроки
@@ -13,9 +20,11 @@
         <p>Пол: {{ player.get_sex_display }}</p>
         <p>Город: {{ player.city }}</p>
         <p>Дата рождения: {{ player.date_of_birth }}</p>
-        <p>Email: {{ player.user.email }}</p>
+        <p>Email: {{ user_form.email }}</p>
         <p>Телефон: {{ player.phone }}</p>
-        <a class="btn btn-warning" href="#edit_modal" data-toggle="modal">Редактировать</a>
+        {% if request.user.is_staff %}
+            <a class="btn btn-warning" href="#edit_modal" data-toggle="modal">Редактировать</a>
+        {% endif %}
     </div>
 
     <div class="col-sm-4 mar-top-75 cropped">
@@ -42,24 +51,70 @@
                 <div class="modal-header no-border pad-b-0">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">×</span></button>
-                </div>§
+                </div>
+
                 <div class="modal-body pad-t-0">
-                    <h4 class="text-center custom-margin">Редактирование информации</h4>
-                    <br>
-                    <form class="form">
+
+                    <form enctype="multipart/form-data" method="post" action="{% url 'bowlingApp:player' player.pk %}">
                         <div class="form-group">
-                            <label class="">Label</label>
-                            <input type="text" class="form-control">
+                            {% csrf_token %}
+
+                            <div class="form-group">
+                                <label for="{{ player_form.license.id_for_label }}">{{ player_form.license.label }}</label>
+                                {{ player_form.license }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ player_form.category.id_for_label }}">{{ player_form.category.label }}</label>
+                                {{ player_form.category }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ player_form.f_name.id_for_label }}">{{ player_form.f_name.label }}</label>
+                                {{ player_form.f_name }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ player_form.i_name.id_for_label }}">{{ player_form.i_name.label }}</label>
+                                {{ player_form.i_name }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ player_form.o_name.id_for_label }}">{{ player_form.o_name.label }}</label>
+                                {{ player_form.o_name }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ player_form.city.id_for_label }}">{{ player_form.city.label }}</label>
+                                {{ player_form.city }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ player_form.sex.id_for_label }}">{{ player_form.sex.label }}</label>
+                                {{ player_form.sex }}
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="{{ player_form.date_of_birth.id_for_label }}">{{ player_form.date_of_birth.label }}</label>
+                                {{ player_form.date_of_birth }}
+                            </div>
+
+
                         </div>
+
                         <div class="form-group">
-                            <label class="">Label</label>
-                            <input type="text" class="form-control">
+                            <a href="{% url 'auth:profile' %}" class="btn btn-danger">Отменить</a>
+                            <button type="submit" class="btn btn-success">Сохранить</button>
                         </div>
-                        <div class="btn btn-block btn-primary">Сохранить</div>
+
+
                     </form>
+
                 </div>
             </div>
         </div>
     </div>
     <!-- EDIT INFO MODAL -->
 {% endblock %}
+
