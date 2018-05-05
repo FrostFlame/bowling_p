@@ -86,16 +86,16 @@
                     class="fa fa-plus"></em></span>
             </a>
             <ul class="children collapse" id="sub-item-1">
-                <li><a href="{% url 'tournaments:tournaments_all' %}">
+                <li><a href="{% url 'tournaments:tournaments_all' page=1%}">
                     <span class="fa fa-globe">&nbsp;</span> Все
                 </a></li>
 {#                <li><a href="{% url 'tournaments:tournaments_all' tournament_type='public' %} ">#}
 {#                    <span class="fa fa-unlock">&nbsp;</span> Публичные#}
 {#                </a></li>#}
-                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='sport' %} ">
+                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='sport' page=1%} ">
                     <span class="fa fa-soccer-ball-o">&nbsp;</span> Спортивные
                 </a></li>
-                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='commercial' %} ">
+                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='commercial' page=1%} ">
                     <span class="fa fa-money">&nbsp;</span> Коммерческие
                 </a></li>
                 <li><a class="" href="{% url 'tournaments:tournaments_create' %}">

@@ -44,10 +44,16 @@ class TournamentDelete(DeleteView):
     success_url = get_success_url
 
 
-class TournamentsListView(ListView,FormView):
+class TournamentsListView(ListView, FormView):
     """
     class-based view для отображения спискка турниров
     """
+
+    def get_page(self):
+        page = 1
+        if 'page' in self.kwargs:
+            page = int(self.kwargs['page'])
+        return page
 
     def get_queryset(self):
         tournament_type = 'all'
@@ -56,14 +62,21 @@ class TournamentsListView(ListView,FormView):
             tournament_type = self.kwargs['tournament_type']
         tournaments = Tournament.get_by_type(tournament_type)
         if form.is_valid():
-            return tournaments.filter(Q(name__icontains=form.cleaned_data['search_field']) | Q(city__name__icontains=form.cleaned_data['search_field']) )
+            return tournaments.filter(Q(name__icontains=form.cleaned_data['search_field']) | Q(
+                city__name__icontains=form.cleaned_data['search_field']))[(self.get_page() - 1) * 10:self.get_page() * 10]
         else:
-            return tournaments
+            return tournaments[(self.get_page() - 1) * 10:self.get_page() * 10]
 
-    queryset = Tournament.objects.all()
+    # queryset = Tournament.objects.all()
     context_object_name = 'tournaments'
     template_name = 'tournaments/tournaments_list.html'
     form_class = TournamentSearchForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total'] = Tournament.objects.count()
+        context['page'] = self.get_page()
+        return context
 
 
 class TournamentView(View):
