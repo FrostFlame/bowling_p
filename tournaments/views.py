@@ -138,7 +138,7 @@ class AddPlayersView(View):
                 TournamentMembership.objects.get_or_create(player=player,
                                                            tournament=tournament)
 
-        return redirect('tournaments:tournaments_all')
+        return redirect(reverse('tournaments:tournament_page', kwargs={'pk': pk}))
 
 
 @method_decorator(staff_member_required(), name='dispatch')
