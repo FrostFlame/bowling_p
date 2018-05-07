@@ -2,10 +2,14 @@
 {% load static %}
 
 {% block extrahead %}
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'stats/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'stats/tableexport.min.css' %}">
 
-    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+    <script src="{% static 'stats/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'stats/dataTables.bootstrap.min.js' %}"></script>
+{#    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">#}
+{#    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>#}
+{#    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>#}
 {% endblock %}
 
 {% block title %}
@@ -18,7 +22,11 @@
     {% endif %}
 
     <div class="col-md-12">
-        <h3>Игра: {{ game.name }}</h3>
+        <h3>
+            <a class="text-black" href="{% url 'tournaments:tournament_page' game.tournament_id %}">
+            {{ game.tournament.name }}</a>
+        </h3>
+        <h4>Игра: {{ game.name }}</h4>
     </div>
 
 
@@ -53,7 +61,8 @@
             </table>
         </div>
         <div class="col-md-12">
-            <a class="btn btn-primary" href="{% url 'tournaments:tournament_page' game.tournament.pk %}">Сохранить и вернуться к турниру</a>
+            <a class="btn btn-primary" href="{% url 'tournaments:tournament_page' game.tournament.pk %}">Сохранить и
+                вернуться к турниру</a>
         </div>
     {% else %}
 

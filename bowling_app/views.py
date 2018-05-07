@@ -24,9 +24,8 @@ class RequestsView(View):
         if request.user.is_staff:
             registration_requests = RegistrationRequest.objects.get_active_requests()
             tournaments_requests = TournamentRequest.objects.get_active_requests()
-            requests = chain(registration_requests, tournaments_requests)
             return render(request, 'bowling_app/registration_requests.html',
-                          {'requests': requests})
+                          {'reg_requests': registration_requests, 'tournament_requests': tournaments_requests})
         else:
             return HttpResponse("Access Denied", status=403)
 

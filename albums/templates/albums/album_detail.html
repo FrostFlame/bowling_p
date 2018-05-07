@@ -7,6 +7,9 @@
         <a class="right" href="{% url 'album:edit_album' album.id %}">Редактировать</a>
     {% endif %}
     <h1>{{ album.name }}</h1>
+    <h3>
+        <a class="text-black" href="{% url 'tournaments:tournament_page' album.tournament_id %}">{{ album.tournament.name }}</a>
+    </h3>
 
     {% if request.user.is_staff or request.user.is_photographer %}
         <div id="save_images" class="mar-top-25 mar-bot-10">

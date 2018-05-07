@@ -1,40 +1,50 @@
 {% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+
 {% block title %}
     Заявки на регистрацию
 {% endblock %}
 
 {% block content %}
 
-    <h3 class="text-center">Заявки на регистрацию</h3>
+    <h3 class="text-center" id="registration">Заявки на регистрацию</h3>
     <div class="list-group mar-top-25">
         <ul id="itemsUL" class="list-unstyled">
-            {% for request in requests %}
+            {% for request in reg_requests %}
+                <a href="{% url 'bowlingApp:handling_registration' request.id %}"
+                       class="list-group-item ov-hidden"
+                       id="tournament">
+
+                        <h4 class="list-group-item-heading"
+                            id="c${complex.id?c}">{{ request.user.profile.f_name }} {{ request.user.profile.i_name }} {{ request.user.profile.o_name }}</h4>
+                        <p class="list-group-item-text mar-top-10">{{ request.user.email }}</p>
+                        <p class="list-group-item-text">{{ request.user.date_joined }}</p>
+                    </a>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <h3 class="text-center" id="tournaments">Заявки на участие в турнирах</h3>
+    <div class="list-group mar-top-25">
+        <ul id="itemsUL" class="list-unstyled">
+            {% for request in tournament_requests %}
                 <li class="mar-top-10">
-                    {% if request.is_registration_request %}
-                        <a href="{% url 'bowlingApp:handling_registration' request.id %}"
-                           class="list-group-item ov-hidden"
-                           id="tournament">
+                    <a href="{% url 'bowlingApp:handling_tournament_request' request.id %}"
+                       class="list-group-item ov-hidden"
+                       id="tournament">
 
-                            <h4 class="list-group-item-heading"
-                                id="c${complex.id?c}">{{ request.user.profile.f_name }} {{ request.user.profile.i_name }} {{ request.user.profile.o_name }}</h4>
-                            <p class="list-group-item-text mar-top-10">{{ request.user.email }}</p>
-                            <p class="list-group-item-text">{{ request.user.date_joined }}</p>
-                        </a>
-                    {% elif request.is_tournament_request %}
-                        <a href="{% url 'bowlingApp:handling_tournament_request' request.id %}"
-                           class="list-group-item ov-hidden"
-                           id="tournament">
-
-                            <h4 class="list-group-item-heading"
-                                id="c${complex.id?c}">{{ request.user.profile.f_name }} {{ request.user.profile.i_name }} {{ request.user.profile.o_name }}</h4>
-                            <p class="list-group-item-text mar-top-10">{{ request.tournament.name }}</p>
-                            <p class="list-group-item-text">{{ request.tournament.start }}</p>
-                            <p class="list-group-item-text">{{ request.tournament.end }}</p>
-                        </a>
-                    {% endif %}
+                        <h4 class="list-group-item-heading"
+                            id="c${complex.id?c}">{{ request.user.profile.f_name }} {{ request.user.profile.i_name }} {{ request.user.profile.o_name }}</h4>
+                        <p class="list-group-item-text mar-top-10">{{ request.tournament.name }}</p>
+                        <p class="list-group-item-text">{{ request.tournament.start }}</p>
+                        <p class="list-group-item-text">{{ request.tournament.end }}</p>
+                    </a>
                 </li>
             {% endfor %}
         </ul>
     </div>
     <br>
+
+
+
 {% endblock %}
+

@@ -1,5 +1,6 @@
 {% load static %}
 {% load base_filters %}
+{% load requests_tags %}
 
 <!DOCTYPE html>
 <html>
@@ -43,15 +44,15 @@
                                                                             style="width: 190px" alt=""></a>
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                    <em class="fa fa-bell"></em><span class="label label-danger">5</span>
+                    <em class="fa fa-bell"></em><span class="label label-danger" id="total_count"></span>
                 </a>
                     <ul class="dropdown-menu dropdown-alerts">
                         <li><a href="{% url 'bowlingApp:bowling_manage_registration' %}">
-                            <div><em class="fa fa-envelope"></em> 1 Заявка на регистрацию</div>
+                            <div><em class="fa fa-user"></em> Заявки на регистрацию (<span id="reg_req_count">{% get_registration_requests_count %}</span>)</div>
                         </a></li>
                         <li class="divider"></li>
-                        <li><a href="#">
-                            <div><em class="fa fa-heart"></em> 12 Заявок на турнир</div>
+                        <li><a href="{% url 'bowlingApp:bowling_manage_registration' %}#tournaments">
+                            <div><em class="fa fa-trophy"></em> Заявки на турнир (<span id="tourn_req_count">{% get_tournament_requests_count %}</span>)</div>
                         </a></li>
                     </ul>
                 </li>
@@ -541,6 +542,12 @@
 <script src="{% static 'js/formValid.js' %}"></script>
 
 <script src="{% static 'js/html5shiv.js' %}"></script>
+
+<script>
+    $('#total_count').html(function () {
+        return parseInt($('#reg_req_count').html()) + parseInt($('#tourn_req_count').html())
+    });
+</script>
 
 {% block scripts %}
 
