@@ -16,4 +16,5 @@ urlpatterns = [
         views.activate, name='activate'),
     url(r'^profile/$', ProfileView.as_view(), name="profile"),
     url(r'^profile/edit$', ProfileEditView.as_view(), name="profile_edit"),
+    url(r'ajax/email', views.check_email_free, name='check_email'),
 ]

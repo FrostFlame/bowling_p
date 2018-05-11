@@ -50,7 +50,22 @@
                         {{ player_form.o_name }}
                     </p>
 
-                    {{ reg_form.as_p }}
+
+                    <p>
+                        <label for="{{ reg_form.email.id_for_label }}">{{ reg_form.email.label }}</label>
+                        {{ reg_form.email }}
+                        <span class="error" id="email_busy_error" hidden>Этот email уже используется</span>
+                    </p>
+
+                    <p>
+                        <label for="{{ reg_form.password.id_for_label }}">{{ reg_form.password.label }}</label>
+                        {{ reg_form.password }}
+                    </p>
+
+                    <p>
+                        <label for="{{ reg_form.password2.id_for_label }}">{{ reg_form.password2.label }}</label>
+                        {{ reg_form.password2 }}
+                    </p>
 
                     <p>
                         <label for="{{ player_form.sex.id_for_label }}">{{ player_form.sex.label }}</label>
@@ -129,14 +144,14 @@
                     </div>
 
                     <div class="form-group mar-top-10">
-                        <button class="btn btn-primary btn-block">Зарегистрироваться</button>
+                        <button class="btn btn-primary btn-block" id="register_button">Зарегистрироваться</button>
                     </div>
 
                     <div class="form-group">
                         <p class="text-center">Уже зарегистрированы? <a href="{% url 'auth:login' %}">Войдите</a>
                         </p>
                     </div>
-                    </form>
+                </form>
             </div>
         </div>
     </div>
@@ -303,4 +318,36 @@
             display: none;
         }
     </style>
+
+    <script>
+        function checkEmail(input) {
+            var email = input.val();
+
+            $.ajax({
+                url: "{% url 'auth:check_email' %}",
+                data: {'email': email},
+                success: function (result) {
+                    console.log(result);
+                    if (result === "True") {
+                        $('#email_busy_error').hide();
+                        input.addClass("valid");
+                        input.removeClass("error");
+                        $('#register_button').prop('disabled', false);
+                    }
+                    else {
+                        $('#email_busy_error').show();
+                        input.addClass("error");
+                        input.css('border-color', 'rgb(185, 74, 72)');
+                        $('#register_button').prop('disabled', true);
+                    }
+                }
+            });
+        }
+
+        $('#id_email').on("focusout", function () {
+            checkEmail($(this));
+        })
+
+
+    </script>
 {% endblock %}

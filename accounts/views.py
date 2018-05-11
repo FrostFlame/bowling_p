@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -107,3 +107,10 @@ class ProfileEditView(View):
         else:
             return render(request, 'accounts/profile_edit.html',
                           {'user_form': user_form, 'player_form': player_form})
+
+
+def check_email_free(request):
+    email = request.GET.get('email')
+    user = User.objects.filter(email=email).exists()
+    print(user)
+    return HttpResponse(not user)
