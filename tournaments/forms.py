@@ -34,14 +34,14 @@ class TournamentCreationForm(forms.ModelForm):
         label="Описание",
         required=False,
         widget=forms.Textarea(
-            attrs={'class': 'form-control', 'rows': '4'}
+            attrs={'class': 'form-control vertical-resize', 'rows': '4'}
         )
     )
 
     start = forms.DateTimeField(
         label='Начало',
         widget=forms.TextInput(
-            attrs={'class': 'form-control', 'data-validation': 'custom',
+            attrs={'class': 'form-control', 'data-validation': 'custom, compare',
                    'data-validation-regexp': '^(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})$'}
         )
     )
@@ -116,11 +116,12 @@ class GameCreationForm(forms.ModelForm):
         model = Game
         exclude = ('tournament', 'players')
 
+
 class TournamentSearchForm(forms.Form):
     search_field = forms.CharField(
-            label='',
-            required=False,
-            widget=forms.TextInput(
-                attrs={'placeholder': 'Введите название турнира или город','class': 'form-control'}
-            )
+        label='',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Введите название турнира или город', 'class': 'form-control'}
         )
+    )

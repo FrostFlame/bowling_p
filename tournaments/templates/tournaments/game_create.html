@@ -19,7 +19,16 @@
             <div class="panel-body">
                 <form action="" method="post">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                    <p>
+                        <label for="{{ form.start.id_for_label }}">{{ form.start.label }}</label>
+                        {{ form.start }}
+                        <span class="error" id="date_error" hidden>Дата начала игры не входит в промежуток проведения турнира</span>
+                    </p>
+                    <p>
+                        <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                        {{ form.name }}
+                    </p>
+
                     <div class="form-group">
                         <label for="players_select">Игроки</label>
                         <br>
@@ -95,6 +104,32 @@
                 }
             );
         });
+
+        $('#id_start').change(function () {
+            var game_date = $(this).val().split(".");
+            console.log($(this).val().split("."));
+            var start_date = "{{ tournament.start|date:"d.m.Y" }}".split(".");
+            var end_date = "{{ tournament.end|date:"d.m.Y" }}".split(".");
+
+            game_date = new Date(game_date[2].substring(0, 4), game_date[1] - 1, game_date[0]);
+            start_date = new Date(start_date[2], start_date[1] - 1, start_date[0]);
+            end_date = new Date(end_date[2], end_date[1] - 1, end_date[0]);
+
+            console.log(game_date);
+            console.log(start_date);
+            console.log(end_date);
+
+            if (game_date >= start_date && game_date <= end_date) {
+                $('#date_error').hide();
+                $(this).removeClass("error");
+            }
+            else {
+                $('#date_error').show();
+                $(this).addClass("error");
+            }
+
+        });
+
     </script>
 {% endblock %}
 

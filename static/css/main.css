@@ -1505,3 +1505,9 @@ a.text-black {
 a.text-black:hover {
     color: #5f5f5f !important;
 }
+
+textarea.vertical-resize {
+    resize: vertical;
+    max-height: 300px;
+    min-height: 40px;
+}
