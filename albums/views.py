@@ -20,8 +20,8 @@ class AlbumsListView(ListView):
     model = Album
     template_name = 'albums/albums_list.html'
 
-class AlbumDetailView(View):
 
+class AlbumDetailView(View):
     def get(self,request,pk):
         album=get_object_or_404(Album,pk=pk)
         return render(request,'albums/album_detail.html',{
@@ -67,8 +67,8 @@ class AlbumDeletelView(DeleteView):
     model = Album
     success_url = reverse_lazy('album:albums_list')
 
-class AlbumEditlView (View):
 
+class AlbumEditlView (View):
     def get(self,request,pk):
         album=get_object_or_404(Album,pk=pk)
         form = CreatAlbumForm(initial={
@@ -77,7 +77,6 @@ class AlbumEditlView (View):
             'tournament':album.tournament
         })
         return render(request,'albums/edit_album.html',{'form':form,'album_id':pk})
-
 
     def post(self,request,pk):
         instance = get_object_or_404(Album, pk=pk)
@@ -90,7 +89,6 @@ class AlbumEditlView (View):
 
 
 class PhotoDeleteView(View):
-
     def post(self,request,album_id,photo_id):
         try:
             photo = Photo.objects.get(id=photo_id)

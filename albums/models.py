@@ -13,23 +13,25 @@ from tournaments.models import Tournament
 
 
 def album_cover_path(instance, filename):
-    return os.path.join('albums',instance.name,get_random_string(length=32) + '.' + filename.split('.')[-1])
+    return os.path.join('albums', instance.name, get_random_string(length=32) + '.' + filename.split('.')[-1])
+
 
 def album_image_path(instance, filename):
-    return os.path.join('albums',instance.album.name,get_random_string(length=32) + '.' + filename.split('.')[-1])
+    return os.path.join('albums', instance.album.name, get_random_string(length=32) + '.' + filename.split('.')[-1])
 
 
 class Album(models.Model):
-    name= models.CharField(max_length=200, blank=False,unique=True)
-    created_at=models.DateTimeField(default=datetime.now)
-    cover=models.ImageField(upload_to=album_cover_path,default=os.path.join('default','album_avatar.jpg'))
-    tournament = models.OneToOneField(Tournament,null=True,default=None)
+    name = models.CharField(max_length=200, blank=False,unique=True)
+    created_at = models.DateTimeField(default=datetime.now)
+    cover = models.ImageField(upload_to=album_cover_path,default=os.path.join('default','album_avatar.jpg'))
+    tournament = models.OneToOneField(Tournament, null=True, default=None, related_name="tournament_album")
 
     def __str__(self):
         return self.name
 
+
 class Photo(models.Model):
-    created_at=models.DateTimeField(default=datetime.now)
-    image=models.ImageField(upload_to=album_image_path)
-    album=models.ForeignKey('Album',on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=datetime.now)
+    image = models.ImageField(upload_to=album_image_path)
+    album = models.ForeignKey('Album', on_delete=models.CASCADE)
 

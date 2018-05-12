@@ -19,6 +19,7 @@ class AddImagesForm(forms.ModelForm):
             })
     )
 
+
 class CreatAlbumForm(forms.ModelForm):
 
     class Meta:
@@ -43,7 +44,7 @@ class CreatAlbumForm(forms.ModelForm):
 
     tournament = forms.ModelChoiceField(
         label='Привязать к турниру',
-        queryset=Tournament.objects.all(),
+        queryset=Tournament.objects.filter(tournament_album=None),
         empty_label="Не привязывать",
         required=False,
         widget=forms.Select(
