@@ -3,7 +3,7 @@
 {% block content %}
     <a href="{% url 'album:album_detail' album_id %}">Вернуться к альбому</a>
     <h3>Редактирование альбома</h3>
-    <form method="post" action="{% url 'album:edit_album' album_id %}">
+    <form method="post" action="{% url 'album:edit_album' album_id %}" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button class="btn btn-primary" type="submit">Сохранить</button>

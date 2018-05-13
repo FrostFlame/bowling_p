@@ -80,7 +80,7 @@ class AlbumEditlView (View):
 
     def post(self,request,pk):
         instance = get_object_or_404(Album, pk=pk)
-        form=CreatAlbumForm(request.POST,instance=instance)
+        form=CreatAlbumForm(request.POST,request.FILES,instance=instance)
         if form.is_valid():
             form.save()
             return redirect(reverse('album:album_detail',kwargs={'pk':pk}))
