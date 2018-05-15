@@ -21,7 +21,7 @@ def album_image_path(instance, filename):
 
 
 class Album(models.Model):
-    name = models.CharField(max_length=200, blank=False,unique=True)
+    name = models.CharField(max_length=200, blank=False,unique=False)
     created_at = models.DateTimeField(default=datetime.now)
     cover = models.ImageField(upload_to=album_cover_path,default=os.path.join('default','album_avatar.jpg'))
     tournament = models.OneToOneField(Tournament, null=True, default=None, related_name="tournament_album")

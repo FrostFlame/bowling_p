@@ -63,7 +63,8 @@ class TournamentsListView(ListView, FormView):
         tournaments = Tournament.get_by_type(tournament_type)
         if form.is_valid():
             return tournaments.filter(Q(name__icontains=form.cleaned_data['search_field']) | Q(
-                city__name__icontains=form.cleaned_data['search_field']))[(self.get_page() - 1) * 10:self.get_page() * 10]
+                city__name__icontains=form.cleaned_data['search_field']))[
+                   (self.get_page() - 1) * 10:self.get_page() * 10]
         else:
             return tournaments[(self.get_page() - 1) * 10:self.get_page() * 10]
 
@@ -89,18 +90,34 @@ class TournamentView(View):
         games = tournament.tournament_games.all().order_by('start')
         # Сортируем игроков по сумме очков, набранных за турнир
         players = tournament.players.all()
-        players = sorted(players, key=tournament.get_player_points, reverse=True)
 
-        player_games_dict = defaultdict(list)
+        men_players = players.filter(sex='0')
+        women_players = players.filter(sex='1')
+
+        men_players = sorted(men_players, key=tournament.get_player_points, reverse=True)
+        women_players = sorted(women_players, key=tournament.get_player_points, reverse=True)
+
+        men_player_games_dict = defaultdict(list)
         # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
         for game in games:
-            for player in players:
+            for player in men_players:
                 try:
-                    player_games_dict[player.id].append(player.player_games.get(game=game))
+                    men_player_games_dict[player.id].append(player.player_games.get(game=game))
                 except GameInfo.DoesNotExist:
                     # Если игрок не участвовал в данной игре, его результат равен 0.
                     gi = GameInfo(result=0)
-                    player_games_dict[player.id].append(gi)
+                    men_player_games_dict[player.id].append(gi)
+
+        women_player_games_dict = defaultdict(list)
+        # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
+        for game in games:
+            for player in women_players:
+                try:
+                    women_player_games_dict[player.id].append(player.player_games.get(game=game))
+                except GameInfo.DoesNotExist:
+                    # Если игрок не участвовал в данной игре, его результат равен 0.
+                    gi = GameInfo(result=0)
+                    women_player_games_dict[player.id].append(gi)
 
         tournament_request = False
         if not request.user.is_staff:
@@ -109,8 +126,10 @@ class TournamentView(View):
         return render(request, 'tournaments/tournament_page.html',
                       {'tournament': tournament,
                        'games': games,
-                       'players': players,
-                       'games_dict': player_games_dict,
+                       'men_players': men_players,
+                       'women_players': women_players,
+                       'men_games_dict': men_player_games_dict,
+                       'women_games_dict': women_player_games_dict,
                        'tournament_request': tournament_request
                        })
 

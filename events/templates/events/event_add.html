@@ -1,4 +1,4 @@
-{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% extends user.is_staff|yesno:"moderator/base.html,base.html" %}
 {% load  static %}
 
 {% block title %}
