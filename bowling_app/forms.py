@@ -1,6 +1,7 @@
 from dal import autocomplete
 from django import forms
 
+from accounts.forms import RegisterUserForm
 from accounts.models import PlayerInfo, SportCategory, SEX_CHOICES, City
 
 
@@ -85,4 +86,12 @@ class PlayerSearchForm(forms.Form):
             widget=forms.TextInput(
                 attrs={'placeholder': 'ФИО игрока','class': 'form-control'}
             )
+        )
+
+class PersonalRegisterForm(RegisterUserForm):
+    PERSONAL_CHOICES = (('1', 'Фотограф',), ('2', 'Редактор',))
+    role = forms.ChoiceField(
+        label='Роль',
+        required=True,
+        choices=PERSONAL_CHOICES,
         )

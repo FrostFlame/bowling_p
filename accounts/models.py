@@ -50,6 +50,7 @@ class User(AbstractUser):
     first_name = None
     last_name = None
     is_photographer = models.BooleanField(default=False)
+    is_editor = models.BooleanField(default=False)
     email_confirmed = models.BooleanField(null=False, default=False)
     # Вместо username используем email
     email = models.EmailField(unique=True, blank=False)
