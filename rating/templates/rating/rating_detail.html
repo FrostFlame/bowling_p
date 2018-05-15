@@ -1,0 +1,122 @@
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load static %}
+{% load rating_extras %}
+
+{% block title %}
+    {{ rating.name }}
+{% endblock %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'stats/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'stats/tableexport.min.css' %}">
+
+    <script src="{% static 'stats/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'stats/dataTables.bootstrap.min.js' %}"></script>
+
+    {# tableexport.js staff #}
+    <script lang="javascript" src="{% static 'stats/xlsx.core.min.js' %}"></script>
+    <script src="{% static 'stats/FileSaver.min.js' %}"></script>
+    <script src="{% static 'stats/tableexport.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="col-md-12">
+        <h3>{{ rating.name }}</h3>
+
+        <p>
+            {% for tournament in rating.tournaments.all %}
+                {{ tournament }}|
+            {% endfor %}
+        </p>
+
+        <table class="table display nowrap table-hover" id="rating_table" style="width: 100%;">
+            <thead>
+            <th>Игрок</th>
+            <th class="text-center">Сумма</th>
+            {% for tournament in rating.tournaments.all|dictsort:"name" %}
+                <th>
+                    {{ forloop.counter }}
+                </th>
+            {% endfor %}
+            </thead>
+
+            <tbody>
+            {% for player in players %}
+                <tr>
+                    <td>{{ player }}</td>
+                    <td id="sum_{{ forloop.counter }}" class="text-center">0</td>
+                    {% for tournament in rating.tournaments.all %}
+                        <td class="variable text-center">{% get_rating_points tournament player %}</td>
+                    {% endfor %}
+
+                    <script>
+                        var variables = $('#sum_{{ forloop.counter }}').parent().find('td.variable');
+                        var sum = 0;
+                        $.each(variables, function (i, variable) {
+                            sum += parseInt(variable.innerHTML);
+                        });
+                        $('#sum_{{ forloop.counter }}').html(sum);
+                    </script>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <p class="right"><a href="{% url 'rating:edit' rating.id %}">Редактировать</a></p>
+
+
+        <div class="col-xs-12 mar-bot-10">
+            <form action="{% url 'rating:delete' rating.id %}" method="post" onsubmit="return ConfirmDelete()">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-default" value="Удалить">
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function ConfirmDelete() {
+            return !!confirm("Удалить рейтинг?");
+        }
+
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+            var table = $('#rating_table');
+            var index = table.find('th:last').index();
+            table.DataTable({
+                scrollX: true,
+                "bPaginate": false,
+                scrollCollapse: true,
+                "language": {
+                    "url": "{% static 'stats/Russian.json' %}"
+                },
+                "info": false,
+                "order": [
+                    [index, "desc"]
+                ]
+            });
+
+            TableExport.prototype.formatConfig.xlsx.buttonContent = "Экспорт в xlsx";
+            TableExport.prototype.formatConfig.csv.buttonContent = "Экспорт в csv";
+            TableExport(document.getElementById("rating_table"), {
+                headers: true,                              // (Boolean), display table headers (th or td elements) in the <thead>, (default: true)
+                formats: ['xlsx', 'csv'],                   // (String[]), filetype(s) for the export, (default: ['xlsx', 'csv', 'txt'])
+                filename: '{{ rating.name }}' + ' Cтат.',                             // (id, String), filename for the downloaded file, (default: 'id')
+                bootstrap: true,                           // (Boolean), style buttons using bootstrap, (default: true)
+                exportButtons: true,                        // (Boolean), automatically generate the built-in export buttons for each of the specified formats (default: true)
+                position: 'bottom',                         // (top, bottom), position of the caption element relative to table, (default: 'bottom')
+                ignoreRows: null,                           // (Number, Number[]), row indices to exclude from the exported file(s) (default: null)
+                ignoreCols: null,                           // (Number, Number[]), column indices to exclude from the exported file(s) (default: null)
+                trimWhitespace: false
+            });
+
+
+        });
+    </script>
+{% endblock %}

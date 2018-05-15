@@ -102,9 +102,6 @@ class GameCreationForm(forms.ModelForm):
         )
     )
 
-    # tournament = forms.ModelChoiceField(queryset=Tournament.objects.all(),
-    #                                     widget=autocomplete.ModelSelect2(url='tournaments:tournament-autocomplete'))
-
     def save(self, commit=True):
         game = super(GameCreationForm, self).save(commit=False)
         if commit:

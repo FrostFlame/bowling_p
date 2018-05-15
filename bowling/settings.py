@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'django_summernote',
     'dal',
     'dal_select2',
-    'albums'
+    'albums',
+    'rating'
 ]
 
 MIDDLEWARE = [

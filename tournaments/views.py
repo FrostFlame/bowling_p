@@ -38,7 +38,7 @@ class TournamentDelete(DeleteView):
     """
 
     def get_success_url(self):
-        return reverse('tournaments:tournaments_all')
+        return reverse('tournaments:tournaments_all', kwargs={'page': 1})
 
     model = Tournament
     success_url = get_success_url

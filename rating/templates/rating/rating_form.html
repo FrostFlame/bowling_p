@@ -1,0 +1,20 @@
+{% extends user.is_staff|yesno:"admin/base.html,base.html" %}
+{% load static %}
+
+{% block title %}
+    Создание рейтинга
+{% endblock %}
+
+{% block extrahead %}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+    <h3>Редактирование рейтинга</h3>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-primary mar-bot-10">Сохранить</button>
+        </form>
+    </div>
+{% endblock %}

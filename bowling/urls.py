@@ -21,17 +21,16 @@ from django.contrib import admin
 from events import views
 
 urlpatterns = [
-                  url(r'^admin/', admin.site.urls),
-                  url(r'^account/', include('accounts.urls', namespace='auth')),
+                  url(r'^admin/', admin.site.urls), url(r'^account/', include('accounts.urls', namespace='auth')),
                   url(r'^', include('bowling_app.urls', namespace="bowlingApp")),
                   url(r'^tournaments/', include('tournaments.urls', namespace='tournaments')),
                   url(r'^news/', include('news.urls', namespace='news')),
                   url(r'^album/', include('albums.urls', namespace='album')),
                   url(r'^events/', include('events.urls', namespace='events')),
                   url(r'^calendar/', views.CalendarView.as_view(), name='calendar'),
-                  # summernote
+                  url(r'rating/', include('rating.urls', namespace='rating')),
                   url(r'^summernote/', include('django_summernote.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
-     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

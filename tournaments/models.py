@@ -1,3 +1,4 @@
+import operator
 import os
 from datetime import datetime
 
@@ -7,6 +8,7 @@ from django.db.models import Sum, Max, Min
 from django.utils.crypto import get_random_string
 
 from accounts.models import PlayerInfo, City, User
+from rating.utils import position_to_points
 
 
 def filename(instance, filename):
@@ -67,6 +69,32 @@ class Tournament(models.Model):
         info = GameInfo.objects.filter(game__in=games, player=player)
         min_points = info.aggregate(Min('result'))['result__min']
         return min_points if min_points else 0
+
+    def get_sorted_rating(self):
+        """
+        Возвращает упорядоченный по количеству убывания очков словарь игроков с суммой очков
+        """
+        players = self.players.all()
+        players_points = dict()
+        for player in players:
+            games = Game.objects.filter(tournament=self)
+            info = GameInfo.objects.filter(game__in=games, player=player)
+            points = info.aggregate(Sum('result'))['result__sum']
+            points = 0 if points is None else points
+            players_points.update({str(player): points})
+        players_points = sorted(players_points.items(), key=operator.itemgetter(1), reverse=True)
+        return players_points
+
+    def get_rating_points(self, player):
+        """
+        Переводим место в турнире в количество очков в рейтинге
+        """
+        rating = self.get_sorted_rating()
+        for r in rating:
+            if str(player) in r:
+                position = rating.index(r) + 1
+                return position_to_points(position)
+        return 0
 
     @classmethod
     def get_by_type(clf, tournament_type):

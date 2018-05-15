@@ -48,11 +48,15 @@
                 </a>
                     <ul class="dropdown-menu dropdown-alerts">
                         <li><a href="{% url 'bowlingApp:bowling_manage_registration' %}">
-                            <div><em class="fa fa-user"></em> Заявки на регистрацию (<span id="reg_req_count">{% get_registration_requests_count %}</span>)</div>
+                            <div><em class="fa fa-user"></em> Заявки на регистрацию (<span
+                                    id="reg_req_count">{% get_registration_requests_count %}</span>)
+                            </div>
                         </a></li>
                         <li class="divider"></li>
                         <li><a href="{% url 'bowlingApp:bowling_manage_registration' %}#tournaments">
-                            <div><em class="fa fa-trophy"></em> Заявки на турнир (<span id="tourn_req_count">{% get_tournament_requests_count %}</span>)</div>
+                            <div><em class="fa fa-trophy"></em> Заявки на турнир (<span
+                                    id="tourn_req_count">{% get_tournament_requests_count %}</span>)
+                            </div>
                         </a></li>
                     </ul>
                 </li>
@@ -87,16 +91,16 @@
                     class="fa fa-plus"></em></span>
             </a>
             <ul class="children collapse" id="sub-item-1">
-                <li><a href="{% url 'tournaments:tournaments_all' page=1%}">
+                <li><a href="{% url 'tournaments:tournaments_all' page=1 %}">
                     <span class="fa fa-globe">&nbsp;</span> Все
                 </a></li>
-{#                <li><a href="{% url 'tournaments:tournaments_all' tournament_type='public' %} ">#}
-{#                    <span class="fa fa-unlock">&nbsp;</span> Публичные#}
-{#                </a></li>#}
-                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='sport' page=1%} ">
+                {#                <li><a href="{% url 'tournaments:tournaments_all' tournament_type='public' %} ">#}
+                {#                    <span class="fa fa-unlock">&nbsp;</span> Публичные#}
+                {#                </a></li>#}
+                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='sport' page=1 %} ">
                     <span class="fa fa-soccer-ball-o">&nbsp;</span> Спортивные
                 </a></li>
-                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='commercial' page=1%} ">
+                <li><a class="" href="{% url 'tournaments:tournaments_all' tournament_type='commercial' page=1 %} ">
                     <span class="fa fa-money">&nbsp;</span> Коммерческие
                 </a></li>
                 <li><a class="" href="{% url 'tournaments:tournaments_create' %}">
@@ -105,13 +109,17 @@
             </ul>
         </li>
 
+        <li {% if request.resolver_match.namespace == 'rating' %}class="active"{% endif %}>
+            <a href="{% url 'rating:list' %}"><em class="fa fa-bar-chart">&nbsp;</em> Рейтинг</a></li>
+
         <li {% if request.resolver_match.namespace == 'events' %}class="active"{% endif %}>
             <a href="{% url 'events:list' page=1 %}"><em class="fa fa-birthday-cake">&nbsp;</em> Мероприятия</a></li>
 
         <li class="parent {% if request.resolver_match.url_name|first_part == 'tournaments' %}active{% endif %}">
         <li {% if request.resolver_match.url_name|first_part == 'albums' %}class="active"{% endif %}><a
                 href="{% url 'album:albums_list' %}"><em class="fa fa-picture-o">&nbsp;</em> Альбомы</a></li>
-        <li {% if request.resolver_match.url_name == 'calendar' %}class="active"{% endif %}><a href="{% url 'calendar' %}"><em
+        <li {% if request.resolver_match.url_name == 'calendar' %}class="active"{% endif %}><a
+                href="{% url 'calendar' %}"><em
                 class="fa fa-calendar">&nbsp;</em> Календарь</a></li>
         <li {% if request.resolver_match.url_name == 'bowling_manage_registration' %}class="active"{% endif %}><a
                 href="{% url 'bowlingApp:bowling_manage_registration' %}"><em class="fa fa-bell-o">&nbsp;</em>
