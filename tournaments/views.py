@@ -120,7 +120,7 @@ class TournamentView(View):
                     women_player_games_dict[player.id].append(gi)
 
         tournament_request = False
-        if not request.user.is_staff:
+        if request.user.is_authenticated and not request.user.is_staff:
             tournament_request = TournamentRequest.objects.filter(user=request.user, tournament=tournament).exists()
 
         return render(request, 'tournaments/tournament_page.html',
