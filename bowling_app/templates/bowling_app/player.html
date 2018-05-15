@@ -18,10 +18,25 @@
 
     <div class="col-md-8">
         <p>Пол: {{ player.get_sex_display }}</p>
+
         <p>Город: {{ player.city }}</p>
+
         <p>Дата рождения: {{ player.date_of_birth }}</p>
-        <p>Email: {{ user_form.email }}</p>
+
+        {% if player.user.email %}
+            <p>Email: {{ player.user.email }}</p>
+        {% endif %}
+
         <p>Телефон: {{ player.phone }}</p>
+
+        {% if player.license %}
+            <p>Лиценизия: {{ player.license }}</p>
+        {% endif %}
+
+        {% if player.category %}
+            <p>Разряд: {{ player.category }}</p>
+        {% endif %}
+
         {% if request.user.is_staff %}
             <a class="btn btn-warning" href="#edit_modal" data-toggle="modal">Редактировать</a>
         {% endif %}
@@ -104,7 +119,7 @@
                         </div>
 
                         <div class="form-group">
-                            <a href="{% url 'auth:profile' %}" class="btn btn-danger">Отменить</a>
+                            <a href="{% url 'bowlingApp:player' player.id %}" class="btn btn-danger">Отменить</a>
                             <button type="submit" class="btn btn-success">Сохранить</button>
                         </div>
 
@@ -118,3 +133,17 @@
     <!-- EDIT INFO MODAL -->
 {% endblock %}
 
+{% block scripts %}
+    <script src="{% static 'js/jquery-ui.js' %}"></script>
+    <script src="{% static 'js/datepicker-ru.js' %}"></script>
+    <script src="{% static 'js/jquery.maskedinput.js' %}"></script>
+    <script>
+        $('#id_license').mask("99 №9999");
+        $('#id_phone').mask("+7(999)999-9999");
+        $('#id_date_of_birth').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "1910:+nn"
+        });
+    </script>
+{% endblock %}
