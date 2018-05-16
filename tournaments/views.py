@@ -91,47 +91,68 @@ class TournamentView(View):
         # Сортируем игроков по сумме очков, набранных за турнир
         players = tournament.players.all()
 
-        men_players = players.filter(sex='0')
-        women_players = players.filter(sex='1')
-
-        men_players = sorted(men_players, key=tournament.get_player_points, reverse=True)
-        women_players = sorted(women_players, key=tournament.get_player_points, reverse=True)
-
-        men_player_games_dict = defaultdict(list)
-        # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
-        for game in games:
-            for player in men_players:
-                try:
-                    men_player_games_dict[player.id].append(player.player_games.get(game=game))
-                except GameInfo.DoesNotExist:
-                    # Если игрок не участвовал в данной игре, его результат равен 0.
-                    gi = GameInfo(result=0)
-                    men_player_games_dict[player.id].append(gi)
-
-        women_player_games_dict = defaultdict(list)
-        # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
-        for game in games:
-            for player in women_players:
-                try:
-                    women_player_games_dict[player.id].append(player.player_games.get(game=game))
-                except GameInfo.DoesNotExist:
-                    # Если игрок не участвовал в данной игре, его результат равен 0.
-                    gi = GameInfo(result=0)
-                    women_player_games_dict[player.id].append(gi)
-
         tournament_request = False
-        if request.user.is_authenticated and not request.user.is_staff:
+        if not request.user.is_staff:
             tournament_request = TournamentRequest.objects.filter(user=request.user, tournament=tournament).exists()
 
-        return render(request, 'tournaments/tournament_page.html',
-                      {'tournament': tournament,
-                       'games': games,
-                       'men_players': men_players,
-                       'women_players': women_players,
-                       'men_games_dict': men_player_games_dict,
-                       'women_games_dict': women_player_games_dict,
-                       'tournament_request': tournament_request
-                       })
+        if tournament.type.name == 'Спортивный':
+            men_players = players.filter(sex='0')
+            women_players = players.filter(sex='1')
+
+            men_players = sorted(men_players, key=tournament.get_player_points, reverse=True)
+            women_players = sorted(women_players, key=tournament.get_player_points, reverse=True)
+
+            men_player_games_dict = defaultdict(list)
+            # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
+            for game in games:
+                for player in men_players:
+                    try:
+                        men_player_games_dict[player.id].append(player.player_games.get(game=game))
+                    except GameInfo.DoesNotExist:
+                        # Если игрок не участвовал в данной игре, его результат равен 0.
+                        gi = GameInfo(result=0)
+                        men_player_games_dict[player.id].append(gi)
+
+            women_player_games_dict = defaultdict(list)
+            # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
+            for game in games:
+                for player in women_players:
+                    try:
+                        women_player_games_dict[player.id].append(player.player_games.get(game=game))
+                    except GameInfo.DoesNotExist:
+                        # Если игрок не участвовал в данной игре, его результат равен 0.
+                        gi = GameInfo(result=0)
+                        women_player_games_dict[player.id].append(gi)
+
+            return render(request, 'tournaments/tournament_page.html',
+                          {'tournament': tournament,
+                           'games': games,
+                           'men_players': men_players,
+                           'women_players': women_players,
+                           'men_games_dict': men_player_games_dict,
+                           'women_games_dict': women_player_games_dict,
+                           'tournament_request': tournament_request
+                           })
+
+        else:
+            player_games_dict = defaultdict(list)
+
+            for game in games:
+                for player in players:
+                    try:
+                        player_games_dict[player.id].append(player.player_games.get(game=game))
+                    except GameInfo.DoesNotExist:
+                        # Если игрок не участвовал в данной игре, его результат равен 0.
+                        gi = GameInfo(result=0)
+                        player_games_dict[player.id].append(gi)
+
+            return render(request, 'tournaments/tournament_page.html',
+                          {'tournament': tournament,
+                           'games': games,
+                           'players': players,
+                           'games_dict': player_games_dict,
+                           'tournament_request': tournament_request
+                           })
 
 
 class AddPlayersView(View):
