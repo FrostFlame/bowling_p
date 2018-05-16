@@ -7,9 +7,9 @@
 
     <script src="{% static 'stats/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'stats/dataTables.bootstrap.min.js' %}"></script>
-{#    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">#}
-{#    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>#}
-{#    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>#}
+    {#    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">#}
+    {#    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>#}
+    {#    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>#}
 {% endblock %}
 
 {% block title %}
@@ -24,7 +24,7 @@
     <div class="col-md-12">
         <h3>
             <a class="text-black" href="{% url 'tournaments:tournament_page' game.tournament_id %}">
-            {{ game.tournament.name }}</a>
+                {{ game.tournament.name }}</a>
         </h3>
         <h4>Игра: {{ game.name }}</h4>
     </div>
@@ -32,33 +32,98 @@
 
     {% if request.user.is_staff %}
         <div class="col-md-8">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <td><h5>Игрок</h5></td>
-                    <td><h5>Результат</h5></td>
-                </tr>
-                </thead>
 
-                {% for gInf in gameInfo %}
+
+            {% if tournament.type.name == 'Спортивный' %}
+                <h2>Мужчины</h2>
+                <table class="table table-hover">
+                    <thead>
                     <tr>
-                        <td>
-                            <h5>{{ gInf.player }}</h5>
-
-                        </td>
-
-                        <td class="col-xs-2">
-                            <form action="" method="post" name="playersToEdit" onsubmit="updateResults(event)"
-                                  class="updateResultsForm" id="form{{ gInf.pk }}">
-                                {% csrf_token %}
-                                <input id="input{{ gInf.pk }}" class="form-control" style="" type="text" name="result"
-                                       value="{{ gInf.result }}" onchange="$('#form{{ gInf.pk }}').submit()">
-                                <input type="hidden" name="info_id" value="{{ gInf.pk }}">
-                            </form>
-                        </td>
+                        <td><h5>Игрок</h5></td>
+                        <td><h5>Результат</h5></td>
                     </tr>
-                {% endfor %}
-            </table>
+                    </thead>
+                    {% for gInf in mGameInfo %}
+                        <tr>
+                            <td>
+                                <h5>{{ gInf.player }}</h5>
+
+                            </td>
+
+                            <td class="col-xs-2">
+                                <form action="" method="post" name="playersToEdit" onsubmit="updateResults(event)"
+                                      class="updateResultsForm" id="form{{ gInf.pk }}">
+                                    {% csrf_token %}
+                                    <input id="input{{ gInf.pk }}" class="form-control" style="" type="text"
+                                           name="result"
+                                           value="{{ gInf.result }}" onchange="$('#form{{ gInf.pk }}').submit()">
+                                    <input type="hidden" name="info_id" value="{{ gInf.pk }}">
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+
+                <h2>Женщины</h2>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <td><h5>Игрок</h5></td>
+                        <td><h5>Результат</h5></td>
+                    </tr>
+                    </thead>
+                    {% for gInf in wGameInfo %}
+                        <tr>
+                            <td>
+                                <h5>{{ gInf.player }}</h5>
+
+                            </td>
+
+                            <td class="col-xs-2">
+                                <form action="" method="post" name="playersToEdit" onsubmit="updateResults(event)"
+                                      class="updateResultsForm" id="form{{ gInf.pk }}">
+                                    {% csrf_token %}
+                                    <input id="input{{ gInf.pk }}" class="form-control" style="" type="text"
+                                           name="result"
+                                           value="{{ gInf.result }}" onchange="$('#form{{ gInf.pk }}').submit()">
+                                    <input type="hidden" name="info_id" value="{{ gInf.pk }}">
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <td><h5>Игрок</h5></td>
+                        <td><h5>Результат</h5></td>
+                    </tr>
+                    </thead>
+                    {% for gInf in gameInfo %}
+                        <tr>
+                            <td>
+                                <h5>{{ gInf.player }}</h5>
+
+                            </td>
+
+                            <td class="col-xs-2">
+                                <form action="" method="post" name="playersToEdit" onsubmit="updateResults(event)"
+                                      class="updateResultsForm" id="form{{ gInf.pk }}">
+                                    {% csrf_token %}
+                                    <input id="input{{ gInf.pk }}" class="form-control" style="" type="text"
+                                           name="result"
+                                           value="{{ gInf.result }}" onchange="$('#form{{ gInf.pk }}').submit()">
+                                    <input type="hidden" name="info_id" value="{{ gInf.pk }}">
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+            {% endif %}
+
         </div>
         <div class="col-md-12">
             <a class="btn btn-primary" href="{% url 'tournaments:tournament_page' game.tournament.pk %}">Сохранить и

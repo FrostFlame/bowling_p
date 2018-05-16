@@ -215,9 +215,23 @@ class TournamentGameInfo(View):
     """
 
     def get(self, request, tournament_pk, game_pk):
+        tournament = get_object_or_404(Tournament, pk=tournament_pk)
         game = get_object_or_404(Game, pk=game_pk)
         gameInfo = GameInfo.objects.filter(game=game)
-        return render(request, 'tournaments/tournament_game_info.html', {'game': game, 'gameInfo': gameInfo})
+        if tournament.type.name == 'Спортивный':
+            men_game_info = filter(lambda g: g.player.sex == '0', gameInfo)
+            women_game_info = [g for g in gameInfo if g.player.sex == '1']
+            return render(request, 'tournaments/tournament_game_info.html',
+                          {'game': game,
+                           'mGameInfo': men_game_info,
+                           'wGameInfo': women_game_info,
+                           'tournament': tournament})
+
+        else:
+            return render(request, 'tournaments/tournament_game_info.html',
+                          {'game': game,
+                           'gameInfo': gameInfo,
+                           'tournament': tournament})
 
 
 class GameCreateView(View):
