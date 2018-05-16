@@ -1,5 +1,6 @@
 import io
 import os
+from datetime import date
 
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.core.files.base import ContentFile
@@ -116,7 +117,12 @@ class PlayerInfo(models.Model):
         return f'{self.f_name} {self.i_name} {self.o_name}'
 
     def fullName_lower(self):
-        return '{0} {1} {2}'.format(self.f_name.lower(),self.i_name.lower(),self.o_name.lower())
+        return '{0} {1} {2}'.format(self.f_name.lower(), self.i_name.lower(), self.o_name.lower())
+
+    def get_age(self):
+        today = date.today()
+        return today.year - self.date_of_birth.year - (
+                (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
 
     def update(self, obj):
         # Объединяет игрока созданного ранее модератором и игрока, который зарегистрирован пользователем

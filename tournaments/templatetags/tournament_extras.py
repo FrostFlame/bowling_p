@@ -30,6 +30,16 @@ def get_player_200_points(player, tournament):
     return f'{round(result,2)}'
 
 
+@register.simple_tag
+def get_sum(a, b):
+    return f'{a + b}'
+
+
+@register.simple_tag
+def get_handicap(games_count):
+    return f'{games_count * 8}'
+
+
 @register.filter
 def get_item(dictionary, key):
     """
@@ -43,3 +53,17 @@ def get_item(dictionary, key):
         Элемент словаря dictionary[key]
     """
     return dictionary.get(key)
+
+
+@register.filter
+def get_list_len(list):
+    """
+    Получение количества ключей в словера
+
+    Args:
+        list (list)
+
+    Returns:
+        Количество ключей в словаре dictionary
+    """
+    return len(list)
