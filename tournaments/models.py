@@ -23,6 +23,8 @@ class TournamentType(models.Model):
 
 
 class Tournament(models.Model):
+    class Meta:
+        verbose_name_plural = 'Турниры'
     name = models.CharField(max_length=40)
     start = models.DateTimeField()
     end = models.DateTimeField()
@@ -132,6 +134,8 @@ class TournamentMembership(models.Model):
 
 
 class TeamType(models.Model):
+    class Meta:
+        verbose_name_plural = 'Типы команд'
     name = models.CharField(max_length=20)
 
     def __str__(self):
@@ -139,6 +143,8 @@ class TeamType(models.Model):
 
 
 class Game(models.Model):
+    class Meta:
+        verbose_name_plural = 'Игры'
     start = models.DateTimeField(default=datetime.now)
     name = models.CharField(max_length=200, blank=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='tournament_games')

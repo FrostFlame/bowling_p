@@ -5,6 +5,9 @@ from accounts.utils import UploadToPathAndRename
 
 
 class News(models.Model):
+    class Meta:
+        verbose_name_plural = 'Новости'
+
     title = models.CharField(max_length=140)
     text = models.TextField(max_length=500)
     created = models.DateTimeField(auto_now_add=True)
@@ -15,6 +18,8 @@ class News(models.Model):
         if amount == 0:
             amount = News.objects.count()
         if not reversed:
-            return News.objects.order_by('created').values('id', 'title', 'image', 'created')[(page - 1) * amount:page * amount]
+            return News.objects.order_by('created').values('id', 'title', 'image', 'created')[
+                   (page - 1) * amount:page * amount]
         else:
-            return News.objects.order_by('-created').values('id', 'title', 'image', 'created')[(page - 1) * amount:page * amount]
+            return News.objects.order_by('-created').values('id', 'title', 'image', 'created')[
+                   (page - 1) * amount:page * amount]

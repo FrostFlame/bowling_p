@@ -4,6 +4,8 @@ from tournaments.models import Tournament
 
 
 class Rating(models.Model):
+    class Meta:
+        verbose_name_plural = 'Рейтинги'
     name = models.CharField(max_length=240, unique=True)
     tournaments = models.ManyToManyField(Tournament)
 
