@@ -1,5 +1,3 @@
-from itertools import chain
-
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMultiAlternatives
@@ -109,6 +107,8 @@ class PlayersUnionView(View):
 
         # Подтверждаем аккаунт и принимаем заявку
         primary.user.is_active = True
+        primary.save()
+
         request = RegistrationRequest.objects.get(pk=request.POST['request_id'])
         request.status = RegistrationRequest.ACCEPTED
         request.save()
