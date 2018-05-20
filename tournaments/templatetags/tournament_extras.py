@@ -36,8 +36,10 @@ def get_sum(a, b):
 
 
 @register.simple_tag
-def get_handicap(games_count):
-    return f'{games_count * 8}'
+def get_handicap(games_list):
+    gk = list(filter(lambda x: x.result != 0, games_list))
+    print(gk)
+    return f'{len(gk) * 8}'
 
 
 @register.filter

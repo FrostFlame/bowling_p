@@ -307,7 +307,7 @@ class GameUpdateView(View):
             for player in players:
                 GameInfo.objects.create(player=player, game=game)
 
-            return redirect('tournaments:tournaments_all')
+            return redirect(reverse('tournaments:tournament_page', kwargs={"pk": tournament_pk}))
 
 
 def send_participation_request(request, pk):

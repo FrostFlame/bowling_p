@@ -223,8 +223,13 @@
                             <td style="text-align: left">{{ player }}</td>
                             {% for game in games_dict|get_item:player.id %}
                                 <td>
+
                                     {% if player.sex == '1' or player.get_age > 50 %}
-                                        {% get_sum game.result 8 %}
+                                        {% if game.result != 0 %}
+                                            {% get_sum game.result 8 %}
+                                        {% else %}
+                                            0
+                                        {% endif %}
                                     {% else %}
                                         {{ game.result }}
                                     {% endif %}
@@ -245,7 +250,7 @@
                             <td>{% get_player_max_points player tournament %}</td>
                             <td>
                                 {% if player.sex == '1' or player.get_age > 50 %}
-                                    {% get_handicap games_dict|get_item:player.pk|get_list_len %}
+                                    {% get_handicap games_dict|get_item:player.pk %}
                                 {% else %}
 
                                 {% endif %}
