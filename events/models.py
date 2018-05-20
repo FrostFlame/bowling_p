@@ -2,6 +2,8 @@ from django.db import models
 
 
 class Event(models.Model):
+    class Meta:
+        verbose_name_plural = 'Мероприятия'
     name = models.CharField(max_length=140)
     description = models.TextField(max_length=500, blank=True, default='')
     date = models.DateTimeField()

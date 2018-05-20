@@ -93,6 +93,9 @@ class PlayerManager(models.Manager):
 
 
 class PlayerInfo(models.Model):
+    class Meta:
+        verbose_name_plural = 'Игроки'
+
     user = models.OneToOneField(User, null=True, unique=True, related_name="profile")
 
     i_name = models.CharField(max_length=50, blank=False)
@@ -186,9 +189,15 @@ class SportCategory(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'Спортивные разряды'
+
 
 class City(models.Model):
     name = models.CharField(max_length=60, default='Не указан')
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name_plural = 'Города'

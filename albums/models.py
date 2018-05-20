@@ -21,9 +21,12 @@ def album_image_path(instance, filename):
 
 
 class Album(models.Model):
-    name = models.CharField(max_length=200, blank=False,unique=False)
+    class Meta:
+        verbose_name_plural = 'Альбомы'
+
+    name = models.CharField(max_length=200, blank=False, unique=False)
     created_at = models.DateTimeField(default=datetime.now)
-    cover = models.ImageField(upload_to=album_cover_path,default=os.path.join('default','album_avatar.jpg'))
+    cover = models.ImageField(upload_to=album_cover_path, default=os.path.join('default', 'album_avatar.jpg'))
     tournament = models.OneToOneField(Tournament, null=True, default=None, related_name="tournament_album")
 
     def __str__(self):
@@ -31,7 +34,9 @@ class Album(models.Model):
 
 
 class Photo(models.Model):
+    class Meta:
+        verbose_name_plural = 'Фотографии'
+
     created_at = models.DateTimeField(default=datetime.now)
     image = models.ImageField(upload_to=album_image_path)
     album = models.ForeignKey('Album', on_delete=models.CASCADE)
-
