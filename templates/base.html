@@ -42,27 +42,27 @@
             <a class="navbar-brand" href="{% url 'bowlingApp:home' %}"><img src="{% static 'images/logo12.png' %}"
                                                                             style="width: 190px" alt=""></a>
             <ul class="nav navbar-top-links navbar-right">
-                {% if user.is_authenticated %}
-                    <li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                        <em class="fa fa-user"></em>
-                    </a>
-                        <ul class="dropdown-menu dropdown-alerts-small">
-                            <li><a href="{% url 'auth:profile' %}">
-                                <div><em class="fa fa-user"></em> &nbsp; &nbsp;Профиль</div>
-                            </a></li>
-                            <li class="divider"></li>
-                            <li><a href="{% url 'auth:logout' %}">
-                                <div><em class="fa fa-power-off"></em> &nbsp; &nbsp;Выход</div>
-                            </a></li>
-                        </ul>
-                    </li>
-                {% else %}
-                    <li class="right nav-link">
-                        <a href="{% url 'auth:login' %}">
-                            Вход
-                        </a>
-                    </li>
-                {% endif %}
+{#                {% if user.is_authenticated %}#}
+{#                    <li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">#}
+{#                        <em class="fa fa-user"></em>#}
+{#                    </a>#}
+{#                        <ul class="dropdown-menu dropdown-alerts-small">#}
+{#                            <li><a href="{% url 'auth:profile' %}">#}
+{#                                <div><em class="fa fa-user"></em> &nbsp; &nbsp;Профиль</div>#}
+{#                            </a></li>#}
+{#                            <li class="divider"></li>#}
+{#                            <li><a href="{% url 'auth:logout' %}">#}
+{#                                <div><em class="fa fa-power-off"></em> &nbsp; &nbsp;Выход</div>#}
+{#                            </a></li>#}
+{#                        </ul>#}
+{#                    </li>#}
+{#                {% else %}#}
+{#                    <li class="right nav-link">#}
+{#                        <a href="{% url 'auth:login' %}">#}
+{#                            Вход#}
+{#                        </a>#}
+{#                    </li>#}
+{#                {% endif %}#}
             </ul>
         </div>
     </div><!-- /.container-fluid -->

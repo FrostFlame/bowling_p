@@ -3,7 +3,7 @@ from django import forms
 from django.forms import CheckboxSelectMultiple
 
 from rating.models import Rating
-from tournaments.models import Tournament
+from tournaments.models import Tournament, TournamentType
 
 
 class RatingCreationForm(forms.ModelForm):
@@ -25,3 +25,10 @@ class RatingCreationForm(forms.ModelForm):
         )
     )
 
+    type = forms.ModelChoiceField(
+        queryset=TournamentType.objects.all(),
+        label="Тип",
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+        )
+    )

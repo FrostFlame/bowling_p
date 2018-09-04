@@ -11,6 +11,8 @@
         <div class="ov-hidden">
             {% if user.is_staff %}
                 <a class="right" href="{% url 'bowlingApp:player_create' %}">Добавить игрока</a>
+                <br>
+{#                <a class="right" href="{% url 'bowlingApp:personal_create' %}">Добавить персонал</a>#}
             {% endif %}
         </div>
         <form method="get" id="search_form">

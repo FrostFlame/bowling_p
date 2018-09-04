@@ -87,13 +87,15 @@
                         <tr>
                             <th rowspan="2">#</th>
                             <th rowspan="2">Игрок</th>
-                            <th colspan="{{ games.count }}" class="text-center">Игры</th>
-                            <th rowspan="2">Город</th>
-                            <th rowspan="2">Сумма</th>
-                            <th rowspan="2">+-200</th>
-                            <th rowspan="2">Сред</th>
-                            <th rowspan="2">Мин. игра</th>
-                            <th rowspan="2">Макс. игра</th>
+                            {% if games.count > 0 %}
+                                                                <th colspan="{{ games.count }}" class="text-center">Игры</th>
+                            {% endif %}
+                            <th class="text-center" rowspan="2">Город</th>
+                            <th class="text-center" rowspan="2">Сумма</th>
+                            <th class="text-center" rowspan="2">+-200</th>
+                            <th class="text-center" rowspan="2">Сред</th>
+                            <th class="text-center" rowspan="2">Мин. игра</th>
+                            <th class="text-center" rowspan="2">Макс. игра</th>
                         </tr>
                         <tr>
                             {% for game in games %}
@@ -109,20 +111,20 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td style="text-align: left">{{ player }}</td>
                                 {% for game in men_games_dict|get_item:player.id %}
-                                    <td>{{ game.result }}</td>
+                                    <td class="text-center">{{ game.result }}</td>
                                 {% endfor %}
-                                <td>
+                                <td class="text-center">
                                     {% if player.city is not None %}
                                         {{ player.city }}
                                     {% else %}
                                         Не указано
                                     {% endif %}
                                 </td>
-                                <td>{% get_player_points player tournament %}</td>
-                                <td>{% get_player_200_points player tournament %}</td>
-                                <td>{% get_player_avg_points player tournament %}</td>
-                                <td>{% get_player_min_points player tournament %}</td>
-                                <td>{% get_player_max_points player tournament %}</td>
+                                <td class="text-center">{% get_player_points player tournament %}</td>
+                                <td class="text-center">{% get_player_200_points player tournament %}</td>
+                                <td class="text-center">{% get_player_avg_points player tournament %}</td>
+                                <td class="text-center">{% get_player_min_points player tournament %}</td>
+                                <td class="text-center">{% get_player_max_points player tournament %}</td>
                             </tr>
 
                         {% endfor %}
@@ -139,13 +141,16 @@
                         <tr>
                             <th rowspan="2">#</th>
                             <th rowspan="2">Игрок</th>
-                            <th colspan="{{ games.count }}" class="text-center">Игры</th>
-                            <th rowspan="2">Город</th>
-                            <th rowspan="2">Сумма</th>
-                            <th rowspan="2">+-200</th>
-                            <th rowspan="2">Сред</th>
-                            <th rowspan="2">Мин. игра</th>
-                            <th rowspan="2">Макс. игра</th>
+                            {% if games %}
+                                <th colspan="{{ games.count }}" class="text-center">Игры</th>
+                            {% endif %}
+
+                            <th class="text-center" rowspan="2">Город</th>
+                            <th class="text-center" rowspan="2">Сумма</th>
+                            <th class="text-center" rowspan="2">+-200</th>
+                            <th class="text-center" rowspan="2">Сред</th>
+                            <th class="text-center" rowspan="2">Мин. игра</th>
+                            <th class="text-center" rowspan="2">Макс. игра</th>
                         </tr>
                         <tr>
                             {% for game in games %}
@@ -161,20 +166,20 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td style="text-align: left">{{ player }}</td>
                                 {% for game in women_games_dict|get_item:player.id %}
-                                    <td>{{ game.result }}</td>
+                                    <td class="text-center">{{ game.result }}</td>
                                 {% endfor %}
-                                <td>
+                                <td class="text-center">
                                     {% if player.city is not None %}
                                         {{ player.city }}
                                     {% else %}
                                         Не указано
                                     {% endif %}
                                 </td>
-                                <td>{% get_player_points player tournament %}</td>
-                                <td>{% get_player_200_points player tournament %}</td>
-                                <td>{% get_player_avg_points player tournament %}</td>
-                                <td>{% get_player_min_points player tournament %}</td>
-                                <td>{% get_player_max_points player tournament %}</td>
+                                <td class="text-center">{% get_player_points player tournament %}</td>
+                                <td class="text-center">{% get_player_200_points player tournament %}</td>
+                                <td class="text-center">{% get_player_avg_points player tournament %}</td>
+                                <td class="text-center">{% get_player_min_points player tournament %}</td>
+                                <td class="text-center">{% get_player_max_points player tournament %}</td>
                             </tr>
 
                         {% endfor %}
@@ -199,14 +204,17 @@
                     <tr>
                         <th rowspan="2">#</th>
                         <th rowspan="2">Игрок</th>
-                        <th colspan="{{ games.count }}" class="text-center">Игры</th>
-                        <th rowspan="2">Город</th>
-                        <th rowspan="2">Сумма</th>
-                        <th rowspan="2">+-200</th>
-                        <th rowspan="2">Сред</th>
-                        <th rowspan="2">Мин. игра</th>
-                        <th rowspan="2">Макс. игра</th>
-                        <th rowspan="2">Гандикап</th>
+                        {% if games %}
+                            <th colspan="{{ games.count }}" class="text-center">Игры</th>
+                        {% endif %}
+
+                        <th class="text-center" rowspan="2">Город</th>
+                        <th class="text-center" rowspan="2">Сумма</th>
+                        <th class="text-center" rowspan="2">+-200</th>
+                        <th class="text-center" rowspan="2">Сред</th>
+                        <th class="text-center" rowspan="2">Мин. игра</th>
+                        <th class="text-center" rowspan="2">Макс. игра</th>
+                        <th class="text-center" rowspan="2">Гандикап</th>
                     </tr>
                     <tr>
                         {% for game in games %}
@@ -222,7 +230,7 @@
                             <td>{{ forloop.counter }}</td>
                             <td style="text-align: left">{{ player }}</td>
                             {% for game in games_dict|get_item:player.id %}
-                                <td>
+                                <td class="text-center">
 
                                     {% if player.sex == '1' or player.get_age > 50 %}
                                         {% if game.result != 0 %}
@@ -236,19 +244,19 @@
 
                                 </td>
                             {% endfor %}
-                            <td>
+                            <td class="text-center">
                                 {% if player.city is not None %}
                                     {{ player.city }}
                                 {% else %}
                                     Не указано
                                 {% endif %}
                             </td>
-                            <td>{% get_player_points player tournament %}</td>
-                            <td>{% get_player_200_points player tournament %}</td>
-                            <td>{% get_player_avg_points player tournament %}</td>
-                            <td>{% get_player_min_points player tournament %}</td>
-                            <td>{% get_player_max_points player tournament %}</td>
-                            <td>
+                            <td class="text-center">{% get_player_points player tournament %}</td>
+                            <td class="text-center">{% get_player_200_points player tournament %}</td>
+                            <td class="text-center">{% get_player_avg_points player tournament %}</td>
+                            <td class="text-center">{% get_player_min_points player tournament %}</td>
+                            <td class="text-center">{% get_player_max_points player tournament %}</td>
+                            <td class="text-center">
                                 {% if player.sex == '1' or player.get_age > 50 %}
                                     {% get_handicap games_dict|get_item:player.pk %}
                                 {% else %}

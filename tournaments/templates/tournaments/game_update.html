@@ -17,7 +17,7 @@
                 <h3>Редактирование игры</h3>
             </div>
             <div class="panel-body">
-                <form action="" method="post">
+                <form action="" method="post" class="mar-bot-10">
                     {% csrf_token %}
                     {{ form.as_p }}
 
@@ -37,7 +37,7 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <input type="submit" name="type" value="Сохранить" class="btn btn-success ">
+                    <input type="submit" name="type" value="Сохранить" class="btn btn-success mar-bot-10">
                 </form>
             </div>
         </div>

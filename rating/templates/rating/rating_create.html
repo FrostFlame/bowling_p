@@ -13,7 +13,31 @@
         <h3>Создание рейтинга</h3>
         <form action="" method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            <p>
+                <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                {{ form.name }}
+            </p>
+
+            <p>
+                <label for="{{ form.type.id_for_label }}">{{ form.type.label }}</label>
+                {{ form.type }}
+            </p>
+
+            <p>
+                <label for="{{ form.tournaments.id_for_label }}">{{ form.tournaments.label }}</label>
+                {{ form.tournaments }}
+            </p>
+
+            {% if form.errors.name %}
+                <p class="error">Рейтинг с таким названием уже существует</p>
+            {% endif %}
+            {% if form.errors.tournaments %}
+                <p class="error">Рейтинг не может быть создан без турниров</p>
+            {% endif %}
+
+
+
+            {#            {{ form.as_p }}#}
             <button class="btn btn-primary mar-bot-10">Создать</button>
         </form>
     </div>
@@ -21,6 +45,38 @@
 
 {% block scripts %}
     <script>
+        function updateTournaments(input) {
+            var v = input.val();
+            $.ajax({
+                url: '/rating/get_tournaments',
+                data: {'tournament_type': v},
+                success: function (tournaments) {
+                    var ts = tournaments['tournaments'];
+                    var tournaments_block = $('#id_tournaments');
+                    tournaments_block.empty();
+                    $.each(ts, function (i, t) {
+                        var li = '<li><label for="id_tournaments_' + t['id'] + '">' +
+                            '<input type="checkbox" name="tournaments" value="' + t['id']
+                            + '" id="id_tournaments_' + t['id'] + '"> ' +
+                            t['name'] +
+                            '</label></li>';
+                        tournaments_block.append(li);
+                    });
+
+
+                }
+            });
+        }
+
+        $(document).ready(updateTournaments($('#id_type')));
+
+        $('#id_type').change(function () {
+            updateTournaments($(this));
+            {#console.log(v);#}
+
+            {#var o = $(this).find("option:selected").text();#}
+            {#console.log(o);#}
+        })
 
     </script>
 {% endblock %}

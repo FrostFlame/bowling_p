@@ -1,4 +1,5 @@
 from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -6,6 +7,7 @@ from django.views.generic import CreateView, ListView, DetailView, DeleteView, U
 
 from rating.forms import RatingCreationForm
 from rating.models import Rating
+from tournaments.models import Tournament
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -59,3 +61,13 @@ class RatingUpdateView(UpdateView):
     model = Rating
     fields = '__all__'
     success_url = get_success_url
+
+
+def get_tournaments(request):
+    t_type = request.GET.get('tournament_type')
+    if t_type == "":
+        tournaments = Tournament.objects.all().values('id', 'name')
+    else:
+        tournaments = Tournament.objects.filter(type=t_type).values('id', 'name')
+
+    return JsonResponse({'tournaments': list(tournaments)})

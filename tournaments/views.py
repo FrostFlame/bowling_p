@@ -92,7 +92,7 @@ class TournamentView(View):
         players = tournament.players.all()
 
         tournament_request = False
-        if not request.user.is_staff:
+        if request.user.is_authenticated and not request.user.is_staff:
             tournament_request = TournamentRequest.objects.filter(user=request.user, tournament=tournament).exists()
 
         if tournament.type.name == 'Спортивный':
@@ -258,7 +258,7 @@ class GameCreateView(View):
             game = game_form.save()
             players = request.POST.getlist('select')
             for player in players:
-                GameInfo(player=PlayerInfo.objects.get(id=player),
+                GameInfo(player=PlayerInfo.objects.get(pk=player),
                          game=game).save()
             return redirect(reverse('tournaments:tournament_page', kwargs={'pk': tournament.id}))
         else:

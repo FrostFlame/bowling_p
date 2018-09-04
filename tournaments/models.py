@@ -25,7 +25,7 @@ class TournamentType(models.Model):
 class Tournament(models.Model):
     class Meta:
         verbose_name_plural = 'Турниры'
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=100)
     start = models.DateTimeField()
     end = models.DateTimeField()
     description = models.TextField(max_length=500, blank=True, default='')

@@ -29,7 +29,7 @@ class RequestsView(View):
 
 
 class RegistrationRequestHandlingView(View):
-    def post(self, request, id):
+    def post(self, request, pk):
         if request.user.is_staff:
             status = None
             if request.POST['status'] == "Accept":
@@ -39,9 +39,9 @@ class RegistrationRequestHandlingView(View):
 
             if status is not None:
                 # Obtain request's id from url parameters
-                request_id = id
+                request_id = pk
                 # Change current request's status to obtained from request
-                reg_request = RegistrationRequest.objects.get(id=request_id)
+                reg_request = RegistrationRequest.objects.get(pk=request_id)
                 reg_request.status = status
                 reg_request.save()
                 # Make user active if request is accepted
@@ -71,9 +71,9 @@ class RegistrationRequestHandlingView(View):
         else:
             return HttpResponse("Access Denied", status=403)
 
-    def get(self, request, id):
+    def get(self, request, pk):
         if request.user.is_staff:
-            reg_request = RegistrationRequest.objects.get(pk=id)
+            reg_request = RegistrationRequest.objects.get(pk=pk)
             similar_players = PlayerInfo.objects.get_similar_players(primary_player=reg_request.user.profile)
             return render(request, 'bowling_app/reg_request.html',
                           {"reg_request": reg_request,
@@ -172,15 +172,15 @@ class HomePage(View):
 
 
 class PlayerBlockUnblock(View):
-    def post(self, request, id):
-        player = get_object_or_404(PlayerInfo, pk=id)
+    def post(self, request, pk):
+        player = get_object_or_404(PlayerInfo, pk=pk)
         player.user.is_active = not player.user.is_active
         player.user.save()
-        return redirect(reverse('bowlingApp:player', kwargs={'id': id}))
+        return redirect(reverse('bowlingApp:player', kwargs={'pk': pk}))
 
 
 class TournamentRequestHandlingView(View):
-    def post(self, request, id):
+    def post(self, request, pk):
         if request.user.is_staff:
             status = None
             if request.POST['status'] == "Accept":
@@ -190,15 +190,15 @@ class TournamentRequestHandlingView(View):
 
             if status is not None:
                 # Obtain request's id from url parameters
-                request_id = id
+                request_id = pk
                 # Change current request's status to obtained from request
-                tournament_request = TournamentRequest.objects.get(id=request_id)
+                tournament_request = TournamentRequest.objects.get(pk=request_id)
                 tournament_request.status = status
                 tournament_request.save()
 
                 if status == TournamentRequest.ACCEPTED:
                     tournament_membership = TournamentMembership(
-                        player=User.objects.get(id=tournament_request.user.pk).profile,
+                        player=User.objects.get(pk=tournament_request.user.pk).profile,
                         tournament=tournament_request.tournament)
                     tournament_membership.save()
 
@@ -218,9 +218,9 @@ class TournamentRequestHandlingView(View):
         else:
             return HttpResponse("Access Denied", status=403)
 
-    def get(self, request, id):
+    def get(self, request, pk):
         if request.user.is_staff:
-            reg_request = TournamentRequest.objects.get(pk=id)
+            reg_request = TournamentRequest.objects.get(pk=pk)
             return render(request, 'bowling_app/tournament_request.html',
                           {"tournament_request": reg_request,
                            })

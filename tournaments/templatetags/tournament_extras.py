@@ -20,12 +20,16 @@ def get_player_min_points(player, tournament):
 
 @register.simple_tag
 def get_player_avg_points(player, tournament):
-    return f'{round(tournament.get_player_points(player) / tournament.get_games_count(),2)}'
+    if tournament.get_games_count() != 0:
+        return f'{round(tournament.get_player_points(player) / tournament.get_games_count(),2)}'
+    else:
+        return 0
 
 
 @register.simple_tag
 def get_player_200_points(player, tournament):
     player_points = tournament.get_player_points(player)
+    # games_count = tournament.get_games_count()
     result = player_points - (tournament.get_games_count() * 200) if player_points else 0
     return f'{round(result,2)}'
 
@@ -37,9 +41,12 @@ def get_sum(a, b):
 
 @register.simple_tag
 def get_handicap(games_list):
-    gk = list(filter(lambda x: x.result != 0, games_list))
-    print(gk)
-    return f'{len(gk) * 8}'
+    if games_list is not None:
+        gk = list(filter(lambda x: x.result != 0, games_list))
+        print(gk)
+        return f'{len(gk) * 8}'
+    else:
+        return 0
 
 
 @register.filter
