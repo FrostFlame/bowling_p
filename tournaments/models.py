@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models import Sum, Max, Min
 from django.utils.crypto import get_random_string
 
-from accounts.models import PlayerInfo, City, User
+from accounts.models import PlayerInfo, City
 from rating.utils import position_to_points
 
 
@@ -32,9 +32,10 @@ class Tournament(models.Model):
     type = models.ForeignKey(TournamentType)
     team_type = models.ForeignKey('TeamType')
     photo = models.ImageField(upload_to=filename, blank=True, default=os.path.join('default', 'tournament_avatar.png'))
-    players = models.ManyToManyField(PlayerInfo, through='TournamentMembership')
     # Значение по умолчанию - Казань
     city = models.ForeignKey(City, default=5139)
+    handicap = models.BooleanField(default=False)
+    handicap_size = models.
 
     def __str__(self):
         return self.name
