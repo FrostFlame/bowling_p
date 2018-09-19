@@ -25,6 +25,7 @@ class TournamentType(models.Model):
 class Tournament(models.Model):
     class Meta:
         verbose_name_plural = 'Турниры'
+
     name = models.CharField(max_length=100)
     start = models.DateTimeField()
     end = models.DateTimeField()
@@ -35,7 +36,7 @@ class Tournament(models.Model):
     # Значение по умолчанию - Казань
     city = models.ForeignKey(City, default=5139)
     handicap = models.BooleanField(default=False)
-    handicap_size = models.
+    handicap_size = models.IntegerField(default=8)
 
     def __str__(self):
         return self.name
@@ -73,31 +74,31 @@ class Tournament(models.Model):
         min_points = info.aggregate(Min('result'))['result__min']
         return min_points if min_points else 0
 
-    def get_sorted_rating(self):
-        """
-        Возвращает упорядоченный по количеству убывания очков словарь игроков с суммой очков
-        """
-        players = self.players.all()
-        players_points = dict()
-        for player in players:
-            games = Game.objects.filter(tournament=self)
-            info = GameInfo.objects.filter(game__in=games, player=player)
-            points = info.aggregate(Sum('result'))['result__sum']
-            points = 0 if points is None else points
-            players_points.update({str(player): points})
-        players_points = sorted(players_points.items(), key=operator.itemgetter(1), reverse=True)
-        return players_points
+    # def get_sorted_rating(self):
+    #     """
+    #     Возвращает упорядоченный по количеству убывания очков словарь игроков с суммой очков
+    #     """
+    #     players = self.players.all()
+    #     players_points = dict()
+    #     for player in players:
+    #         games = Game.objects.filter(tournament=self)
+    #         info = GameInfo.objects.filter(game__in=games, player=player)
+    #         points = info.aggregate(Sum('result'))['result__sum']
+    #         points = 0 if points is None else points
+    #         players_points.update({str(player): points})
+    #     players_points = sorted(players_points.items(), key=operator.itemgetter(1), reverse=True)
+    #     return players_points
 
-    def get_rating_points(self, player):
-        """
-        Переводим место в турнире в количество очков в рейтинге
-        """
-        rating = self.get_sorted_rating()
-        for r in rating:
-            if str(player) in r:
-                position = rating.index(r) + 1
-                return position_to_points(position)
-        return 0
+    # def get_rating_points(self, player):
+    #     """
+    #     Переводим место в турнире в количество очков в рейтинге
+    #     """
+    #     rating = self.get_sorted_rating()
+    #     for r in rating:
+    #         if str(player) in r:
+    #             position = rating.index(r) + 1
+    #             return position_to_points(position)
+    #     return 0
 
     @classmethod
     def get_by_type(clf, tournament_type):
@@ -108,14 +109,14 @@ class Tournament(models.Model):
             tournaments = Tournament.objects.filter(type__name='Спортивный')
         elif tournament_type == 'commercial':
             tournaments = Tournament.objects.filter(type__name='Коммерческий')
-        # elif tournament_type == 'public':
-        #     tournaments = Tournament.objects.filter(type__name='Публичный')
+        elif tournament_type == 'both':
+            tournaments = Tournament.objects.filter(type__name='Спортивный и коммерческий')
         else:
             tournaments = Tournament.objects.all()
         return tournaments
 
-    def get_games_count(self):
-        return self.tournament_games.count()
+    # def get_games_count(self):
+    #     return self.tournament_games.count()
 
     @classmethod
     def ordered_by_creation(cls, amount=0, reversed=True, page=1):
@@ -129,63 +130,55 @@ class Tournament(models.Model):
                    (page - 1) * amount:page * amount]
 
 
-class TournamentMembership(models.Model):
-    player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+class Team(models.Model):
+    count = models.IntegerField(default=1)
+    players = models.ManyToManyField(PlayerInfo)
 
 
 class TeamType(models.Model):
     class Meta:
         verbose_name_plural = 'Типы команд'
+
     name = models.CharField(max_length=20)
 
     def __str__(self):
         return self.name
 
+class BlockType(models.Model):
+    class Meta:
+        verbose_name_plural = 'Типы блоков'
+
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
+class Block(models.Model):
+    name = models.CharField(max_length=200, blank=False)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    creation_date = models.DateTimeField(default=datetime.now)
+    description = models.TextField(max_length=500, blank=True, default='')
+    is_final = models.BooleanField(default=False)
+    type = models.ForeignKey(BlockType, on_delete=models.CASCADE, related_name='block_type')
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='tournament')
+
 
 class Game(models.Model):
     class Meta:
         verbose_name_plural = 'Игры'
-    start = models.DateTimeField(default=datetime.now)
+
+    date = models.DateField(default=datetime.today)
+    time = models.TimeField(default=datetime.now)
     name = models.CharField(max_length=200, blank=False)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='tournament_games')
-    players = models.ManyToManyField(PlayerInfo, through='GameInfo')
+    block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name='block')
+    is_desperado = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
 
 
 class GameInfo(models.Model):
-    player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE, related_name='player_games')
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='game_players')
-    result = models.IntegerField(default=0)
-
-
-class TournamentRequestManager(models.Manager):
-    def create_request(self, user, tournament):
-        request = self.create(user=user, tournament=tournament)
-        return request
-
-    def get_active_requests(self):
-        return super().get_queryset().filter(status=TournamentRequest.IN_PROGRESS)
-
-
-class TournamentRequest(models.Model):
-    IN_PROGRESS = 0
-    ACCEPTED = 1
-    DECLINED = 2
-
-    REQUEST_STATUS = (
-        (IN_PROGRESS, "In progress"),
-        (ACCEPTED, "Accepted"),
-        (DECLINED, "Declined")
-    )
-
-    tournament = models.ForeignKey(Tournament)
-    user = models.ForeignKey(User)
-    status = models.CharField(max_length=1, choices=REQUEST_STATUS, default=IN_PROGRESS)
-
-    objects = TournamentRequestManager()
-
-    def is_tournament_request(self):
-        return True
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team')
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='game')
+    point = models.IntegerField(default=0)
