@@ -37,6 +37,7 @@ class Tournament(models.Model):
     city = models.ForeignKey(City, default=5139)
     handicap = models.BooleanField(default=False)
     handicap_size = models.IntegerField(default=8)
+    players = models.ManyToManyField(PlayerInfo, through='Team')
 
     def __str__(self):
         return self.name
@@ -129,10 +130,10 @@ class Tournament(models.Model):
             return Tournament.objects.order_by('-start').values('id', 'name', 'photo', 'start')[
                    (page - 1) * amount:page * amount]
 
-
 class Team(models.Model):
     count = models.IntegerField(default=1)
-    players = models.ManyToManyField(PlayerInfo)
+    players = models.ForeignKey(PlayerInfo, )
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='team_tournament')
 
 
 class TeamType(models.Model):
@@ -144,6 +145,7 @@ class TeamType(models.Model):
     def __str__(self):
         return self.name
 
+
 class BlockType(models.Model):
     class Meta:
         verbose_name_plural = 'Типы блоков'
@@ -153,6 +155,7 @@ class BlockType(models.Model):
     def __str__(self):
         return self.name
 
+
 class Block(models.Model):
     name = models.CharField(max_length=200, blank=False)
     start_date = models.DateTimeField()
@@ -161,7 +164,7 @@ class Block(models.Model):
     description = models.TextField(max_length=500, blank=True, default='')
     is_final = models.BooleanField(default=False)
     type = models.ForeignKey(BlockType, on_delete=models.CASCADE, related_name='block_type')
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='tournament')
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='block_tournament')
 
 
 class Game(models.Model):

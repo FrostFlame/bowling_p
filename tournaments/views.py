@@ -12,7 +12,7 @@ from django.views.generic import FormView
 
 from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm, GameCreationForm, TournamentSearchForm
-from tournaments.models import Tournament, TournamentMembership, Game, GameInfo, TournamentRequest
+from tournaments.models import Tournament, Game, GameInfo, Team
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -91,10 +91,6 @@ class TournamentView(View):
         # Сортируем игроков по сумме очков, набранных за турнир
         players = tournament.players.all()
 
-        tournament_request = False
-        if request.user.is_authenticated and not request.user.is_staff:
-            tournament_request = TournamentRequest.objects.filter(user=request.user, tournament=tournament).exists()
-
         if tournament.type.name == 'Спортивный':
             men_players = players.filter(sex='0')
             women_players = players.filter(sex='1')
@@ -130,8 +126,7 @@ class TournamentView(View):
                            'men_players': men_players,
                            'women_players': women_players,
                            'men_games_dict': men_player_games_dict,
-                           'women_games_dict': women_player_games_dict,
-                           'tournament_request': tournament_request
+                           'women_games_dict': women_player_games_dict
                            })
 
         else:
@@ -150,8 +145,7 @@ class TournamentView(View):
                           {'tournament': tournament,
                            'games': games,
                            'players': players,
-                           'games_dict': player_games_dict,
-                           'tournament_request': tournament_request
+                           'games_dict': player_games_dict
                            })
 
 
@@ -182,14 +176,14 @@ class AddPlayersView(View):
         for tournament_players_pk in tournament_players_pks:
             if tournament_players_pk not in players_pks:
                 player = get_object_or_404(PlayerInfo, pk=tournament_players_pk)
-                TournamentMembership.objects.get(player=player,
-                                                 tournament=tournament).delete()
+                Team.objects.get(player=player,
+                                tournament=tournament).delete()
         # Добавление новых игроков
         for player_pk in players_pks:
             if player_pk not in tournament_players_pks:
                 player = get_object_or_404(PlayerInfo, pk=player_pk)
-                TournamentMembership.objects.get_or_create(player=player,
-                                                           tournament=tournament)
+                Team.objects.get_or_create(player=player,
+                                            tournament=tournament)
 
         return redirect(reverse('tournaments:tournament_page', kwargs={'pk': pk}))
 
@@ -308,13 +302,3 @@ class GameUpdateView(View):
                 GameInfo.objects.create(player=player, game=game)
 
             return redirect(reverse('tournaments:tournament_page', kwargs={"pk": tournament_pk}))
-
-
-def send_participation_request(request, pk):
-    user = request.user
-    tournament = Tournament.objects.get(id=pk)
-    if TournamentRequest.objects.filter(user=user, tournament=tournament).exists():
-        TournamentRequest.objects.get(user=user, tournament=tournament).delete()
-    else:
-        TournamentRequest.objects.create_request(user=user, tournament=tournament)
-    return redirect(reverse('tournaments:tournament_page', kwargs={'pk': tournament.id}))

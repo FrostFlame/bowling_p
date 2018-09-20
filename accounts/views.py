@@ -9,7 +9,7 @@ from django.views import View
 
 from accounts import forms
 from accounts.forms import PlayerRegistrationForm, UserEditForm, PlayerEditForm
-from accounts.models import RegistrationRequest, PlayerInfo, User
+from accounts.models import PlayerInfo, User
 from accounts.utils import send_activation_mail
 from .tokens import account_activation_token
 
@@ -51,21 +51,21 @@ class RegisterUserView(View):
                           {'reg_form': user_form, 'player_form': profile_form})
 
 
-# email confirmation
-def activate(request, uidb64, token):
-    try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-
-    if user is not None and account_activation_token.check_token(user, token):
-        user.email_confirmed = True
-        user.save()
-        RegistrationRequest.objects.create_request(user=user)
-        return render(request, 'accounts/email_confirmed.html')
-    else:
-        return render(request, 'accounts/email_unconfirmed.html')
+# # email confirmation
+# def activate(request, uidb64, token):
+#     try:
+#         uid = force_text(urlsafe_base64_decode(uidb64))
+#         user = User.objects.get(pk=uid)
+#     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+#         user = None
+#
+#     if user is not None and account_activation_token.check_token(user, token):
+#         user.email_confirmed = True
+#         user.save()
+#         RegistrationRequest.objects.create_request(user=user)
+#         return render(request, 'accounts/email_confirmed.html')
+#     else:
+#         return render(request, 'accounts/email_unconfirmed.html')
 
 
 class ProfileView(View):
