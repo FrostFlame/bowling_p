@@ -32,7 +32,7 @@ class PlayersListView(View):
     # @method_decorator(staff_member_required())
     def get(self, request):
         fullName = request.GET.get('name', None)
-        players = PlayerInfo.objects.exclude(~Q(user=None) & Q(user__is_active=False))
+        players = PlayerInfo.objects.exclude()
         if fullName:
             for term in fullName.split():
                 players = players.filter(

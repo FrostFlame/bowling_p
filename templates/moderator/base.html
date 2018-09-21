@@ -1,6 +1,6 @@
 {% load static %}
 {% load base_filters %}
-{% load requests_tags %}
+{#{% load requests_tags %}#}
 
 <!DOCTYPE html>
 <html>
@@ -43,23 +43,23 @@
             <a class="navbar-brand" href="{% url 'bowlingApp:home' %}"><img src="{% static 'images/logo12.png' %}"
                                                                             style="width: 190px" alt=""></a>
             <ul class="nav navbar-top-links navbar-right">
-                <li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                    <em class="fa fa-bell"></em><span class="label label-danger" id="total_count"></span>
-                </a>
-                    <ul class="dropdown-menu dropdown-alerts">
-                        <li><a href="{% url 'bowlingApp:bowling_manage_registration' %}">
-                            <div><em class="fa fa-user"></em> Заявки на регистрацию (<span
-                                    id="reg_req_count">{% get_registration_requests_count %}</span>)
-                            </div>
-                        </a></li>
-                        <li class="divider"></li>
-                        <li><a href="{% url 'bowlingApp:bowling_manage_registration' %}#tournaments">
-                            <div><em class="fa fa-trophy"></em> Заявки на турнир (<span
-                                    id="tourn_req_count">{% get_tournament_requests_count %}</span>)
-                            </div>
-                        </a></li>
-                    </ul>
-                </li>
+{#                <li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">#}
+{#                    <em class="fa fa-bell"></em><span class="label label-danger" id="total_count"></span>#}
+{#                </a>#}
+{#                    <ul class="dropdown-menu dropdown-alerts">#}
+{#                        <li><a href="{% url 'bowlingApp:bowling_manage_registration' %}">#}
+{#                            <div><em class="fa fa-user"></em> Заявки на регистрацию (<span#}
+{#                                    id="reg_req_count">{% get_registration_requests_count %}</span>)#}
+{#                            </div>#}
+{#                        </a></li>#}
+{#                        <li class="divider"></li>#}
+{#                        <li><a href="{% url 'bowlingApp:bowling_manage_registration' %}#tournaments">#}
+{#                            <div><em class="fa fa-trophy"></em> Заявки на турнир (<span#}
+{#                                    id="tourn_req_count">{% get_tournament_requests_count %}</span>)#}
+{#                            </div>#}
+{#                        </a></li>#}
+{#                    </ul>#}
+{#                </li>#}
 
                 {% if user.is_authenticated %}
                     <li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -121,10 +121,10 @@
         <li {% if request.resolver_match.url_name == 'calendar' %}class="active"{% endif %}><a
                 href="{% url 'calendar' %}"><em
                 class="fa fa-calendar">&nbsp;</em> Календарь</a></li>
-        <li {% if request.resolver_match.url_name == 'bowling_manage_registration' %}class="active"{% endif %}><a
-                href="{% url 'bowlingApp:bowling_manage_registration' %}"><em class="fa fa-bell-o">&nbsp;</em>
-            Заявки</a>
-        </li>
+{#        <li {% if request.resolver_match.url_name == 'bowling_manage_registration' %}class="active"{% endif %}><a#}
+{#                href="{% url 'bowlingApp:bowling_manage_registration' %}"><em class="fa fa-bell-o">&nbsp;</em>#}
+{#            Заявки</a>#}
+{#        </li>#}
         <li {% if request.resolver_match.url_name|first_part == 'players' or request.resolver_match.url_name|first_part == 'player' %}class="active"{% endif %}>
             <a href="{% url 'bowlingApp:players_list' %}"><em class="fa fa-users">&nbsp;</em> Игроки</a></li>
 

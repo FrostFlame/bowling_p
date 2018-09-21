@@ -22,6 +22,11 @@ class TournamentType(models.Model):
         return self.name
 
 
+class TournamentMembership(models.Model):
+    player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE)
+    tournament = models.ForeignKey('Tournament', on_delete=models.CASCADE)
+
+
 class Tournament(models.Model):
     class Meta:
         verbose_name_plural = 'Турниры'
@@ -31,13 +36,13 @@ class Tournament(models.Model):
     end = models.DateTimeField()
     description = models.TextField(max_length=500, blank=True, default='')
     type = models.ForeignKey(TournamentType)
-    team_type = models.ForeignKey('TeamType')
+    team_type = models.ManyToManyField('TeamType')
     photo = models.ImageField(upload_to=filename, blank=True, default=os.path.join('default', 'tournament_avatar.png'))
     # Значение по умолчанию - Казань
     city = models.ForeignKey(City, default=5139)
     handicap = models.BooleanField(default=False)
     handicap_size = models.IntegerField(default=8)
-    players = models.ManyToManyField(PlayerInfo, through='Team')
+    players = models.ManyToManyField(PlayerInfo, related_name='tournament_players', through=TournamentMembership)
 
     def __str__(self):
         return self.name
@@ -129,6 +134,7 @@ class Tournament(models.Model):
         else:
             return Tournament.objects.order_by('-start').values('id', 'name', 'photo', 'start')[
                    (page - 1) * amount:page * amount]
+
 
 class Team(models.Model):
     count = models.IntegerField(default=1)

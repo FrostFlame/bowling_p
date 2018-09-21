@@ -12,7 +12,7 @@ from django.views.generic import FormView
 
 from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm, GameCreationForm, TournamentSearchForm
-from tournaments.models import Tournament, Game, GameInfo, Team
+from tournaments.models import Tournament, Game, GameInfo, Team, TournamentMembership
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -176,13 +176,12 @@ class AddPlayersView(View):
         for tournament_players_pk in tournament_players_pks:
             if tournament_players_pk not in players_pks:
                 player = get_object_or_404(PlayerInfo, pk=tournament_players_pk)
-                Team.objects.get(player=player,
-                                tournament=tournament).delete()
+                TournamentMembership.objects.get(player=player, tournament=tournament).delete()
         # Добавление новых игроков
         for player_pk in players_pks:
             if player_pk not in tournament_players_pks:
                 player = get_object_or_404(PlayerInfo, pk=player_pk)
-                Team.objects.get_or_create(player=player,
+                TournamentMembership.objects.get_or_create(player=player,
                                             tournament=tournament)
 
         return redirect(reverse('tournaments:tournament_page', kwargs={'pk': pk}))

@@ -9,7 +9,7 @@ from tournaments.models import Tournament, TournamentType, TeamType, Game
 class TournamentCreationForm(forms.ModelForm):
     class Meta:
         model = Tournament
-        fields = ('name', 'start', 'end', 'description', 'type', 'team_type', 'city', 'photo')
+        fields = ('name', 'start', 'end', 'description', 'type', 'team_type', 'handicap', 'handicap_size', 'city', 'photo')
 
     photo = forms.ImageField(
         required=False,
@@ -63,12 +63,23 @@ class TournamentCreationForm(forms.ModelForm):
         )
     )
 
-    team_type = forms.ModelChoiceField(
+    team_type = forms.ModelMultipleChoiceField(
         label='Тип команд',
         queryset=TeamType.objects.all(),
-        empty_label=None,
-        widget=forms.Select(
+        widget=forms.CheckboxSelectMultiple(
             attrs={'class': 'form-control'}
+        )
+    )
+
+    handicap = forms.BooleanField(
+        label='Гандикап',
+    )
+
+    handicap_size = forms.IntegerField(
+        required=False,
+        label='Размер гандикапа',
+        widget=forms.TextInput(
+            attrs={'placeholder': 8, 'class': 'form-control'}
         )
     )
 
