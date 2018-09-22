@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^all/(?P<tournament_type>\w+)/(?P<page>\d+)$', TournamentsListView.as_view(), name='tournaments_all'),
     url(r'^(?P<pk>\d+)$', TournamentView.as_view(), name='tournament_page'),
     url(r'^(?P<pk>\d+)/game/create$', GameCreateView.as_view(), name='game_create'),
+    url(r'^(?P<pk>\d+)/block/create$', BlockCreateView.as_view(), name='block_create'),
     url(r'^(?P<pk>\d+)/add_players$', AddPlayersView.as_view(), name='tournament_add_players'),
     url(r'^(?P<pk>\d+)/divide_players$', DividePlayersByTeams.as_view(), name='divide_players'),
     url(r'^(?P<pk>\d+)/edit$', TournamentUpdate.as_view(), name='tournament_update'),

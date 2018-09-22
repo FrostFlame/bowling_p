@@ -11,7 +11,7 @@ from django.views.generic import CreateView, UpdateView, ListView, DeleteView
 from django.views.generic import FormView
 
 from accounts.models import PlayerInfo
-from tournaments.forms import TournamentCreationForm, GameCreationForm, TournamentSearchForm
+from tournaments.forms import TournamentCreationForm, GameCreationForm, TournamentSearchForm, BlockCreationForm
 from tournaments.models import Tournament, Game, GameInfo, Team, TournamentMembership, TeamType
 
 
@@ -87,66 +87,66 @@ class TournamentView(View):
 
     def get(self, request, pk):
         tournament = Tournament.objects.get(id=pk)
-        games = tournament.tournament_games.all().order_by('start')
+        blocks = tournament.block_tournament.all().order_by('creation_date')
         # Сортируем игроков по сумме очков, набранных за турнир
-        players = tournament.players.all()
+        # players = tournament.players.all()
 
-        if tournament.type.name == 'Спортивный':
-            men_players = players.filter(sex='0')
-            women_players = players.filter(sex='1')
+        # if tournament.type.name == 'Спортивный':
+        #     men_players = players.filter(sex='0')
+        #     women_players = players.filter(sex='1')
+        #
+        #     men_players = sorted(men_players, key=tournament.get_player_points, reverse=True)
+        #     women_players = sorted(women_players, key=tournament.get_player_points, reverse=True)
 
-            men_players = sorted(men_players, key=tournament.get_player_points, reverse=True)
-            women_players = sorted(women_players, key=tournament.get_player_points, reverse=True)
+        # men_player_games_dict = defaultdict(list)
+        # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
+        # for block in blocks:
+        #     for player in men_players:
+        #         try:
+        #             men_player_games_dict[player.id].append(player.player_games.get(game=game))
+        #         except GameInfo.DoesNotExist:
+        #             # Если игрок не участвовал в данной игре, его результат равен 0.
+        #             gi = GameInfo(result=0)
+        #             men_player_games_dict[player.id].append(gi)
+        #
+        # women_player_games_dict = defaultdict(list)
+        # # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
+        # for game in games:
+        #     for player in women_players:
+        #         try:
+        #             women_player_games_dict[player.id].append(player.player_games.get(game=game))
+        #         except GameInfo.DoesNotExist:
+        #             # Если игрок не участвовал в данной игре, его результат равен 0.
+        #             gi = GameInfo(result=0)
+        #             women_player_games_dict[player.id].append(gi)
 
-            men_player_games_dict = defaultdict(list)
-            # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
-            for game in games:
-                for player in men_players:
-                    try:
-                        men_player_games_dict[player.id].append(player.player_games.get(game=game))
-                    except GameInfo.DoesNotExist:
-                        # Если игрок не участвовал в данной игре, его результат равен 0.
-                        gi = GameInfo(result=0)
-                        men_player_games_dict[player.id].append(gi)
+        return render(request, 'tournaments/tournament_page.html',
+                      {'tournament': tournament,
+                       'blocks': blocks,
+                       # 'men_players': men_players,
+                       # 'women_players': women_players,
+                       # 'men_games_dict': men_player_games_dict,
+                       # 'women_games_dict': women_player_games_dict
+                       })
 
-            women_player_games_dict = defaultdict(list)
-            # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
-            for game in games:
-                for player in women_players:
-                    try:
-                        women_player_games_dict[player.id].append(player.player_games.get(game=game))
-                    except GameInfo.DoesNotExist:
-                        # Если игрок не участвовал в данной игре, его результат равен 0.
-                        gi = GameInfo(result=0)
-                        women_player_games_dict[player.id].append(gi)
+        # else:
+        #     player_games_dict = defaultdict(list)
+        #
+        #     for game in games:
+        #         for player in players:
+        #             try:
+        #                 player_games_dict[player.id].append(player.player_games.get(game=game))
+        #             except GameInfo.DoesNotExist:
+        #                 # Если игрок не участвовал в данной игре, его результат равен 0.
+        #                 gi = GameInfo(result=0)
+        #                 player_games_dict[player.id].append(gi)
 
-            return render(request, 'tournaments/tournament_page.html',
-                          {'tournament': tournament,
-                           'games': games,
-                           'men_players': men_players,
-                           'women_players': women_players,
-                           'men_games_dict': men_player_games_dict,
-                           'women_games_dict': women_player_games_dict
-                           })
-
-        else:
-            player_games_dict = defaultdict(list)
-
-            for game in games:
-                for player in players:
-                    try:
-                        player_games_dict[player.id].append(player.player_games.get(game=game))
-                    except GameInfo.DoesNotExist:
-                        # Если игрок не участвовал в данной игре, его результат равен 0.
-                        gi = GameInfo(result=0)
-                        player_games_dict[player.id].append(gi)
-
-            return render(request, 'tournaments/tournament_page.html',
-                          {'tournament': tournament,
-                           'games': games,
-                           'players': players,
-                           'games_dict': player_games_dict
-                           })
+        # return render(request, 'tournaments/tournament_page.html',
+        #               {'tournament': tournament,
+        #                'games': games,
+        #                'players': players,
+        #                'games_dict': player_games_dict
+        #                })
 
 
 class AddPlayersView(View):
@@ -336,3 +336,38 @@ class GameUpdateView(View):
                 GameInfo.objects.create(player=player, game=game)
 
             return redirect(reverse('tournaments:tournament_page', kwargs={"pk": tournament_pk}))
+
+
+class BlockCreateView(View):
+    """
+    class-based view для создания блока/этапа турнира
+    после создания перенаправляет на страницу турнира
+    """
+
+    def get(self, request, pk):
+        tournament = Tournament.objects.get(pk=pk)
+        selected = tournament.players.all()
+        block_form = BlockCreationForm()
+        return render(request, 'tournaments/block_create.html', {
+            'tournament': tournament,
+            'form': block_form,
+            'selected': selected,
+        })
+
+    def post(self, request, pk):
+        tournament = Tournament.objects.get(pk=pk)
+
+        block_form = BlockCreationForm(request.POST, tournament=tournament)
+        if block_form.is_valid():
+            game = block_form.save()
+            players = request.POST.getlist('select')
+            for player in players:
+                GameInfo(player=PlayerInfo.objects.get(pk=player),
+                         game=game).save()
+            return redirect(reverse('tournaments:tournament_page', kwargs={'pk': tournament.id}))
+        else:
+            selected = tournament.players.all()
+            return render(request, 'tournaments/block_create.html', {
+                'form': block_form,
+                'selected': selected
+            })

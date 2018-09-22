@@ -50,279 +50,266 @@
 
         <div class="col-md-12 mar-top-10 mar-l-3">
             <div class="list-group list-group-horizontal">
-                <span class="list-group-item list-group-item-action"><b>Игры</b></span>
-                {% for game in games %}
-                    <a href="{% url 'tournaments:tournament_game_info' tournament.pk game.pk %}"
-                       class="list-group-item list-group-item-action">{{ game.name }}</a>
+                <span class="list-group-item list-group-item-action"><b>Блоки</b></span>
+                {% for block in blocks %}
+                    <a href="{% url 'tournaments:tournament_game_info' tournament.pk block.pk %}"
+                       class="list-group-item list-group-item-action">{{ block.name }}</a>
                 {% endfor %}
 
                 {% if user.is_staff %}
-                    <a href="{% url 'tournaments:game_create' tournament.id %}"
+                    <a href="{% url 'tournaments:block_create' tournament.id %}"
                        class="list-group-item list-group-item-success">Добавить</a>
                 {% endif %}
             </div>
         </div>
 
-        {% if user.is_authenticated and not user.is_staff %}
-            <div class="col-md-12">
-                {% if not tournament_request %}
-                    <a class="btn btn-success" style="width: 200px"
-                       href="{% url 'tournaments:send_request' tournament.id %}">Подать заявку</a>
-
-                {% else %}
-                    <a class="btn btn-default box-shadow" style="width: 200px"
-                       href="{% url 'tournaments:send_request' tournament.id %}">Отклонить заявку</a>
-                {% endif %}
-            </div>
-        {% endif %}
-
-        <div class="col-md-12 table-responsive">
-            <h3>Статистика</h3>
-            {% if tournament.type.name == 'Спортивный' %}
-                {% if men_games_dict %}
-                    <h2>Мужчины</h2>
-
-                    <table class="table display nowrap table-hover res-table" id="result-table-m" style="width: 100%;">
-                        <thead>
-                        <tr>
-                            <th rowspan="2">#</th>
-                            <th rowspan="2">Игрок</th>
-                            {% if games.count > 0 %}
-                                                                <th colspan="{{ games.count }}" class="text-center">Игры</th>
-                            {% endif %}
-                            <th class="text-center" rowspan="2">Город</th>
-                            <th class="text-center" rowspan="2">Сумма</th>
-                            <th class="text-center" rowspan="2">+-200</th>
-                            <th class="text-center" rowspan="2">Сред</th>
-                            <th class="text-center" rowspan="2">Мин. игра</th>
-                            <th class="text-center" rowspan="2">Макс. игра</th>
-                        </tr>
-                        <tr>
-                            {% for game in games %}
-                                <th>{{ forloop.counter }}</th>
-                            {% endfor %}
-                        </tr>
-
-                        </thead>
-                        <tbody>
-                        {% for player in men_players %}
-                            <tr>
-
-                                <td>{{ forloop.counter }}</td>
-                                <td style="text-align: left">{{ player }}</td>
-                                {% for game in men_games_dict|get_item:player.id %}
-                                    <td class="text-center">{{ game.result }}</td>
-                                {% endfor %}
-                                <td class="text-center">
-                                    {% if player.city is not None %}
-                                        {{ player.city }}
-                                    {% else %}
-                                        Не указано
-                                    {% endif %}
-                                </td>
-                                <td class="text-center">{% get_player_points player tournament %}</td>
-                                <td class="text-center">{% get_player_200_points player tournament %}</td>
-                                <td class="text-center">{% get_player_avg_points player tournament %}</td>
-                                <td class="text-center">{% get_player_min_points player tournament %}</td>
-                                <td class="text-center">{% get_player_max_points player tournament %}</td>
-                            </tr>
-
-                        {% endfor %}
-
-
-                        </tbody>
-                    </table>
-
-                {% endif %}
-                {% if women_games_dict %}
-                    <h2>Женщины</h2>
-                    <table class="table display nowrap table-hover res-table" id="result-table-w" style="width: 100%;">
-                        <thead>
-                        <tr>
-                            <th rowspan="2">#</th>
-                            <th rowspan="2">Игрок</th>
-                            {% if games %}
-                                <th colspan="{{ games.count }}" class="text-center">Игры</th>
-                            {% endif %}
-
-                            <th class="text-center" rowspan="2">Город</th>
-                            <th class="text-center" rowspan="2">Сумма</th>
-                            <th class="text-center" rowspan="2">+-200</th>
-                            <th class="text-center" rowspan="2">Сред</th>
-                            <th class="text-center" rowspan="2">Мин. игра</th>
-                            <th class="text-center" rowspan="2">Макс. игра</th>
-                        </tr>
-                        <tr>
-                            {% for game in games %}
-                                <th>{{ forloop.counter }}</th>
-                            {% endfor %}
-                        </tr>
-
-                        </thead>
-                        <tbody>
-                        {% for player in women_players %}
-                            <tr>
-
-                                <td>{{ forloop.counter }}</td>
-                                <td style="text-align: left">{{ player }}</td>
-                                {% for game in women_games_dict|get_item:player.id %}
-                                    <td class="text-center">{{ game.result }}</td>
-                                {% endfor %}
-                                <td class="text-center">
-                                    {% if player.city is not None %}
-                                        {{ player.city }}
-                                    {% else %}
-                                        Не указано
-                                    {% endif %}
-                                </td>
-                                <td class="text-center">{% get_player_points player tournament %}</td>
-                                <td class="text-center">{% get_player_200_points player tournament %}</td>
-                                <td class="text-center">{% get_player_avg_points player tournament %}</td>
-                                <td class="text-center">{% get_player_min_points player tournament %}</td>
-                                <td class="text-center">{% get_player_max_points player tournament %}</td>
-                            </tr>
-
-                        {% endfor %}
-
-
-                        </tbody>
-                    </table>
-                {% endif %}
-
-
-                {% if not men_games_dict and not women_games_dict %}
-                    <div class="text-center">В данном турнире еще нет игр.</div>
-                {% endif %}
-
-
-
-
-            {% elif tournament.type.name == 'Коммерческий' %}
-                <h2>Таблица</h2>
-                <table class="table display nowrap table-hover res-table" id="result-table-w" style="width: 100%;">
-                    <thead>
-                    <tr>
-                        <th rowspan="2">#</th>
-                        <th rowspan="2">Игрок</th>
-                        {% if games %}
-                            <th colspan="{{ games.count }}" class="text-center">Игры</th>
-                        {% endif %}
-
-                        <th class="text-center" rowspan="2">Город</th>
-                        <th class="text-center" rowspan="2">Сумма</th>
-                        <th class="text-center" rowspan="2">+-200</th>
-                        <th class="text-center" rowspan="2">Сред</th>
-                        <th class="text-center" rowspan="2">Мин. игра</th>
-                        <th class="text-center" rowspan="2">Макс. игра</th>
-                        <th class="text-center" rowspan="2">Гандикап</th>
-                    </tr>
-                    <tr>
-                        {% for game in games %}
-                            <th>{{ forloop.counter }}</th>
-                        {% endfor %}
-                    </tr>
-
-                    </thead>
-                    <tbody>
-                    {% for player in players %}
-                        <tr>
-
-                            <td>{{ forloop.counter }}</td>
-                            <td style="text-align: left">{{ player }}</td>
-                            {% for game in games_dict|get_item:player.id %}
-                                <td class="text-center">
-
-                                    {% if player.sex == '1' or player.get_age > 50 %}
-                                        {% if game.result != 0 %}
-                                            {% get_sum game.result 8 %}
-                                        {% else %}
-                                            0
-                                        {% endif %}
-                                    {% else %}
-                                        {{ game.result }}
-                                    {% endif %}
-
-                                </td>
-                            {% endfor %}
-                            <td class="text-center">
-                                {% if player.city is not None %}
-                                    {{ player.city }}
-                                {% else %}
-                                    Не указано
-                                {% endif %}
-                            </td>
-                            <td class="text-center">{% get_player_points player tournament %}</td>
-                            <td class="text-center">{% get_player_200_points player tournament %}</td>
-                            <td class="text-center">{% get_player_avg_points player tournament %}</td>
-                            <td class="text-center">{% get_player_min_points player tournament %}</td>
-                            <td class="text-center">{% get_player_max_points player tournament %}</td>
-                            <td class="text-center">
-                                {% if player.sex == '1' or player.get_age > 50 %}
-                                    {% get_handicap games_dict|get_item:player.pk %}
-                                {% else %}
-
-                                {% endif %}
-                            </td>
-                        </tr>
-
-                    {% endfor %}
-
-
-                    </tbody>
-                </table>
-
-            {% else %}
-                <h2>Таблица</h2>
-                <table class="table display nowrap table-hover res-table" id="result-table-w" style="width: 100%;">
-                    <thead>
-                    <tr>
-                        <th rowspan="2">#</th>
-                        <th rowspan="2">Игрок</th>
-                        <th colspan="{{ games.count }}" class="text-center">Игры</th>
-                        <th rowspan="2">Город</th>
-                        <th rowspan="2">Сумма</th>
-                        <th rowspan="2">+-200</th>
-                        <th rowspan="2">Сред</th>
-                        <th rowspan="2">Мин. игра</th>
-                        <th rowspan="2">Макс. игра</th>
-                    </tr>
-                    <tr>
-                        {% for game in games %}
-                            <th>{{ forloop.counter }}</th>
-                        {% endfor %}
-                    </tr>
-
-                    </thead>
-                    <tbody>
-                    {% for player in players %}
-                        <tr>
-
-                            <td>{{ forloop.counter }}</td>
-                            <td style="text-align: left">{{ player }}</td>
-                            {% for game in games_dict|get_item:player.id %}
-                                <td>{{ game.result }}</td>
-                            {% endfor %}
-                            <td>
-                                {% if player.city is not None %}
-                                    {{ player.city }}
-                                {% else %}
-                                    Не указано
-                                {% endif %}
-                            </td>
-                            <td>{% get_player_points player tournament %}</td>
-                            <td>{% get_player_200_points player tournament %}</td>
-                            <td>{% get_player_avg_points player tournament %}</td>
-                            <td>{% get_player_min_points player tournament %}</td>
-                            <td>{% get_player_max_points player tournament %}</td>
-                        </tr>
-
-                    {% endfor %}
-
-
-                    </tbody>
-                </table>
-            {% endif %}
-        </div>
+{#        <div class="col-md-12 table-responsive">#}
+{#            <h3>Статистика</h3>#}
+{#            {% if tournament.type.name == 'Спортивный' %}#}
+{#                {% if men_games_dict %}#}
+{#                    <h2>Мужчины</h2>#}
+{##}
+{#                    <table class="table display nowrap table-hover res-table" id="result-table-m" style="width: 100%;">#}
+{#                        <thead>#}
+{#                        <tr>#}
+{#                            <th rowspan="2">#</th>#}
+{#                            <th rowspan="2">Игрок</th>#}
+{#                            {% if games.count > 0 %}#}
+{#                                <th colspan="{{ games.count }}" class="text-center">Игры</th>#}
+{#                            {% endif %}#}
+{#                            <th class="text-center" rowspan="2">Город</th>#}
+{#                            <th class="text-center" rowspan="2">Сумма</th>#}
+{#                            <th class="text-center" rowspan="2">+-200</th>#}
+{#                            <th class="text-center" rowspan="2">Сред</th>#}
+{#                            <th class="text-center" rowspan="2">Мин. игра</th>#}
+{#                            <th class="text-center" rowspan="2">Макс. игра</th>#}
+{#                        </tr>#}
+{#                        <tr>#}
+{#                            {% for game in games %}#}
+{#                                <th>{{ forloop.counter }}</th>#}
+{#                            {% endfor %}#}
+{#                        </tr>#}
+{##}
+{#                        </thead>#}
+{#                        <tbody>#}
+{#                        {% for player in men_players %}#}
+{#                            <tr>#}
+{##}
+{#                                <td>{{ forloop.counter }}</td>#}
+{#                                <td style="text-align: left">{{ player }}</td>#}
+{#                                {% for game in men_games_dict|get_item:player.id %}#}
+{#                                    <td class="text-center">{{ game.result }}</td>#}
+{#                                {% endfor %}#}
+{#                                <td class="text-center">#}
+{#                                    {% if player.city is not None %}#}
+{#                                        {{ player.city }}#}
+{#                                    {% else %}#}
+{#                                        Не указано#}
+{#                                    {% endif %}#}
+{#                                </td>#}
+{#                                <td class="text-center">{% get_player_points player tournament %}</td>#}
+{#                                <td class="text-center">{% get_player_200_points player tournament %}</td>#}
+{#                                <td class="text-center">{% get_player_avg_points player tournament %}</td>#}
+{#                                <td class="text-center">{% get_player_min_points player tournament %}</td>#}
+{#                                <td class="text-center">{% get_player_max_points player tournament %}</td>#}
+{#                            </tr>#}
+{##}
+{#                        {% endfor %}#}
+{##}
+{##}
+{#                        </tbody>#}
+{#                    </table>#}
+{##}
+{#                {% endif %}#}
+{#                {% if women_games_dict %}#}
+{#                    <h2>Женщины</h2>#}
+{#                    <table class="table display nowrap table-hover res-table" id="result-table-w" style="width: 100%;">#}
+{#                        <thead>#}
+{#                        <tr>#}
+{#                            <th rowspan="2">#</th>#}
+{#                            <th rowspan="2">Игрок</th>#}
+{#                            {% if games %}#}
+{#                                <th colspan="{{ games.count }}" class="text-center">Игры</th>#}
+{#                            {% endif %}#}
+{##}
+{#                            <th class="text-center" rowspan="2">Город</th>#}
+{#                            <th class="text-center" rowspan="2">Сумма</th>#}
+{#                            <th class="text-center" rowspan="2">+-200</th>#}
+{#                            <th class="text-center" rowspan="2">Сред</th>#}
+{#                            <th class="text-center" rowspan="2">Мин. игра</th>#}
+{#                            <th class="text-center" rowspan="2">Макс. игра</th>#}
+{#                        </tr>#}
+{#                        <tr>#}
+{#                            {% for game in games %}#}
+{#                                <th>{{ forloop.counter }}</th>#}
+{#                            {% endfor %}#}
+{#                        </tr>#}
+{##}
+{#                        </thead>#}
+{#                        <tbody>#}
+{#                        {% for player in women_players %}#}
+{#                            <tr>#}
+{##}
+{#                                <td>{{ forloop.counter }}</td>#}
+{#                                <td style="text-align: left">{{ player }}</td>#}
+{#                                {% for game in women_games_dict|get_item:player.id %}#}
+{#                                    <td class="text-center">{{ game.result }}</td>#}
+{#                                {% endfor %}#}
+{#                                <td class="text-center">#}
+{#                                    {% if player.city is not None %}#}
+{#                                        {{ player.city }}#}
+{#                                    {% else %}#}
+{#                                        Не указано#}
+{#                                    {% endif %}#}
+{#                                </td>#}
+{#                                <td class="text-center">{% get_player_points player tournament %}</td>#}
+{#                                <td class="text-center">{% get_player_200_points player tournament %}</td>#}
+{#                                <td class="text-center">{% get_player_avg_points player tournament %}</td>#}
+{#                                <td class="text-center">{% get_player_min_points player tournament %}</td>#}
+{#                                <td class="text-center">{% get_player_max_points player tournament %}</td>#}
+{#                            </tr>#}
+{##}
+{#                        {% endfor %}#}
+{##}
+{##}
+{#                        </tbody>#}
+{#                    </table>#}
+{#                {% endif %}#}
+{##}
+{##}
+{#                {% if not men_games_dict and not women_games_dict %}#}
+{#                    <div class="text-center">В данном турнире еще нет игр.</div>#}
+{#                {% endif %}#}
+{##}
+{##}
+{##}
+{##}
+{#            {% elif tournament.type.name == 'Коммерческий' %}#}
+{#                <h2>Таблица</h2>#}
+{#                <table class="table display nowrap table-hover res-table" id="result-table-w" style="width: 100%;">#}
+{#                    <thead>#}
+{#                    <tr>#}
+{#                        <th rowspan="2">#</th>#}
+{#                        <th rowspan="2">Игрок</th>#}
+{#                        {% if games %}#}
+{#                            <th colspan="{{ games.count }}" class="text-center">Игры</th>#}
+{#                        {% endif %}#}
+{##}
+{#                        <th class="text-center" rowspan="2">Город</th>#}
+{#                        <th class="text-center" rowspan="2">Сумма</th>#}
+{#                        <th class="text-center" rowspan="2">+-200</th>#}
+{#                        <th class="text-center" rowspan="2">Сред</th>#}
+{#                        <th class="text-center" rowspan="2">Мин. игра</th>#}
+{#                        <th class="text-center" rowspan="2">Макс. игра</th>#}
+{#                        <th class="text-center" rowspan="2">Гандикап</th>#}
+{#                    </tr>#}
+{#                    <tr>#}
+{#                        {% for game in games %}#}
+{#                            <th>{{ forloop.counter }}</th>#}
+{#                        {% endfor %}#}
+{#                    </tr>#}
+{##}
+{#                    </thead>#}
+{#                    <tbody>#}
+{#                    {% for player in players %}#}
+{#                        <tr>#}
+{##}
+{#                            <td>{{ forloop.counter }}</td>#}
+{#                            <td style="text-align: left">{{ player }}</td>#}
+{#                            {% for game in games_dict|get_item:player.id %}#}
+{#                                <td class="text-center">#}
+{##}
+{#                                    {% if player.sex == '1' or player.get_age > 50 %}#}
+{#                                        {% if game.result != 0 %}#}
+{#                                            {% get_sum game.result 8 %}#}
+{#                                        {% else %}#}
+{#                                            0#}
+{#                                        {% endif %}#}
+{#                                    {% else %}#}
+{#                                        {{ game.result }}#}
+{#                                    {% endif %}#}
+{##}
+{#                                </td>#}
+{#                            {% endfor %}#}
+{#                            <td class="text-center">#}
+{#                                {% if player.city is not None %}#}
+{#                                    {{ player.city }}#}
+{#                                {% else %}#}
+{#                                    Не указано#}
+{#                                {% endif %}#}
+{#                            </td>#}
+{#                            <td class="text-center">{% get_player_points player tournament %}</td>#}
+{#                            <td class="text-center">{% get_player_200_points player tournament %}</td>#}
+{#                            <td class="text-center">{% get_player_avg_points player tournament %}</td>#}
+{#                            <td class="text-center">{% get_player_min_points player tournament %}</td>#}
+{#                            <td class="text-center">{% get_player_max_points player tournament %}</td>#}
+{#                            <td class="text-center">#}
+{#                                {% if player.sex == '1' or player.get_age > 50 %}#}
+{#                                    {% get_handicap games_dict|get_item:player.pk %}#}
+{#                                {% else %}#}
+{##}
+{#                                {% endif %}#}
+{#                            </td>#}
+{#                        </tr>#}
+{##}
+{#                    {% endfor %}#}
+{##}
+{##}
+{#                    </tbody>#}
+{#                </table>#}
+{##}
+{#            {% else %}#}
+{#                <h2>Таблица</h2>#}
+{#                <table class="table display nowrap table-hover res-table" id="result-table-w" style="width: 100%;">#}
+{#                    <thead>#}
+{#                    <tr>#}
+{#                        <th rowspan="2">#</th>#}
+{#                        <th rowspan="2">Игрок</th>#}
+{#                        <th colspan="{{ games.count }}" class="text-center">Игры</th>#}
+{#                        <th rowspan="2">Город</th>#}
+{#                        <th rowspan="2">Сумма</th>#}
+{#                        <th rowspan="2">+-200</th>#}
+{#                        <th rowspan="2">Сред</th>#}
+{#                        <th rowspan="2">Мин. игра</th>#}
+{#                        <th rowspan="2">Макс. игра</th>#}
+{#                    </tr>#}
+{#                    <tr>#}
+{#                        {% for game in games %}#}
+{#                            <th>{{ forloop.counter }}</th>#}
+{#                        {% endfor %}#}
+{#                    </tr>#}
+{##}
+{#                    </thead>#}
+{#                    <tbody>#}
+{#                    {% for player in players %}#}
+{#                        <tr>#}
+{##}
+{#                            <td>{{ forloop.counter }}</td>#}
+{#                            <td style="text-align: left">{{ player }}</td>#}
+{#                            {% for game in games_dict|get_item:player.id %}#}
+{#                                <td>{{ game.result }}</td>#}
+{#                            {% endfor %}#}
+{#                            <td>#}
+{#                                {% if player.city is not None %}#}
+{#                                    {{ player.city }}#}
+{#                                {% else %}#}
+{#                                    Не указано#}
+{#                                {% endif %}#}
+{#                            </td>#}
+{#                            <td>{% get_player_points player tournament %}</td>#}
+{#                            <td>{% get_player_200_points player tournament %}</td>#}
+{#                            <td>{% get_player_avg_points player tournament %}</td>#}
+{#                            <td>{% get_player_min_points player tournament %}</td>#}
+{#                            <td>{% get_player_max_points player tournament %}</td>#}
+{#                        </tr>#}
+{##}
+{#                    {% endfor %}#}
+{##}
+{##}
+{#                    </tbody>#}
+{#                </table>#}
+{#            {% endif %}#}
+{#        </div>#}
 
         {% if user.is_staff %}
             <a class="right" href="{% url 'tournaments:tournament_update' tournament.id %}"><i

@@ -3,13 +3,14 @@ from django import forms
 from file_resubmit.admin import AdminResubmitImageWidget
 
 from accounts.models import City
-from tournaments.models import Tournament, TournamentType, TeamType, Game
+from tournaments.models import Tournament, TournamentType, TeamType, Game, BlockType
 
 
 class TournamentCreationForm(forms.ModelForm):
     class Meta:
         model = Tournament
-        fields = ('name', 'start', 'end', 'description', 'type', 'team_type', 'handicap', 'handicap_size', 'city', 'photo')
+        fields = (
+            'name', 'start', 'end', 'description', 'type', 'team_type', 'handicap', 'handicap_size', 'city', 'photo')
 
     photo = forms.ImageField(
         required=False,
@@ -119,6 +120,62 @@ class GameCreationForm(forms.ModelForm):
             game.tournament = self.tournament
             game.save()
         return game
+
+    class Meta:
+        model = Game
+        exclude = ('tournament', 'players')
+
+
+class BlockCreationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        if 'tournament' in kwargs:
+            self.tournament = kwargs.pop('tournament')
+        super(BlockCreationForm, self).__init__(*args, **kwargs)
+
+    name = forms.CharField(
+        label='Название',
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Название', 'class': 'form-control'}
+        )
+    )
+    start_date = forms.DateTimeField(
+        label='Время начала',
+        widget=forms.DateTimeInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    end_date = forms.DateTimeField(
+        label='Время окончания',
+        widget=forms.DateTimeInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    description = forms.CharField(
+        label="Описание",
+        required=False,
+        widget=forms.Textarea(
+            attrs={'class': 'form-control vertical-resize', 'rows': '4'}
+        )
+    )
+    is_final = forms.BooleanField(
+        label='Финал',
+    )
+    type = forms.ModelChoiceField(
+        label='Тип блока',
+        queryset=BlockType.objects.all(),
+        empty_label=None,
+        required=True,
+
+        widget=autocomplete.ModelSelect2(url='bowlingApp:city-autocomplete',
+                                         attrs={'class': 'form-control'})
+    )
+
+    def save(self, commit=True):
+        block = super(BlockCreationForm, self).save(commit=False)
+        if commit:
+            block.tournament = self.tournament
+            block.save()
+        return block
 
     class Meta:
         model = Game

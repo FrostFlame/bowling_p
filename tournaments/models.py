@@ -55,7 +55,7 @@ class Tournament(models.Model):
         games = Game.objects.filter(tournament=self)
         info = GameInfo.objects.filter(game__in=games, player=player)
 
-        points = info.aggregate(Sum('result'))['result__sum']
+        points = info.aggregate(Sum('points'))['result__sum']
         return points if points else 0
 
     def get_player_max_points(self, player):
