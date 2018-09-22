@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)$', TournamentView.as_view(), name='tournament_page'),
     url(r'^(?P<pk>\d+)/game/create$', GameCreateView.as_view(), name='game_create'),
     url(r'^(?P<pk>\d+)/add_players$', AddPlayersView.as_view(), name='tournament_add_players'),
+    url(r'^(?P<pk>\d+)/divide_players$', DividePlayersByTeams.as_view(), name='divide_players'),
     url(r'^(?P<pk>\d+)/edit$', TournamentUpdate.as_view(), name='tournament_update'),
     url(r'^(?P<tournament_pk>\d+)/game/(?P<game_pk>\d+)$',
         TournamentGameInfo.as_view(), name='tournament_game_info'),

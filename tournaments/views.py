@@ -12,7 +12,7 @@ from django.views.generic import FormView
 
 from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm, GameCreationForm, TournamentSearchForm
-from tournaments.models import Tournament, Game, GameInfo, Team, TournamentMembership
+from tournaments.models import Tournament, Game, GameInfo, Team, TournamentMembership, TeamType
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -182,8 +182,43 @@ class AddPlayersView(View):
             if player_pk not in tournament_players_pks:
                 player = get_object_or_404(PlayerInfo, pk=player_pk)
                 TournamentMembership.objects.get_or_create(player=player,
-                                            tournament=tournament)
+                                                           tournament=tournament)
 
+        return redirect(reverse('tournaments:divide_players', kwargs={'pk': pk}))
+
+
+class DividePlayersByTeams(View):
+    """
+        class-based view для страницы разбиения игроков по командам
+    """
+
+    def get(self, request, pk):
+        tournament = Tournament.objects.get(id=pk)
+        players = PlayerInfo.objects.get_players_by_license_type(tournament.type)
+        return render(request, 'tournaments/divide_players.html',
+                      {'tournament': tournament, 'players': players})
+
+    def post(self, request, pk):
+        tournament = Tournament.objects.get(id=pk)
+        players_ids = tournament.players.all().values_list('id', flat=True)
+        types_ids = tournament.team_type.all().values_list('id', flat=True)
+        for p_id in players_ids:
+            for t_id in types_ids:
+                number = request.POST.get(str(p_id) + '_' + str(t_id))
+                count = 0
+                if TeamType.objects.get(id=t_id).name == 'Один игрок':
+                    count = 1
+                elif TeamType.objects.get(id=t_id).name == 'Два игрока':
+                    count = 2
+                elif TeamType.objects.get(id=t_id).name == 'Три игрока':
+                    count = 3
+                elif TeamType.objects.get(id=t_id).name == 'Пять игроков':
+                    count = 5
+                if Team.objects.filter(tournament_id=pk, number=number, count=count).exists():
+                    team = Team.objects.get(tournament_id=pk, number=number, count=count)
+                else:
+                    team = Team.objects.create(tournament_id=pk, number=number, count=count)
+                team.players.add(PlayerInfo.objects.get(id=p_id))
         return redirect(reverse('tournaments:tournament_page', kwargs={'pk': pk}))
 
 
