@@ -12,7 +12,7 @@ from django.views.generic import FormView
 
 from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm, GameCreationForm, TournamentSearchForm, BlockCreationForm
-from tournaments.models import Tournament, Game, GameInfo, Team, TournamentMembership, TeamType
+from tournaments.models import Tournament, Game, GameInfo, Team, TournamentMembership, TeamType, Block
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -338,36 +338,17 @@ class GameUpdateView(View):
             return redirect(reverse('tournaments:tournament_page', kwargs={"pk": tournament_pk}))
 
 
-class BlockCreateView(View):
+@method_decorator(staff_member_required(), name='dispatch')
+class BlockCreate(CreateView):
     """
-    class-based view для создания блока/этапа турнира
-    после создания перенаправляет на страницу турнира
+    class-based view для создания блока/этапа
+    перенаправляет на страницу добавления игроков созданного турнира
     """
 
-    def get(self, request, pk):
-        tournament = Tournament.objects.get(pk=pk)
-        selected = tournament.players.all()
-        block_form = BlockCreationForm()
-        return render(request, 'tournaments/block_create.html', {
-            'tournament': tournament,
-            'form': block_form,
-            'selected': selected,
-        })
+    def get_success_url(self):
+        return reverse('tournaments:block_add_players', args=(self.object.id,))
 
-    def post(self, request, pk):
-        tournament = Tournament.objects.get(pk=pk)
-
-        block_form = BlockCreationForm(request.POST, tournament=tournament)
-        if block_form.is_valid():
-            game = block_form.save()
-            players = request.POST.getlist('select')
-            for player in players:
-                GameInfo(player=PlayerInfo.objects.get(pk=player),
-                         game=game).save()
-            return redirect(reverse('tournaments:tournament_page', kwargs={'pk': tournament.id}))
-        else:
-            selected = tournament.players.all()
-            return render(request, 'tournaments/block_create.html', {
-                'form': block_form,
-                'selected': selected
-            })
+    model = Block
+    template_name = 'tournaments/block_form.html'
+    success_url = get_success_url
+    form_class = BlockCreationForm

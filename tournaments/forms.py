@@ -3,7 +3,7 @@ from django import forms
 from file_resubmit.admin import AdminResubmitImageWidget
 
 from accounts.models import City
-from tournaments.models import Tournament, TournamentType, TeamType, Game, BlockType
+from tournaments.models import Tournament, TournamentType, TeamType, Game, BlockType, Block
 
 
 class TournamentCreationForm(forms.ModelForm):
@@ -139,15 +139,18 @@ class BlockCreationForm(forms.ModelForm):
         )
     )
     start_date = forms.DateTimeField(
-        label='Время начала',
-        widget=forms.DateTimeInput(
-            attrs={'class': 'form-control'}
+        label='Начало',
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'data-validation': 'custom, compare',
+                   'data-validation-regexp': '^(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})$'}
         )
     )
+
     end_date = forms.DateTimeField(
-        label='Время окончания',
-        widget=forms.DateTimeInput(
-            attrs={'class': 'form-control'}
+        label='Конец',
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'data-validation': 'custom, compare',
+                   'data-validation-regexp': '^(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})$'}
         )
     )
     description = forms.CharField(
@@ -159,15 +162,13 @@ class BlockCreationForm(forms.ModelForm):
     )
     is_final = forms.BooleanField(
         label='Финал',
+        required=False
     )
     type = forms.ModelChoiceField(
         label='Тип блока',
         queryset=BlockType.objects.all(),
         empty_label=None,
-        required=True,
-
-        widget=autocomplete.ModelSelect2(url='bowlingApp:city-autocomplete',
-                                         attrs={'class': 'form-control'})
+        required=True
     )
 
     def save(self, commit=True):
@@ -178,8 +179,8 @@ class BlockCreationForm(forms.ModelForm):
         return block
 
     class Meta:
-        model = Game
-        exclude = ('tournament', 'players')
+        model = Block
+        exclude = ('tournament', 'players', 'creation_date')
 
 
 class TournamentSearchForm(forms.Form):
