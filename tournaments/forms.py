@@ -129,7 +129,7 @@ class GameCreationForm(forms.ModelForm):
 class BlockCreationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         if 'tournament' in kwargs:
-            self.tournament = kwargs.pop('tournament')
+            self.tournament_id = kwargs.pop('tournament')
         super(BlockCreationForm, self).__init__(*args, **kwargs)
 
     name = forms.CharField(
@@ -174,7 +174,7 @@ class BlockCreationForm(forms.ModelForm):
     def save(self, commit=True):
         block = super(BlockCreationForm, self).save(commit=False)
         if commit:
-            block.tournament = self.tournament
+            block.tournament_id = self.tournament_id
             block.save()
         return block
 

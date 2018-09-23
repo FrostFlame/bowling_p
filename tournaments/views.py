@@ -352,3 +352,8 @@ class BlockCreate(CreateView):
     template_name = 'tournaments/block_form.html'
     success_url = get_success_url
     form_class = BlockCreationForm
+
+    def get_form_kwargs(self):
+        kwargs = super(BlockCreate, self).get_form_kwargs()
+        kwargs['tournament'] = self.kwargs.get('pk')
+        return kwargs
