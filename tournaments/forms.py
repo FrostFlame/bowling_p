@@ -129,7 +129,7 @@ class GameCreationForm(forms.ModelForm):
 class BlockCreationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         if 'tournament' in kwargs:
-            self.tournament_id = kwargs.pop('tournament')
+            self.tournament = kwargs.pop('tournament')
         super(BlockCreationForm, self).__init__(*args, **kwargs)
 
     name = forms.CharField(
@@ -164,17 +164,11 @@ class BlockCreationForm(forms.ModelForm):
         label='Финал',
         required=False
     )
-    type = forms.ModelChoiceField(
-        label='Тип блока',
-        queryset=BlockType.objects.all(),
-        empty_label=None,
-        required=True
-    )
 
     def save(self, commit=True):
         block = super(BlockCreationForm, self).save(commit=False)
         if commit:
-            block.tournament_id = self.tournament_id
+            block.tournament = self.tournament
             block.save()
         return block
 

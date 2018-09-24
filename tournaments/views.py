@@ -262,6 +262,7 @@ class TournamentGameInfo(View):
                            'tournament': tournament})
 
 
+@method_decorator(staff_member_required(), name='dispatch')
 class GameCreateView(View):
     """
     class-based view для создания игры турнира
@@ -339,21 +340,31 @@ class GameUpdateView(View):
 
 
 @method_decorator(staff_member_required(), name='dispatch')
-class BlockCreate(CreateView):
+class BlockCreate(View):
     """
     class-based view для создания блока/этапа
     перенаправляет на страницу добавления игроков созданного турнира
     """
 
-    def get_success_url(self):
-        return reverse('tournaments:block_add_players', args=(self.object.id,))
+    def get(self, request, pk):
+        tournament = Tournament.objects.get(pk=pk)
+        selected = tournament.players.all()
+        block_form = BlockCreationForm(tournament=pk)
+        return render(request, 'tournaments/block_form.html', {
+            'tournament': tournament,
+            'form': block_form,
+            'selected': selected
+        })
 
-    model = Block
-    template_name = 'tournaments/block_form.html'
-    success_url = get_success_url
-    form_class = BlockCreationForm
-
-    def get_form_kwargs(self):
-        kwargs = super(BlockCreate, self).get_form_kwargs()
-        kwargs['tournament'] = self.kwargs.get('pk')
-        return kwargs
+    def post(self, request, pk):
+        tournament = Tournament.objects.get(pk=pk)
+        block_form = BlockCreationForm(request.POST, tournament=tournament)
+        if block_form.is_valid():
+            block = block_form.save()
+            return redirect(reverse('tournaments:block_page', kwargs={'pk': tournament.id, 'block':block.id}))
+        else:
+            selected = tournament.players.all()
+            return render(request, 'tournaments/block_form.html', {
+                'form': block_form,
+                'selected': selected
+            })

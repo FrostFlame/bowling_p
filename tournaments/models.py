@@ -43,6 +43,7 @@ class Tournament(models.Model):
     handicap = models.BooleanField(default=False)
     handicap_size = models.IntegerField(default=8)
     players = models.ManyToManyField(PlayerInfo, related_name='tournament_players', through=TournamentMembership)
+    block_type = models.ForeignKey('BlockType', on_delete=models.CASCADE, related_name='block_type')
 
     def __str__(self):
         return self.name
@@ -52,11 +53,18 @@ class Tournament(models.Model):
         Возвращает сумму очков, набранную игроком за весь турнир.
         Если игр нет, возвращает 0.
         """
-        games = Game.objects.filter(tournament=self)
-        info = GameInfo.objects.filter(game__in=games, player=player)
+        blocks = self.block_tournament.all()
+        if player.license != '':
+            for block in blocks:
+                pass
+        else:
+            for block in blocks:
+                pass
+        # info = GameInfo.objects.filter(game__in=games, player=player)
 
-        points = info.aggregate(Sum('points'))['result__sum']
-        return points if points else 0
+        # points = info.aggregate(Sum('points'))['result__sum']
+        # return points if points else 0
+        return 0
 
     def get_player_max_points(self, player):
         """
@@ -170,7 +178,6 @@ class Block(models.Model):
     creation_date = models.DateTimeField(default=datetime.now)
     description = models.TextField(max_length=500, blank=True, default='')
     is_final = models.BooleanField(default=False)
-    type = models.ForeignKey(BlockType, on_delete=models.CASCADE, related_name='block_type')
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='block_tournament')
 
 
