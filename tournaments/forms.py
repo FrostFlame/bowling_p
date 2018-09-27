@@ -73,6 +73,7 @@ class TournamentCreationForm(forms.ModelForm):
     )
 
     handicap = forms.BooleanField(
+        required=False,
         label='Гандикап',
     )
 
@@ -84,12 +85,10 @@ class TournamentCreationForm(forms.ModelForm):
         )
     )
 
-    block_type = forms.ModelMultipleChoiceField(
+    block_type = forms.ModelChoiceField(
+        empty_label=None,
         label='Тип блоков',
-        queryset=BlockType.objects.all(),
-        widget=forms.CheckboxSelectMultiple(
-            attrs={'class': 'form-control'}
-        )
+        queryset=BlockType.objects.all()
     )
 
     city = forms.ModelChoiceField(
