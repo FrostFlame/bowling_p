@@ -10,7 +10,7 @@ class TournamentCreationForm(forms.ModelForm):
     class Meta:
         model = Tournament
         fields = (
-            'name', 'start', 'end', 'description', 'type', 'team_type', 'handicap', 'handicap_size', 'city', 'photo')
+            'name', 'start', 'end', 'description', 'type', 'team_type', 'block_type', 'handicap', 'handicap_size', 'city', 'photo')
 
     photo = forms.ImageField(
         required=False,
@@ -81,6 +81,14 @@ class TournamentCreationForm(forms.ModelForm):
         label='Размер гандикапа',
         widget=forms.TextInput(
             attrs={'placeholder': 8, 'class': 'form-control'}
+        )
+    )
+
+    block_type = forms.ModelMultipleChoiceField(
+        label='Тип блоков',
+        queryset=BlockType.objects.all(),
+        widget=forms.CheckboxSelectMultiple(
+            attrs={'class': 'form-control'}
         )
     )
 
