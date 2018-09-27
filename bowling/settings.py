@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'file_resubmit',
     'tournaments',
     'news',
-    'rolepermissions',
     'django_summernote',
     'dal',
     'dal_select2',

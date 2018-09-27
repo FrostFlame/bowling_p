@@ -1,14 +1,12 @@
-import operator
 import os
 from datetime import datetime
 
 from django.db import models
 # Create your models here.
-from django.db.models import Sum, Max, Min
+from django.db.models import Max, Min, Sum
 from django.utils.crypto import get_random_string
 
 from accounts.models import PlayerInfo, City
-from rating.utils import position_to_points
 
 
 def filename(instance, filename):
@@ -129,9 +127,6 @@ class Tournament(models.Model):
             tournaments = Tournament.objects.all()
         return tournaments
 
-    # def get_games_count(self):
-    #     return self.tournament_games.count()
-
     @classmethod
     def ordered_by_creation(cls, amount=0, reversed=True, page=1):
         if amount == 0:
@@ -180,6 +175,44 @@ class Block(models.Model):
     is_final = models.BooleanField(default=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='block_tournament')
 
+    def get_player_points(self, player):
+        """
+        Возвращает сумму очков, набранную игроком за весь блок.
+        Если игр нет, возвращает 0.
+        """
+        games = Game.objects.filter(block=self)
+        info = GameInfo.objects.filter(game__in=games, team__players=player)
+
+        points = info.aggregate(Sum('point'))['point__sum']
+        if points and self.tournament.type.name == 'Коммерческий':
+            points += len(games) * self.tournament.handicap_size
+        return points if points else 0
+
+    def get_games_count(self):
+        return self.games.count()
+
+    def get_player_min_points(self, player):
+        """
+        Возвращает минимальное количество очков, которые игрок набрал в рамках игр данного блока.
+        Если игр нет, возвращает 0.
+        """
+        games = Game.objects.filter(block=self)
+        # todo add get_min_result method
+        info = GameInfo.objects.filter(game__in=games, team__players=player)
+        min_points = info.aggregate(Min('point'))['point__min']
+        return min_points if min_points else 0
+
+    def get_player_max_points(self, player):
+        """
+        Возвращает максимальное количество очков, которые игрок набрал в рамках игр данного блока.
+        Если игр нет, возвращает 0.
+        """
+        games = Game.objects.filter(block=self)
+        info = GameInfo.objects.filter(game__in=games, team__players=player)
+
+        max_points = info.aggregate(Max('point'))['point__max']
+        return max_points if max_points else 0
+
 
 class Game(models.Model):
     class Meta:
@@ -188,7 +221,7 @@ class Game(models.Model):
     date = models.DateField(default=datetime.today)
     time = models.TimeField(default=datetime.now)
     name = models.CharField(max_length=200, blank=False)
-    block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name='block')
+    block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name='games')
     is_desperado = models.BooleanField(default=False)
 
     def __str__(self):

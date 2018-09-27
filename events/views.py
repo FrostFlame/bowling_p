@@ -6,9 +6,8 @@ from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView, ListView, DetailView, UpdateView
-from rolepermissions.mixins import HasRoleMixin
 
-from bowling.roles import Editor
+
 from events.forms import EventCreationForm
 from events.models import Event
 
@@ -53,11 +52,10 @@ class EventAddView(CreateView):
         return super(EventAddView, self).dispatch(request, *args, **kwargs)
 
 
-class EventUpdate(HasRoleMixin, UpdateView):
+class EventUpdate(UpdateView):
     def get_success_url(self):
         return reverse('events:view', args=(self.object.id,))
 
-    allowed_roles = [Editor]
     model = Event
     template_name = 'events/event_add.html'
     success_url = get_success_url
