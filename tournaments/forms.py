@@ -81,7 +81,7 @@ class TournamentCreationForm(forms.ModelForm):
         required=False,
         label='Размер гандикапа',
         widget=forms.TextInput(
-            attrs={'placeholder': 8, 'class': 'form-control'}
+            attrs={'value': 8, 'class': 'form-control'}
         )
     )
 
@@ -135,8 +135,8 @@ class GameCreationForm(forms.ModelForm):
 
 class BlockCreationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        if 'pk' in kwargs:
-            self.tournament = kwargs.pop('pk')
+        # if 'tournament_pk' in kwargs:
+        #     self.tournament = kwargs.pop('tournament_pk')
         super(BlockCreationForm, self).__init__(*args, **kwargs)
 
     name = forms.CharField(
@@ -175,14 +175,14 @@ class BlockCreationForm(forms.ModelForm):
     def save(self, commit=True):
         block = super(BlockCreationForm, self).save(commit=False)
         if commit:
-            if Block.tournament is None:
+            if not hasattr(block, 'tournament'):
                 block.tournament = self.tournament
             block.save()
         return block
 
     class Meta:
         model = Block
-        exclude = ('tournament', 'players', 'creation_date')
+        exclude = ('tournament', 'creation_date', 'players')
 
 
 class TournamentSearchForm(forms.Form):

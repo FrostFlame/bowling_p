@@ -346,8 +346,8 @@ class BlockCreate(View):
     перенаправляет на страницу добавления игроков созданного турнира
     """
 
-    def get(self, request, pk):
-        tournament = Tournament.objects.get(pk=pk)
+    def get(self, request, tournament_pk):
+        tournament = Tournament.objects.get(pk=tournament_pk)
         selected = tournament.players.all()
         block_form = BlockCreationForm()
         return render(request, 'tournaments/block_form.html', {
@@ -356,11 +356,15 @@ class BlockCreate(View):
             'selected': selected
         })
 
-    def post(self, request, pk):
-        tournament = Tournament.objects.get(pk=pk)
+    def post(self, request, tournament_pk):
+        tournament = Tournament.objects.get(pk=tournament_pk)
         block_form = BlockCreationForm(request.POST)
         if block_form.is_valid():
+            block_form.tournament = tournament
             block = block_form.save()
+            players = request.POST.getlist('select')
+            for player in players:
+                block.players.add(player)
             return redirect(reverse('tournaments:block_page', kwargs={'pk': tournament.id, 'block_pk': block.id}))
         else:
             selected = tournament.players.all()
@@ -381,7 +385,7 @@ class BlockView(View):
         games = Game.objects.filter(block=block).order_by('date')
 
         # Сортируем игроков по сумме очков, набранных за турнир
-        players = tournament.players.all()
+        players = block.players.all()
 
         if tournament.type.name == 'Спортивный':
             men_players = players.filter(sex='0')
@@ -452,9 +456,8 @@ class BlockUpdate(UpdateView):
     def get_success_url(self):
         return reverse('tournaments:block_page', kwargs={'pk': self.object.tournament.id, 'block_pk': self.object.id})
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        return kwargs
+    def selected(self):
+        return self.object.players.all()
 
     model = Block
     template_name = 'tournaments/block_form.html'

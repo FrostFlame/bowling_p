@@ -299,7 +299,7 @@
         </div>
 
         {% if user.is_staff %}
-            <a class="right" href="{% url 'tournaments:block_update' pk=tournament.pk block_pk=my_block.pk %}"><i
+            <a class="right" href="{% url 'tournaments:block_update' tournament_pk=tournament.pk pk=my_block.pk %}"><i
                     class="fa fa-pencil"></i> Редактировать</a>
         {% endif %}
     </div> <!-- row -->

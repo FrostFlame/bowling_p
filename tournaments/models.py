@@ -174,6 +174,7 @@ class Block(models.Model):
     description = models.TextField(max_length=500, blank=True, default='')
     is_final = models.BooleanField(default=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='block_tournament')
+    players = models.ManyToManyField(PlayerInfo, related_name='block')
 
     def get_player_points(self, player):
         """

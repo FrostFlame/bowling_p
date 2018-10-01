@@ -57,7 +57,7 @@
                 {% endfor %}
 
                 {% if user.is_staff %}
-                    <a href="{% url 'tournaments:block_create' pk=tournament.id %}"
+                    <a href="{% url 'tournaments:block_create' tournament.id %}"
                        class="list-group-item list-group-item-success">Добавить</a>
                 {% endif %}
             </div>
