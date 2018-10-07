@@ -28,6 +28,8 @@
                         <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
                         {{ form.name }}
                     </p>
+                    {{ form.errors }}
+                    {{ form.non_field_errors }}
 
                     <div class="form-group">
                         <label for="players_select">Игроки</label>
@@ -85,7 +87,7 @@
 
         var points = new Map();
         {% for player in selected %}
-            points.set('{{ player.id }}', '{% get_player_points player tournament  %}');
+            points.set('{{ player.id }}', '{% get_player_points player my_block  %}');
         {% endfor %}
 
         function formatState(state) {
@@ -108,8 +110,8 @@
         $('#id_start').change(function () {
             var game_date = $(this).val().split(".");
             console.log($(this).val().split("."));
-            var start_date = "{{ tournament.start|date:"d.m.Y" }}".split(".");
-            var end_date = "{{ tournament.end|date:"d.m.Y" }}".split(".");
+            var start_date = "{{ my_block.start_date|date:"d.m.Y" }}".split(".");
+            var end_date = "{{ my_block.end_date|date:"d.m.Y" }}".split(".");
 
             game_date = new Date(game_date[2].substring(0, 4), game_date[1] - 1, game_date[0]);
             start_date = new Date(start_date[2], start_date[1] - 1, start_date[0]);

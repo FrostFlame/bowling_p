@@ -104,8 +104,8 @@ class TournamentCreationForm(forms.ModelForm):
 
 class GameCreationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        if 'tournament' in kwargs:
-            self.tournament = kwargs.pop('tournament')
+        if 'block' in kwargs:
+            self.block = kwargs.pop('block')
         super(GameCreationForm, self).__init__(*args, **kwargs)
 
     name = forms.CharField(
@@ -124,13 +124,13 @@ class GameCreationForm(forms.ModelForm):
     def save(self, commit=True):
         game = super(GameCreationForm, self).save(commit=False)
         if commit:
-            game.tournament = self.tournament
+            game.block = self.block
             game.save()
         return game
 
     class Meta:
         model = Game
-        exclude = ('tournament', 'players')
+        exclude = ('date', 'time', 'block')
 
 
 class BlockCreationForm(forms.ModelForm):

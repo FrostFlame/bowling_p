@@ -39,12 +39,12 @@
             <div class="list-group list-group-horizontal">
                 <span class="list-group-item list-group-item-action"><b>Игры</b></span>
                 {% for game in games%}
-                    <a href="{% url 'tournaments:tournament_game_info' tournament.pk game.pk %}"
+                    <a href="{% url 'tournaments:tournament_game_info' tournament.pk my_block.pk game.pk %}"
                        class="list-group-item list-group-item-action">{{ game.name }}</a>
                 {% endfor %}
 
                 {% if user.is_staff %}
-                    <a href="{% url 'tournaments:block_create' tournament.id %}"
+                    <a href="{% url 'tournaments:game_create' pk=tournament.id block_pk=my_block.id%}"
                        class="list-group-item list-group-item-success">Добавить</a>
                 {% endif %}
             </div>

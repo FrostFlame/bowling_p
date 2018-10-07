@@ -18,13 +18,13 @@
 
 {% block content %}
     {% if request.user.is_staff %}
-        <a class="right" href="{% url 'tournaments:game_update' game.tournament_id game.id %}">Редактировать</a>
+        <a class="right" href="{% url 'tournaments:game_update' game.block.tournament.pk game.block.pk game.id %}">Редактировать</a>
     {% endif %}
 
     <div class="col-md-12">
         <h3>
-            <a class="text-black" href="{% url 'tournaments:tournament_page' game.tournament_id %}">
-                {{ game.tournament.name }}</a>
+            <a class="text-black" href="{% url 'tournaments:tournament_page' game.block.tournament.pk %}">
+                {{ game.block.tournament.name }}</a>
         </h3>
         <h4>Игра: {{ game.name }}</h4>
     </div>
@@ -126,7 +126,7 @@
 
         </div>
         <div class="col-md-12">
-            <a class="btn btn-primary mar-bot-10" href="{% url 'tournaments:tournament_page' game.tournament.pk %}">Сохранить и
+            <a class="btn btn-primary mar-bot-10" href="{% url 'tournaments:tournament_page' game.block.tournament.pk %}">Сохранить и
                 вернуться к турниру</a>
         </div>
     {% else %}

@@ -52,7 +52,7 @@
             <div class="list-group list-group-horizontal">
                 <span class="list-group-item list-group-item-action"><b>Блоки</b></span>
                 {% for block in blocks %}
-                    <a href="{% url 'tournaments:tournament_game_info' tournament.pk block.pk %}"
+                    <a href="{% url 'tournaments:block_page' tournament.pk block.pk %}"
                        class="list-group-item list-group-item-action">{{ block.name }}</a>
                 {% endfor %}
 

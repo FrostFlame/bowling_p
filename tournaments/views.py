@@ -242,7 +242,7 @@ class TournamentGameInfo(View):
     class-based view для отображения информации о конкретной игре турнира
     """
 
-    def get(self, request, tournament_pk, game_pk):
+    def get(self, request, tournament_pk, block_pk, game_pk):
         tournament = get_object_or_404(Tournament, pk=tournament_pk)
         game = get_object_or_404(Game, pk=game_pk)
         gameInfo = GameInfo.objects.filter(game=game)
@@ -269,31 +269,34 @@ class GameCreateView(View):
     после создаия перенаправляет на страницу турнира
     """
 
-    def get(self, request, pk):
-        tournament = Tournament.objects.get(pk=pk)
-        selected = tournament.players.all()
-        game_form = GameCreationForm()
+    def get(self, request, pk, block_pk):
+        block = Block.objects.get(pk=block_pk)
+        selected = block.players.all()
+        game_form = GameCreationForm(block=block)
         return render(request, 'tournaments/game_create.html', {
-            'tournament': tournament,
+            'my_block': block,
             'form': game_form,
             'selected': selected,
         })
 
-    def post(self, request, pk):
+    def post(self, request, pk, block_pk):
         tournament = Tournament.objects.get(pk=pk)
+        block = Block.objects.get(pk=block_pk)
 
-        game_form = GameCreationForm(request.POST, tournament=tournament)
+        game_form = GameCreationForm(request.POST, block=block)
         if game_form.is_valid():
             game = game_form.save()
             players = request.POST.getlist('select')
             for player in players:
-                GameInfo(player=PlayerInfo.objects.get(pk=player),
-                         game=game).save()
-            return redirect(reverse('tournaments:tournament_page', kwargs={'pk': tournament.id}))
+                for team in Team.objects.filter(tournament=tournament):
+                    if player in team.players.all():
+                        GameInfo(team=team, game=game).save()
+            return redirect(reverse('tournaments:block_page', kwargs={'pk': tournament.id, 'block_pk': block.id}))
         else:
-            selected = tournament.players.all()
+            selected = block.players.all()
             return render(request, 'tournaments/game_create.html', {
                 'form': game_form,
+                'my_block': block,
                 'selected': selected
             })
 
@@ -432,7 +435,8 @@ class BlockView(View):
             for game in games:
                 for player in players:
                     try:
-                        player_games_dict[player.id].append(player.player_games.get(game=game))
+                        # player_games_dict[player.id].append(player.game.get(game=game))
+                        pass
                     except GameInfo.DoesNotExist:
                         # Если игрок не участвовал в данной игре, его результат равен 0.
                         gi = GameInfo(result=0)
@@ -447,19 +451,59 @@ class BlockView(View):
                            })
 
 
-@method_decorator(staff_member_required(), name='dispatch')
-class BlockUpdate(UpdateView):
-    """
-    class-based view для редактирования информации о блоке
-    """
+# @method_decorator(staff_member_required(), name='dispatch')
+# class BlockUpdate(UpdateView):
+#     """
+#     class-based view для редактирования информации о блоке
+#     """
+#
+#     def get_success_url(self):
+#         return reverse('tournaments:block_page', kwargs={'pk': self.object.tournament.id, 'block_pk': self.object.id})
+#
+#     def selected(self):
+#         return self.object.players.all()
+#
+#     model = Block
+#     template_name = 'tournaments/block_form.html'
+#     success_url = get_success_url
+#     form_class = BlockCreationForm
 
-    def get_success_url(self):
-        return reverse('tournaments:block_page', kwargs={'pk': self.object.tournament.id, 'block_pk': self.object.id})
 
-    def selected(self):
-        return self.object.players.all()
+class BlockUpdate(View):
 
-    model = Block
-    template_name = 'tournaments/block_form.html'
-    success_url = get_success_url
-    form_class = BlockCreationForm
+    @method_decorator(staff_member_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(BlockUpdate, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, tournament_pk, pk):
+        block = Block.objects.get(pk=pk)
+        form = BlockCreationForm(instance=block)
+        # Игроки, которые уже добавлены к игре
+        selected_players = block.players.all()
+        # Остальные игроки, которые могут быть добавлены
+        players = Tournament.objects.get(pk=tournament_pk).players.exclude(pk__in=selected_players)
+
+        ctx = {
+            'form': form,
+            'tournament': Tournament.objects.get(pk=tournament_pk),
+            'players': players,
+            'selected': selected_players,
+        }
+        return render(request, 'tournaments/block_form.html', ctx)
+
+    def post(self, request, tournament_pk, pk):
+        block = Block.objects.get(pk=pk)
+        form = BlockCreationForm(request.POST, instance=block)
+
+        if form.is_valid():
+            block = form.save()
+            # Обновление игрок, участвующих в турнире
+            block.players.clear()
+            players_pk = request.POST.getlist('select')
+            players = PlayerInfo.objects.filter(id__in=players_pk)
+            for player in players:
+                block.players.add(player)
+                block.save()
+                # GameInfo.objects.create(player=player, game=game)
+
+            return redirect(reverse('tournaments:block_page', kwargs={"pk": tournament_pk, "block_pk": pk}))

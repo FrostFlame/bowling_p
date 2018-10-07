@@ -142,8 +142,8 @@ class Tournament(models.Model):
 class Team(models.Model):
     number = models.IntegerField()
     count = models.IntegerField(default=1)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='team_tournament')
-    players = models.ManyToManyField(PlayerInfo, related_name='team_players')
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='teams')
+    players = models.ManyToManyField(PlayerInfo, related_name='team')
 
 
 class TeamType(models.Model):
