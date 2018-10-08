@@ -224,6 +224,7 @@ class Game(models.Model):
     name = models.CharField(max_length=200, blank=False)
     block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name='games')
     is_desperado = models.BooleanField(default=False)
+    info = models.ManyToManyField('GameInfo', related_name='game')
 
     def __str__(self):
         return self.name
@@ -231,5 +232,5 @@ class Game(models.Model):
 
 class GameInfo(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team')
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='game')
+    # game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='info')
     point = models.IntegerField(default=0)

@@ -2,6 +2,7 @@ from collections import defaultdict
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
+from django.db.models.functions.datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
 from django.urls import reverse
@@ -271,12 +272,10 @@ class GameCreateView(View):
 
     def get(self, request, pk, block_pk):
         block = Block.objects.get(pk=block_pk)
-        selected = block.players.all()
         game_form = GameCreationForm(block=block)
         return render(request, 'tournaments/game_create.html', {
             'my_block': block,
-            'form': game_form,
-            'selected': selected,
+            'form': game_form
         })
 
     def post(self, request, pk, block_pk):
@@ -286,18 +285,11 @@ class GameCreateView(View):
         game_form = GameCreationForm(request.POST, block=block)
         if game_form.is_valid():
             game = game_form.save()
-            players = request.POST.getlist('select')
-            for player in players:
-                for team in Team.objects.filter(tournament=tournament):
-                    if player in team.players.all():
-                        GameInfo(team=team, game=game).save()
             return redirect(reverse('tournaments:block_page', kwargs={'pk': tournament.id, 'block_pk': block.id}))
         else:
-            selected = block.players.all()
             return render(request, 'tournaments/game_create.html', {
                 'form': game_form,
-                'my_block': block,
-                'selected': selected
+                'my_block': block
             })
 
 
@@ -310,36 +302,25 @@ class GameUpdateView(View):
     def dispatch(self, request, *args, **kwargs):
         return super(GameUpdateView, self).dispatch(request, *args, **kwargs)
 
-    def get(self, request, tournament_pk, game_pk):
+    def get(self, request, tournament_pk, block_pk, game_pk):
         game = Game.objects.get(pk=game_pk)
-        form = GameCreationForm(instance=game)
-        # Игроки, которые уже добавлены к игре
-        selected_players = game.players.all()
-        # Остальные игроки, которые могут быть добавлены
-        players = Tournament.objects.get(pk=tournament_pk).players.exclude(pk__in=selected_players)
+        block = Block.objects.get(pk=block_pk)
+        form = GameCreationForm(instance=game, block=block,
+                                initial={'start': datetime.combine(game.date, game.time)})
 
         ctx = {
-            'form': form,
-            'players': players,
-            'selected': selected_players,
+            'form': form
         }
         return render(request, 'tournaments/game_update.html', ctx)
 
-    def post(self, request, tournament_pk, game_pk):
-        tournament = Tournament.objects.get(pk=tournament_pk)
+    def post(self, request, tournament_pk, block_pk, game_pk):
+        block = Block.objects.get(pk=block_pk)
         game = Game.objects.get(pk=game_pk)
-        form = GameCreationForm(request.POST, instance=game, tournament=tournament)
+        form = GameCreationForm(request.POST, instance=game, block=block)
 
         if form.is_valid():
-            game = form.save()
-            # Обновление игрок, участвующих в турнире
-            game.players.clear()
-            players_pk = request.POST.getlist('select')
-            players = PlayerInfo.objects.filter(id__in=players_pk)
-            for player in players:
-                GameInfo.objects.create(player=player, game=game)
-
-            return redirect(reverse('tournaments:tournament_page', kwargs={"pk": tournament_pk}))
+            form.save()
+            return redirect(reverse('tournaments:block_page', kwargs={"pk": tournament_pk, "block_pk": block_pk}))
 
 
 @method_decorator(staff_member_required(), name='dispatch')

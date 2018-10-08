@@ -10,7 +10,8 @@ class TournamentCreationForm(forms.ModelForm):
     class Meta:
         model = Tournament
         fields = (
-            'name', 'start', 'end', 'description', 'type', 'team_type', 'block_type', 'handicap', 'handicap_size', 'city', 'photo')
+            'name', 'start', 'end', 'description', 'type', 'team_type', 'block_type', 'handicap', 'handicap_size',
+            'city', 'photo')
 
     photo = forms.ImageField(
         required=False,
@@ -124,13 +125,15 @@ class GameCreationForm(forms.ModelForm):
     def save(self, commit=True):
         game = super(GameCreationForm, self).save(commit=False)
         if commit:
+            game.date = self.cleaned_data['start'].date()
+            game.time = self.cleaned_data['start'].time()
             game.block = self.block
             game.save()
         return game
 
     class Meta:
         model = Game
-        exclude = ('date', 'time', 'block')
+        exclude = ('date', 'time', 'block', 'info')
 
 
 class BlockCreationForm(forms.ModelForm):
