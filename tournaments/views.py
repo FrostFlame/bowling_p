@@ -432,24 +432,6 @@ class BlockView(View):
                            })
 
 
-# @method_decorator(staff_member_required(), name='dispatch')
-# class BlockUpdate(UpdateView):
-#     """
-#     class-based view для редактирования информации о блоке
-#     """
-#
-#     def get_success_url(self):
-#         return reverse('tournaments:block_page', kwargs={'pk': self.object.tournament.id, 'block_pk': self.object.id})
-#
-#     def selected(self):
-#         return self.object.players.all()
-#
-#     model = Block
-#     template_name = 'tournaments/block_form.html'
-#     success_url = get_success_url
-#     form_class = BlockCreationForm
-
-
 class BlockUpdate(View):
 
     @method_decorator(staff_member_required)
