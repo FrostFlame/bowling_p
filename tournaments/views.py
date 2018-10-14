@@ -240,13 +240,14 @@ class TournamentUpdate(UpdateView):
 
 class TournamentGameInfo(View):
     """
-    class-based view для отображения информации о конкретной игре турнира
+    class-based view для задания баллов
     """
 
     def get(self, request, tournament_pk, block_pk, game_pk):
         tournament = get_object_or_404(Tournament, pk=tournament_pk)
+        block = get_object_or_404(Block, pk=block_pk)
         game = get_object_or_404(Game, pk=game_pk)
-        gameInfo = GameInfo.objects.filter(game=game)
+        gameInfo = game.info.all()
         if tournament.type.name == 'Спортивный':
             men_game_info = filter(lambda g: g.player.sex == '0', gameInfo)
             women_game_info = [g for g in gameInfo if g.player.sex == '1']
@@ -285,6 +286,9 @@ class GameCreateView(View):
         game_form = GameCreationForm(request.POST, block=block)
         if game_form.is_valid():
             game = game_form.save()
+            for player in block.players.all():
+                info = GameInfo.objects.create(player=player)
+                game.info.add(info)
             return redirect(reverse('tournaments:block_page', kwargs={'pk': tournament.id, 'block_pk': block.id}))
         else:
             return render(request, 'tournaments/game_create.html', {

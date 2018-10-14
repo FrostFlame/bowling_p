@@ -22,9 +22,13 @@
     {% endif %}
 
     <div class="col-md-12">
-        <h3>
+        <h2>
             <a class="text-black" href="{% url 'tournaments:tournament_page' game.block.tournament.pk %}">
-                {{ game.block.tournament.name }}</a>
+                Турнир: {{ game.block.tournament.name }}</a>
+        </h2>
+        <h3>
+            <a class="text-black" href="{% url 'tournaments:block_page' game.block.tournament.pk game.block.pk %}">
+                Блок: {{ game.block.name }}</a>
         </h3>
         <h4>Игра: {{ game.name }}</h4>
     </div>
@@ -126,8 +130,9 @@
 
         </div>
         <div class="col-md-12">
-            <a class="btn btn-primary mar-bot-10" href="{% url 'tournaments:tournament_page' game.block.tournament.pk %}">Сохранить и
-                вернуться к турниру</a>
+            <a class="btn btn-primary mar-bot-10"
+               href="{% url 'tournaments:block_page' game.block.tournament.pk game.block.pk %}">Сохранить и
+                вернуться к блоку</a>
         </div>
     {% else %}
 

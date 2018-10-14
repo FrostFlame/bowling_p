@@ -182,7 +182,7 @@ class Block(models.Model):
         Если игр нет, возвращает 0.
         """
         games = Game.objects.filter(block=self)
-        info = GameInfo.objects.filter(game__in=games, team__players=player)
+        info = GameInfo.objects.filter(game__in=games, player=player)
 
         points = info.aggregate(Sum('point'))['point__sum']
         if points and self.tournament.type.name == 'Коммерческий':
@@ -199,7 +199,7 @@ class Block(models.Model):
         """
         games = Game.objects.filter(block=self)
         # todo add get_min_result method
-        info = GameInfo.objects.filter(game__in=games, team__players=player)
+        info = GameInfo.objects.filter(game__in=games, player=player)
         min_points = info.aggregate(Min('point'))['point__min']
         return min_points if min_points else 0
 
@@ -209,7 +209,7 @@ class Block(models.Model):
         Если игр нет, возвращает 0.
         """
         games = Game.objects.filter(block=self)
-        info = GameInfo.objects.filter(game__in=games, team__players=player)
+        info = GameInfo.objects.filter(game__in=games, player=player)
 
         max_points = info.aggregate(Max('point'))['point__max']
         return max_points if max_points else 0
@@ -231,6 +231,6 @@ class Game(models.Model):
 
 
 class GameInfo(models.Model):
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team')
+    player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE, related_name='info')
     # game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='info')
     point = models.IntegerField(default=0)
