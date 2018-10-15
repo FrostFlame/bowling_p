@@ -387,7 +387,7 @@ class BlockView(View):
             for game in games:
                 for player in men_players:
                     try:
-                        men_player_games_dict[player.id].append(player.player_games.get(game=game))
+                        men_player_games_dict[player.id].append(game.info.get(player=player))
                     except GameInfo.DoesNotExist:
                         # Если игрок не участвовал в данной игре, его результат равен 0.
                         gi = GameInfo(result=0)
@@ -398,7 +398,7 @@ class BlockView(View):
             for game in games:
                 for player in women_players:
                     try:
-                        women_player_games_dict[player.id].append(player.player_games.get(game=game))
+                        women_player_games_dict[player.id].append(game.info.get(player=player))
                     except GameInfo.DoesNotExist:
                         # Если игрок не участвовал в данной игре, его результат равен 0.
                         gi = GameInfo(result=0)
