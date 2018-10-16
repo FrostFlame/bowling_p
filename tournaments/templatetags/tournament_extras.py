@@ -2,6 +2,12 @@ from django import template
 
 register = template.Library()
 
+@register.simple_tag
+def get_game_info(tournament, player, game):
+    result = game.point
+    if tournament.handicap and (player.sex == '0' or player.get_age() >= 50):
+        result += tournament.handicap_size
+    return result
 
 @register.simple_tag
 def get_player_points(player, tournament):
@@ -42,7 +48,7 @@ def get_sum(a, b):
 @register.simple_tag
 def get_handicap(games_list):
     if games_list is not None:
-        gk = list(filter(lambda x: x.result != 0, games_list))
+        gk = list(filter(lambda x: x.point != 0, games_list))
         print(gk)
         return f'{len(gk) * 8}'
     else:

@@ -142,6 +142,7 @@ class Tournament(models.Model):
 class Team(models.Model):
     number = models.IntegerField()
     count = models.IntegerField(default=1)
+    type = models.ForeignKey('TeamType', on_delete=models.CASCADE)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='teams')
     players = models.ManyToManyField(PlayerInfo, related_name='team')
 
@@ -185,7 +186,8 @@ class Block(models.Model):
         info = GameInfo.objects.filter(game__in=games, player=player)
 
         points = info.aggregate(Sum('point'))['point__sum']
-        if points and self.tournament.type.name == 'Коммерческий':
+        if points and self.tournament.type.name == 'Коммерческий' and self.tournament.handicap and (
+                player.sex == '0' or player.get_age() > 50):
             points += len(games) * self.tournament.handicap_size
         return points if points else 0
 

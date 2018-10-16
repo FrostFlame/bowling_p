@@ -196,8 +196,19 @@ class DividePlayersByTeams(View):
     def get(self, request, pk):
         tournament = Tournament.objects.get(id=pk)
         players = PlayerInfo.objects.get_players_by_license_type(tournament.type)
+        data = dict()
+        for player in players:
+            team_ids = dict()
+            for type in tournament.team_type.all():
+                x = Team.objects.filter(tournament=tournament, type=type)
+                for y in x:
+                    if PlayerInfo.objects.get(id=player['id']) in y.players.all():
+                        team_ids.update({y.type.pk: y.number})
+            data.update({player['id']: team_ids})
         return render(request, 'tournaments/divide_players.html',
-                      {'tournament': tournament, 'players': players})
+                      {'tournament': tournament,
+                       'players': players,
+                       'data': data})
 
     def post(self, request, pk):
         tournament = Tournament.objects.get(id=pk)
@@ -420,8 +431,7 @@ class BlockView(View):
             for game in games:
                 for player in players:
                     try:
-                        # player_games_dict[player.id].append(player.game.get(game=game))
-                        pass
+                        player_games_dict[player.id].append(game.info.get(player=player))
                     except GameInfo.DoesNotExist:
                         # Если игрок не участвовал в данной игре, его результат равен 0.
                         gi = GameInfo(result=0)
