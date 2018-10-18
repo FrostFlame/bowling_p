@@ -186,7 +186,7 @@ class Block(models.Model):
         info = GameInfo.objects.filter(game__in=games, player=player)
 
         points = info.aggregate(Sum('point'))['point__sum']
-        if points and self.tournament.type.name == 'Коммерческий' and self.tournament.handicap and (
+        if points and self.tournament.handicap and (
                 player.sex == '0' or player.get_age() > 50):
             points += len(games) * self.tournament.handicap_size
         return points if points else 0
@@ -200,9 +200,11 @@ class Block(models.Model):
         Если игр нет, возвращает 0.
         """
         games = Game.objects.filter(block=self)
-        # todo add get_min_result method
         info = GameInfo.objects.filter(game__in=games, player=player)
+
         min_points = info.aggregate(Min('point'))['point__min']
+        if min_points and self.tournament.handicap and (player.sex == '0' or player.get_age() > 50):
+            min_points += self.tournament.handicap_size
         return min_points if min_points else 0
 
     def get_player_max_points(self, player):
@@ -214,6 +216,8 @@ class Block(models.Model):
         info = GameInfo.objects.filter(game__in=games, player=player)
 
         max_points = info.aggregate(Max('point'))['point__max']
+        if max_points and self.tournament.handicap and (player.sex == '0' or player.get_age() > 50):
+            max_points += self.tournament.handicap_size
         return max_points if max_points else 0
 
 

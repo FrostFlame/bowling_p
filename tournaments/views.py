@@ -217,7 +217,8 @@ class DividePlayersByTeams(View):
         for p_id in players_ids:
             for t_id in types_ids:
                 number = request.POST.get(str(p_id) + '_' + str(t_id))
-                count = 0
+                if number == '':
+                    continue
                 if TeamType.objects.get(id=t_id).name == 'Один игрок':
                     count = 1
                 elif TeamType.objects.get(id=t_id).name == 'Два игрока':
@@ -229,7 +230,7 @@ class DividePlayersByTeams(View):
                 if Team.objects.filter(tournament_id=pk, number=number, count=count).exists():
                     team = Team.objects.get(tournament_id=pk, number=number, count=count)
                 else:
-                    team = Team.objects.create(tournament_id=pk, number=number, count=count)
+                    team = Team.objects.create(tournament_id=pk, number=number, count=count, type_id=t_id)
                 team.players.add(PlayerInfo.objects.get(id=p_id))
         return redirect(reverse('tournaments:tournament_page', kwargs={'pk': pk}))
 
@@ -387,8 +388,8 @@ class BlockView(View):
         players = block.players.all()
 
         if tournament.type.name == 'Спортивный':
-            men_players = players.filter(sex='0')
-            women_players = players.filter(sex='1')
+            men_players = players.filter(sex='1')
+            women_players = players.filter(sex='0')
 
             men_players = sorted(men_players, key=tournament.get_player_points, reverse=True)
             women_players = sorted(women_players, key=tournament.get_player_points, reverse=True)

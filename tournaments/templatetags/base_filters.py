@@ -9,4 +9,4 @@ def first_part(value):
 
 @register.filter
 def index(dict, i):
-    return dict[int(i)]
+    return dict.get(int(i), '')

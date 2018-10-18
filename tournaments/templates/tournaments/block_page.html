@@ -26,9 +26,15 @@
         <div class="col-md-12">
             <div class="bg-w box-shadow pad-10 ov-hidden">
                 <div class="row">
-                                        <div class="col-md-9">
+                    <div class="col-md-9">
                         <h3 class="mar-top-10">{{ my_block.name }}</h3>
-                        <h4 class="color-grey">{{ my_block.start_date|date:"d.m.Y" }} – {{ my_block.end_date|date:"d.m.Y" }}</h4>
+                        <h4 class="color-gray">
+                            <a class="text-black" href="{% url 'tournaments:tournament_page' my_block.tournament.pk %}">
+                                Турнир: {{ my_block.tournament.name }}
+                            </a>
+                        </h4>
+                        <h4 class="color-grey">{{ my_block.start_date|date:"d.m.Y" }}
+                            – {{ my_block.end_date|date:"d.m.Y" }}</h4>
                         <p>{{ my_block.description }}</p>
                     </div>
                 </div>
@@ -38,13 +44,13 @@
         <div class="col-md-12 mar-top-10 mar-l-3">
             <div class="list-group list-group-horizontal">
                 <span class="list-group-item list-group-item-action"><b>Игры</b></span>
-                {% for game in games%}
+                {% for game in games %}
                     <a href="{% url 'tournaments:tournament_game_info' tournament.pk my_block.pk game.pk %}"
                        class="list-group-item list-group-item-action">{{ game.name }}</a>
                 {% endfor %}
 
                 {% if user.is_staff %}
-                    <a href="{% url 'tournaments:game_create' pk=tournament.id block_pk=my_block.id%}"
+                    <a href="{% url 'tournaments:game_create' pk=tournament.id block_pk=my_block.id %}"
                        class="list-group-item list-group-item-success">Добавить</a>
                 {% endif %}
             </div>
@@ -70,6 +76,9 @@
                             <th class="text-center" rowspan="2">Сред</th>
                             <th class="text-center" rowspan="2">Мин. игра</th>
                             <th class="text-center" rowspan="2">Макс. игра</th>
+                            {% if tournament.handicap %}
+                                <th class="text-center" rowspan="2">Гандикап</th>
+                            {% endif %}
                         </tr>
                         <tr>
                             {% for game in games %}
@@ -85,7 +94,9 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td style="text-align: left">{{ player }}</td>
                                 {% for game in men_games_dict|get_item:player.id %}
-                                    <td class="text-center">{{ game.point }}</td>
+                                    <td class="text-center">
+                                        {% get_game_info tournament player game %}
+                                    </td>
                                 {% endfor %}
                                 <td class="text-center">
                                     {% if player.city is not None %}
@@ -99,6 +110,17 @@
                                 <td class="text-center">{% get_player_avg_points player my_block %}</td>
                                 <td class="text-center">{% get_player_min_points player my_block %}</td>
                                 <td class="text-center">{% get_player_max_points player my_block %}</td>
+                                {% if tournament.handicap %}
+                                    <td class="text-center">
+                                        {% if tournament.handicap %}
+                                            {% if player.sex == '0' or player.get_age > 50 %}
+                                                {% get_handicap games_dict|get_item:player.pk tournament %}
+                                            {% endif %}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
                             </tr>
 
                         {% endfor %}
@@ -125,6 +147,9 @@
                             <th class="text-center" rowspan="2">Сред</th>
                             <th class="text-center" rowspan="2">Мин. игра</th>
                             <th class="text-center" rowspan="2">Макс. игра</th>
+                            {% if tournament.handicap %}
+                                <th class="text-center" rowspan="2">Гандикап</th>
+                            {% endif %}
                         </tr>
                         <tr>
                             {% for game in games %}
@@ -140,7 +165,9 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td style="text-align: left">{{ player }}</td>
                                 {% for game in women_games_dict|get_item:player.id %}
-                                    <td class="text-center">{{ game.result }}</td>
+                                    <td class="text-center">
+                                        {% get_game_info tournament player game %}
+                                    </td>
                                 {% endfor %}
                                 <td class="text-center">
                                     {% if player.city is not None %}
@@ -154,6 +181,17 @@
                                 <td class="text-center">{% get_player_avg_points player my_block %}</td>
                                 <td class="text-center">{% get_player_min_points player my_block %}</td>
                                 <td class="text-center">{% get_player_max_points player my_block %}</td>
+                                {% if tournament.handicap %}
+                                    <td class="text-center">
+                                        {% if tournament.handicap %}
+                                            {% if player.sex == '0' or player.get_age > 50 %}
+                                                {% get_handicap women_games_dict|get_item:player.pk tournament %}
+                                            {% endif %}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
                             </tr>
 
                         {% endfor %}
@@ -188,7 +226,9 @@
                         <th class="text-center" rowspan="2">Сред</th>
                         <th class="text-center" rowspan="2">Мин. игра</th>
                         <th class="text-center" rowspan="2">Макс. игра</th>
-                        <th class="text-center" rowspan="2">Гандикап</th>
+                        {% if tournament.handicap %}
+                            <th class="text-center" rowspan="2">Гандикап</th>
+                        {% endif %}
                     </tr>
                     <tr>
                         {% for game in games %}
@@ -220,13 +260,17 @@
                             <td class="text-center">{% get_player_avg_points player my_block %}</td>
                             <td class="text-center">{% get_player_min_points player my_block %}</td>
                             <td class="text-center">{% get_player_max_points player my_block %}</td>
-                            <td class="text-center">
-                                {% if player.sex == '1' or player.get_age > 50 %}
-                                    {% get_handicap games_dict|get_item:player.pk %}
-                                {% else %}
-                                    0
-                                {% endif %}
-                            </td>
+                            {% if tournament.handicap %}
+                                <td class="text-center">
+                                    {% if tournament.handicap %}
+                                        {% if player.sex == '0' or player.get_age > 50 %}
+                                            {% get_handicap games_dict|get_item:player.pk tournament %}
+                                        {% endif %}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </td>
+                            {% endif %}
                         </tr>
 
                     {% endfor %}
