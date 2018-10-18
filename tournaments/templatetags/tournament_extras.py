@@ -19,6 +19,9 @@ def get_team_game_info(tournament, team, game):
 def get_player_points(player, block):
     return block.get_player_points(player)
 
+@register.simple_tag
+def get_team_points(team, block):
+    return sum(get_player_points(player, block) for player in team.players.all())
 
 @register.simple_tag
 def get_player_max_points(player, block):
