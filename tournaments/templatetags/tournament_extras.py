@@ -75,6 +75,10 @@ def get_handicap(games_list, tournament):
     else:
         return 0
 
+@register.simple_tag
+def get_team_handicap(games, team):
+    return len(games)*len(team.players.filter(sex='0'))*games[0].block.tournament.handicap_size
+
 
 @register.filter
 def get_item(dictionary, key):
