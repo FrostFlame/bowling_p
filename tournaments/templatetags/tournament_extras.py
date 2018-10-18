@@ -27,10 +27,17 @@ def get_team_points(team, block):
 def get_player_max_points(player, block):
     return block.get_player_max_points(player)
 
+@register.simple_tag
+def get_team_max_points(team, block):
+    return max(get_team_game_info(block.tournament, team, game) for game in block.games.all())
 
 @register.simple_tag
 def get_player_min_points(player, block):
     return block.get_player_min_points(player)
+
+@register.simple_tag
+def get_team_min_points(team, block):
+    return min(get_team_game_info(block.tournament, team, game) for game in block.games.all())
 
 
 @register.simple_tag
