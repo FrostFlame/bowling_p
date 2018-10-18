@@ -40,6 +40,12 @@ def get_player_avg_points(player, block):
     else:
         return 0
 
+@register.simple_tag
+def get_team_avg_points(team, block):
+    if block.get_games_count() != 0:
+        return f'{round(get_team_points(team, block) / block.get_games_count(),2)}'
+    else:
+        return 0
 
 @register.simple_tag
 def get_player_200_points(player, block):
