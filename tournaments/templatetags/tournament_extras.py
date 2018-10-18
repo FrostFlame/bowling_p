@@ -1,5 +1,7 @@
 from django import template
 
+from tournaments.models import GameInfo
+
 register = template.Library()
 
 @register.simple_tag
@@ -8,6 +10,10 @@ def get_game_info(tournament, player, game):
     if tournament.handicap and result != 0 and (player.sex == '0' or player.get_age() >= 50):
         result += tournament.handicap_size
     return result
+
+@register.simple_tag
+def get_team_game_info(tournament, team, game):
+    return sum(get_game_info(tournament, player, game.info.get(player=player)) for player in team.players.all())
 
 @register.simple_tag
 def get_player_points(player, block):

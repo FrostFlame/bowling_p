@@ -10,3 +10,7 @@ def first_part(value):
 @register.filter
 def index(dict, i):
     return dict.get(int(i), '')
+
+@register.filter
+def filter(dict, i):
+    return dict.filter(type=i)

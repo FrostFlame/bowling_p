@@ -214,6 +214,8 @@ class DividePlayersByTeams(View):
         tournament = Tournament.objects.get(id=pk)
         players_ids = tournament.players.all().values_list('id', flat=True)
         types_ids = tournament.team_type.all().values_list('id', flat=True)
+
+        tournament.teams.all().delete()
         for p_id in players_ids:
             for t_id in types_ids:
                 number = request.POST.get(str(p_id) + '_' + str(t_id))
@@ -387,6 +389,8 @@ class BlockView(View):
         # Сортируем игроков по сумме очков, набранных за турнир
         players = block.players.all()
 
+        teams = Team.objects.filter(tournament_id=pk)
+
         if tournament.type.name == 'Спортивный':
             men_players = players.filter(sex='1')
             women_players = players.filter(sex='0')
@@ -423,7 +427,8 @@ class BlockView(View):
                            'women_players': women_players,
                            'men_games_dict': men_player_games_dict,
                            'women_games_dict': women_player_games_dict,
-                           'my_block': block
+                           'my_block': block,
+                           'teams': teams
                            })
 
         else:
@@ -443,7 +448,8 @@ class BlockView(View):
                            'my_block': block,
                            'games': games,
                            'players': players,
-                           'games_dict': player_games_dict
+                           'games_dict': player_games_dict,
+                           'teams': teams
                            })
 
 

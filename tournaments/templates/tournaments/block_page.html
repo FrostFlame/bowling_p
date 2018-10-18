@@ -1,5 +1,6 @@
 {% extends user.is_staff|yesno:"moderator/base.html,base.html" %}
 {% load static %}
+{% load base_filters %}
 
 {% block title %}
     {{ block.name }}
@@ -278,58 +279,80 @@
 
                     </tbody>
                 </table>
+            {% endif %}
 
-            {% else %}
-                <h2>Таблица</h2>
-                <table class="table display nowrap table-hover res-table" id="result-table-w" style="width: 100%;">
-                    <thead>
-                    <tr>
-                        <th rowspan="2">#</th>
-                        <th rowspan="2">Игрок</th>
-                        <th colspan="{{ games.count }}" class="text-center">Игры</th>
-                        <th rowspan="2">Город</th>
-                        <th rowspan="2">Сумма</th>
-                        <th rowspan="2">+-200</th>
-                        <th rowspan="2">Сред</th>
-                        <th rowspan="2">Мин. игра</th>
-                        <th rowspan="2">Макс. игра</th>
-                    </tr>
-                    <tr>
-                        {% for game in games %}
-                            <th>{{ forloop.counter }}</th>
-                        {% endfor %}
-                    </tr>
 
-                    </thead>
-                    <tbody>
-                    {% for player in players %}
+
+
+            {% for type in tournament.team_type.all %}
+                {% if type.name != "Один игрок" %}
+                    <h2>{{ type.name }}</h2>
+                    <table class="table display nowrap table-hover res-table" id="result-table-w" style="width: 100%;">
+                        <thead>
                         <tr>
+                            <th rowspan="2">#</th>
+                            <th rowspan="2">Команда</th>
+                            {% if games %}
+                                <th colspan="{{ games.count }}" class="text-center">Игры</th>
+                            {% endif %}
 
-                            <td>{{ forloop.counter }}</td>
-                            <td style="text-align: left">{{ player }}</td>
-                            {% for game in games_dict|get_item:player.id %}
-                                <td>{{ game.result }}</td>
+                            {#                            <th class="text-center" rowspan="2">Город</th>#}
+                            <th class="text-center" rowspan="2">Сумма</th>
+                            {#                            <th class="text-center" rowspan="2">+-200</th>#}
+                            <th class="text-center" rowspan="2">Сред</th>
+                            <th class="text-center" rowspan="2">Мин. игра</th>
+                            <th class="text-center" rowspan="2">Макс. игра</th>
+                            {% if tournament.handicap %}
+                                <th class="text-center" rowspan="2">Гандикап</th>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            {% for game in games %}
+                                <th>{{ forloop.counter }}</th>
                             {% endfor %}
-                            <td>
-                                {% if player.city is not None %}
-                                    {{ player.city }}
-                                {% else %}
-                                    Не указано
-                                {% endif %}
-                            </td>
-                            <td>{% get_player_points player my_block %}</td>
-                            <td>{% get_player_200_points player my_block %}</td>
-                            <td>{% get_player_avg_points player my_block %}</td>
-                            <td>{% get_player_min_points player my_block %}</td>
-                            <td>{% get_player_max_points player my_block %}</td>
                         </tr>
 
-                    {% endfor %}
+                        </thead>
+                        <tbody>
+                        {% for team in teams|filter:type %}
+                            <tr>
+
+                                <td>{{ forloop.counter }}</td>
+                                <td style="text-align: left">{{ team }}</td>
+                                {% for game in games %}
+                                    <td class="text-center">
+                                    {% get_team_game_info tournament team game %}
+                                </td>
+                                {% endfor %}
+{#                                <td class="text-center">#}
+{#                                    {% if player.city is not None %}#}
+{#                                        {{ player.city }}#}
+{#                                    {% else %}#}
+{#                                        Не указано#}
+{#                                    {% endif %}#}
+{#                                </td>#}
+{#                                <td class="text-center">{% get_player_points player my_block %}</td>#}
+{#                                <td class="text-center">{% get_player_200_points player my_block %}</td>#}
+{#                                <td class="text-center">{% get_player_avg_points player my_block %}</td>#}
+{#                                <td class="text-center">{% get_player_min_points player my_block %}</td>#}
+{#                                <td class="text-center">{% get_player_max_points player my_block %}</td>#}
+{#                                {% if tournament.handicap %}#}
+{#                                    <td class="text-center">#}
+{#                                        {% if tournament.handicap %}#}
+{#                                                {% get_handicap games_dict|get_item:player.pk tournament %}#}
+{#                                        {% else %}#}
+{#                                            0#}
+{#                                        {% endif %}#}
+{#                                    </td>#}
+{#                                {% endif %}#}
+                            </tr>
+                        {% endfor %}
 
 
-                    </tbody>
-                </table>
-            {% endif %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            {% endfor %}
         </div>
 
         {% if user.is_staff %}

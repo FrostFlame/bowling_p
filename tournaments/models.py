@@ -146,6 +146,9 @@ class Team(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='teams')
     players = models.ManyToManyField(PlayerInfo, related_name='team')
 
+    def __str__(self):
+        return ', '.join(str(player) for player in self.players.all())
+
 
 class TeamType(models.Model):
     class Meta:
