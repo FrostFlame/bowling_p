@@ -67,17 +67,25 @@ class LoginUserForm(AuthenticationForm):
 
 
 class PlayerRegistrationForm(forms.ModelForm):
+    """ Форма самостоятельной регистрации игроком """
     i_name = forms.CharField(
         label='Имя',
         widget=forms.TextInput(
             attrs={'placeholder': 'Имя', 'class': 'form-control', 'data-validation': 'custom',
-                   'data-validation-regexp': '^[а-яёА-ЯЁ]+$'}),
+                   'data-validation-regexp': '^$|^[а-яёА-ЯЁ]+$'}),
     )
     f_name = forms.CharField(
         label='Фамилия',
         widget=forms.TextInput(
             attrs={'placeholder': 'Фамилия', 'class': 'form-control', 'data-validation': 'custom',
                    'data-validation-regexp': '^[а-яёА-ЯЁ]+([-][А-ЯЁа-яё]+)?$'}),
+    )
+    o_name = forms.CharField(
+        label='Отчество',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Отчество', 'class': 'form-control', 'data-validation': 'custom',
+                   'data-validation-regexp': '^$|^[а-яёА-ЯЁ]*$'}),
     )
     passport = forms.ImageField(
         label='Фотография паспорта',
@@ -93,17 +101,11 @@ class PlayerRegistrationForm(forms.ModelForm):
             attrs={'class': 'form-control'}
         )
     )
-    o_name = forms.CharField(
-        label='Отчество',
-        required=False,
-        widget=forms.TextInput(
-            attrs={'placeholder': 'Отчество', 'class': 'form-control', 'data-validation': 'custom',
-                   'data-validation-regexp': '^[а-яёА-ЯЁ]*$'}),
-    )
     sex = forms.ChoiceField(
         label='Пол',
         choices=SEX_CHOICES,
         required=True,
+        initial=SEX_CHOICES[1],
         widget=forms.Select(
             attrs={'class': 'form-control'}, )
     )

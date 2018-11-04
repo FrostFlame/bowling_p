@@ -90,8 +90,8 @@ class PlayerInfo(models.Model):
     class Meta:
         verbose_name_plural = 'Игроки'
 
-    i_name = models.CharField(max_length=50, blank=False)
     f_name = models.CharField(max_length=50, blank=False)
+    i_name = models.CharField(max_length=50, blank=False)
     o_name = models.CharField(max_length=50, blank=True)
 
     date_of_birth = models.DateField(null=True)
@@ -102,7 +102,7 @@ class PlayerInfo(models.Model):
     category = models.ForeignKey('SportCategory')
     license = models.CharField(max_length=20, blank=True, default='Не указана')
 
-    email = models.EmailField(blank=False)
+    email = models.EmailField(blank=True, default='')
 
     objects = PlayerManager()
 
