@@ -278,7 +278,7 @@
 
 
 
-            {% for type in tournament.team_type.all %}
+            {% for type in tournament.team_type.all%}
                 {% if type.name != "Один игрок" %}
                     <h2>{{ type.name }}</h2>
                     <table class="table display nowrap table-hover res-table" id="result-table-w" style="width: 100%;">

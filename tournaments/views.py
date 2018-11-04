@@ -223,14 +223,14 @@ class DividePlayersByTeams(View):
                     continue
                 if TeamType.objects.get(id=t_id).name == 'Один игрок':
                     count = 1
-                elif TeamType.objects.get(id=t_id).name == 'Два игрока':
+                elif TeamType.objects.get(id=t_id).name == 'Пара' or TeamType.objects.get(id=t_id).name == 'Пара микс':
                     count = 2
                 elif TeamType.objects.get(id=t_id).name == 'Три игрока':
                     count = 3
                 elif TeamType.objects.get(id=t_id).name == 'Пять игроков':
                     count = 5
-                if Team.objects.filter(tournament_id=pk, number=number, count=count).exists():
-                    team = Team.objects.get(tournament_id=pk, number=number, count=count)
+                if Team.objects.filter(tournament_id=pk, number=number, type_id=t_id).exists():
+                    team = Team.objects.get(tournament_id=pk, number=number, type_id=t_id)
                 else:
                     team = Team.objects.create(tournament_id=pk, number=number, count=count, type_id=t_id)
                 team.players.add(PlayerInfo.objects.get(id=p_id))

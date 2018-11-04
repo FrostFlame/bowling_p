@@ -186,7 +186,7 @@ class Block(models.Model):
         Если игр нет, возвращает 0.
         """
         games = Game.objects.filter(block=self)
-        info = GameInfo.objects.filter(game__in=games, player=player)
+        info = GameInfo.objects.filter(game__in=games, team=player.get_team(tournament=self.tournament, count=1))
 
         points = info.aggregate(Sum('point'))['point__sum']
         if points and self.tournament.handicap and (
@@ -203,7 +203,7 @@ class Block(models.Model):
         Если игр нет, возвращает 0.
         """
         games = Game.objects.filter(block=self)
-        info = GameInfo.objects.filter(game__in=games, player=player)
+        info = GameInfo.objects.filter(game__in=games, team=player.get_team(tournament=self.tournament, count=1))
 
         min_points = info.aggregate(Min('point'))['point__min']
         if min_points and self.tournament.handicap and (player.sex == '0' or player.get_age() > 50):
@@ -216,7 +216,7 @@ class Block(models.Model):
         Если игр нет, возвращает 0.
         """
         games = Game.objects.filter(block=self)
-        info = GameInfo.objects.filter(game__in=games, player=player)
+        info = GameInfo.objects.filter(game__in=games, team=player.get_team(tournament=self.tournament, count=1))
 
         max_points = info.aggregate(Max('point'))['point__max']
         if max_points and self.tournament.handicap and (player.sex == '0' or player.get_age() > 50):
@@ -233,13 +233,13 @@ class Game(models.Model):
     name = models.CharField(max_length=200, blank=False)
     block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name='games')
     is_desperado = models.BooleanField(default=False)
-    info = models.ManyToManyField('GameInfo', related_name='game')
+    # info = models.ManyToManyField('GameInfo', related_name='game')
 
     def __str__(self):
         return self.name
 
 
 class GameInfo(models.Model):
-    player = models.ForeignKey(PlayerInfo, on_delete=models.CASCADE, related_name='info')
-    # game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='info')
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='info')
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='info')
     point = models.IntegerField(default=0)
