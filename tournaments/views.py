@@ -88,7 +88,7 @@ class TournamentView(View):
 
     def get(self, request, pk):
         tournament = Tournament.objects.get(id=pk)
-        blocks = tournament.block_tournament.filter(tournament=tournament).order_by('creation_date')
+        blocks = tournament.blocks.filter(tournament=tournament).order_by('creation_date')
         # Сортируем игроков по сумме очков, набранных за турнир
         # players = tournament.players.all()
 
@@ -300,10 +300,11 @@ class GameCreateView(View):
         game_form = GameCreationForm(request.POST, block=block)
         if game_form.is_valid():
             game = game_form.save()
-            for player in block.players.all():
-                info = GameInfo.objects.create(player=player)
-                game.info.add(info)
-            return redirect(reverse('tournaments:block_page', kwargs={'pk': tournament.id, 'block_pk': block.id}))
+            for bl in block.tournament.blocks.all():
+                for player in bl.players.all():
+                    info = GameInfo.objects.create(player=player)
+                    game.info.add(info)
+                return redirect(reverse('tournaments:block_page', kwargs={'pk': tournament.id, 'block_pk': block.id}))
         else:
             return render(request, 'tournaments/game_create.html', {
                 'form': game_form,

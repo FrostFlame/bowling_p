@@ -50,7 +50,7 @@
 
         <div class="col-md-12 mar-top-10 mar-l-3">
             <div class="list-group list-group-horizontal">
-                <span class="list-group-item list-group-item-action"><b>Блоки</b></span>
+                <span class="list-group-item list-group-item-action"><b>{{ tournament.block_type }}</b></span>
                 {% for block in blocks %}
                     <a href="{% url 'tournaments:block_page' tournament.pk block.pk %}"
                        class="list-group-item list-group-item-action">{{ block.name }}</a>

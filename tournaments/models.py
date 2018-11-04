@@ -51,7 +51,7 @@ class Tournament(models.Model):
         Возвращает сумму очков, набранную игроком за весь турнир.
         Если игр нет, возвращает 0.
         """
-        blocks = self.block_tournament.all()
+        blocks = self.blocks.all()
         if player.license != '':
             for block in blocks:
                 pass
@@ -177,7 +177,7 @@ class Block(models.Model):
     creation_date = models.DateTimeField(default=datetime.now)
     description = models.TextField(max_length=500, blank=True, default='')
     is_final = models.BooleanField(default=False)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='block_tournament')
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='blocks')
     players = models.ManyToManyField(PlayerInfo, related_name='block')
 
     def get_player_points(self, player):

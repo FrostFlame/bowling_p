@@ -1,43 +1,53 @@
 from django import template
 
-from tournaments.models import GameInfo
-
 register = template.Library()
+
 
 @register.simple_tag
 def get_game_info(tournament, player, game):
     result = game.point
-    if tournament.handicap and result != 0 and (player.sex == '0' or player.get_age() >= 50):
-        result += tournament.handicap_size
     return result
+
 
 @register.simple_tag
 def get_team_game_info(tournament, team, game):
     return sum(get_game_info(tournament, player, game.info.get(player=player)) for player in team.players.all())
 
+
 @register.simple_tag
 def get_player_points(player, block):
     return block.get_player_points(player)
+
 
 @register.simple_tag
 def get_team_points(team, block):
     return sum(get_player_points(player, block) for player in team.players.all())
 
+
 @register.simple_tag
 def get_player_max_points(player, block):
     return block.get_player_max_points(player)
 
+
 @register.simple_tag
 def get_team_max_points(team, block):
-    return max(get_team_game_info(block.tournament, team, game) for game in block.games.all())
+    if block.games.all():
+        return max(get_team_game_info(block.tournament, team, game) for game in block.games.all())
+    else:
+        return 0
+
 
 @register.simple_tag
 def get_player_min_points(player, block):
     return block.get_player_min_points(player)
 
+
 @register.simple_tag
 def get_team_min_points(team, block):
-    return min(get_team_game_info(block.tournament, team, game) for game in block.games.all())
+    if block.games.all():
+        return min(get_team_game_info(block.tournament, team, game) for game in block.games.all())
+    else:
+        return 0
 
 
 @register.simple_tag
@@ -47,12 +57,14 @@ def get_player_avg_points(player, block):
     else:
         return 0
 
+
 @register.simple_tag
 def get_team_avg_points(team, block):
     if block.get_games_count() != 0:
         return f'{round(get_team_points(team, block) / block.get_games_count(),2)}'
     else:
         return 0
+
 
 @register.simple_tag
 def get_player_200_points(player, block):
@@ -75,9 +87,13 @@ def get_handicap(games_list, tournament):
     else:
         return 0
 
+
 @register.simple_tag
 def get_team_handicap(games, team):
-    return len(games)*len(team.players.filter(sex='0'))*games[0].block.tournament.handicap_size
+    if games:
+        return len(games) * len(team.players.filter(sex='0')) * games[0].block.tournament.handicap_size
+    else:
+        return 0
 
 
 @register.filter
