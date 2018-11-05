@@ -43,6 +43,12 @@ class Tournament(models.Model):
     players = models.ManyToManyField(PlayerInfo, related_name='tournament_players', through=TournamentMembership)
     block_type = models.ForeignKey('BlockType', on_delete=models.CASCADE, related_name='block_type')
 
+    def is_commercial(self):
+        return self.type.name == 'Коммерческий'
+
+    def is_sport(self):
+        return self.type.name == 'Спортивный'
+
     def __str__(self):
         return self.name
 
