@@ -29,8 +29,9 @@
                             <div class="form-group">
                                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                                 {% if field.id_for_label == 'id_start' or field.id_for_label == 'id_end' %}
-                                    <input id="{{ field.id }}" name="{{ field.name }}" type="text" class="form-control"
-                                           value="{{ field.value | date:'d.m.Y' }}">
+                                    <input id="{{ field.id_for_label }}" name="{{ field.name }}" type="text" class="form-control"
+                                           value="{{ field.value | date:'d.m.Y' }}" autocomplete="off">
+                                    <p hidden class="error" id="{{ field.id_for_label }}_error">Дата начала турнира не может быть позже даты окончания</p>
                                 {% else %}
                                     {{ field }}
                                 {% endif %}
@@ -121,6 +122,50 @@
 
             $("#id_photo").change(function () {
                 readURL(this);
+            });
+
+            // Валидация дат
+            $('#id_start').change(function () {
+                var start_date = $(this).val();
+                var end_date = $('#id_end').val();
+                if (start_date && end_date) {
+                    end_date = end_date.split('.');
+                    start_date = start_date.split('.');
+                    end_date = new Date(end_date[2], end_date[1] - 1, end_date[0]);
+                    start_date = new Date(start_date[2], start_date[1] - 1, start_date[0]);
+                    if (start_date > end_date) {
+                        $('#id_start_error').show();
+                        $(this).addClass("error");
+                    }
+                    else {
+                        $('#id_start_error').hide();
+                        $(this).removeClass("error");
+                        $('#id_end_error').hide();
+                        $('#id_end').removeClass("error");
+                    }
+                }
+            });
+
+            // тут начало и конец поменялись местами
+            $('#id_end').change(function () {
+                var start_date = $(this).val();
+                var end_date = $('#id_start').val();
+                if (start_date && end_date) {
+                    end_date = end_date.split('.');
+                    start_date = start_date.split('.');
+                    end_date = new Date(end_date[2], end_date[1] - 1, end_date[0]);
+                    start_date = new Date(start_date[2], start_date[1] - 1, start_date[0]);
+                    if (start_date < end_date) {
+                        $('#id_end_error').show();
+                        $(this).addClass("error");
+                    }
+                    else {
+                        $('#id_end_error').hide();
+                        $(this).removeClass("error");
+                        $('#id_start_error').hide();
+                        $('#id_start').removeClass("error");
+                    }
+                }
             });
 
         });
