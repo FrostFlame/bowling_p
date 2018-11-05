@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="{% static 'css/imageupload.css' %}">
     <link rel="stylesheet" type="text/css"
           href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}"/>
-
 {% endblock %}
 
 {% block content %}
@@ -26,12 +25,16 @@
                     {% csrf_token %}
 
                     {% for field in form %}
-
                         {% if field.id_for_label != 'id_photo' %}
-                            <p>
-
+                            <div class="form-group">
                                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                {{ field }}</p>
+                                {% if field.id_for_label == 'id_start' or field.id_for_label == 'id_end' %}
+                                    <input id="{{ field.id }}" name="{{ field.name }}" type="text" class="form-control"
+                                           value="{{ field.value | date:'d.m.Y' }}">
+                                {% else %}
+                                    {{ field }}
+                                {% endif %}
+                            </div>
                         {% endif %}
                     {% endfor %}
 
@@ -41,13 +44,7 @@
                             <div class="input-group">
                     <span class="input-group-btn">
                         <span class="btn btn-default btn-file">
-                            Выбрать… <input type="file" id="id_photo" accept="image/jpeg, image/png"
-                                            name="photo"
-                                            data-validation="mime size"
-                                            data-validation-allowing="jpg, png, gif"
-                                            data-validation-max-size="20Mb"
-                                            data-validation-error-msg-size="Вы не можете загружать изображения больше 20Мб"
-                                            data-validation-error-msg-mime="Вы можете загружать только изображения.">
+                            Выбрать… <input type="file" id="id_photo" accept="image/jpeg, image/png" name="photo">
                         </span>
                     </span>
                                 <input type="text" autocomplete="off" class="form-control" readonly>
@@ -56,7 +53,7 @@
                         </div>
                     </div>
 
-                {{ form.errors }}
+                    {{ form.errors }}
 
                     <div class="form-group mar-top-10">
                         <button class="btn btn-primary">Продолжить</button>
