@@ -16,6 +16,9 @@
     <form action="" method="post">
         {% csrf_token %}
         <div name="mydiv">
+            {% for type in tournament.team_type.all %}
+                {{ type }}
+            {% endfor %}
             {% for player in players %}
                 <ul>
                     <li>
