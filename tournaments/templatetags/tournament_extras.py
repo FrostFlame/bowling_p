@@ -11,7 +11,8 @@ def get_game_info(tournament, player, game):
 
 @register.simple_tag
 def get_team_game_info(tournament, team, game):
-    return sum(get_game_info(tournament, player, game.info.get(player=player)) for player in team.players.all())
+    if tournament.is_commercial():
+        return sum(get_game_info(tournament, player, game.info.get(team=player.get_team(tournament, 1))) for player in team.players.all())
 
 
 @register.simple_tag

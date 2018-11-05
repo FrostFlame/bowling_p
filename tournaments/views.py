@@ -300,11 +300,11 @@ class GameCreateView(View):
         game_form = GameCreationForm(request.POST, block=block)
         if game_form.is_valid():
             game = game_form.save()
-            for bl in block.tournament.blocks.all():
-                for player in bl.players.all():
-                    info = GameInfo.objects.create(player=player)
-                    game.info.add(info)
-                return redirect(reverse('tournaments:block_page', kwargs={'pk': tournament.id, 'block_pk': block.id}))
+            if tournament.is_commercial():
+                for bl in block.tournament.blocks.all():
+                    for solo_team in [player.get_team(tournament=tournament, count=1) for player in bl.players.all()]:
+                        GameInfo.objects.create(team=solo_team, game=game)
+                    return redirect(reverse('tournaments:block_page', kwargs={'pk': tournament.id, 'block_pk': block.id}))
         else:
             return render(request, 'tournaments/game_create.html', {
                 'form': game_form,
@@ -438,7 +438,7 @@ class BlockView(View):
             for game in games:
                 for player in players:
                     try:
-                        player_games_dict[player.id].append(game.info.get(player=player))
+                        player_games_dict[player.id].append(game.info.get(team=player.get_team(tournament, 1)))
                     except GameInfo.DoesNotExist:
                         # Если игрок не участвовал в данной игре, его результат равен 0.
                         gi = GameInfo(result=0)
