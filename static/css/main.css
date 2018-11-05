@@ -1443,7 +1443,7 @@ ul.nostyle i {
     opacity: 1;
 }
 
-#result-table td, th {
+table.result-table td, table.result-table th {
     text-align: center;
 }
 
@@ -1510,4 +1510,8 @@ textarea.vertical-resize {
     resize: vertical;
     max-height: 300px;
     min-height: 40px;
+}
+
+.team-number {
+    width: 50px;
 }

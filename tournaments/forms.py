@@ -60,6 +60,7 @@ class TournamentCreationForm(forms.ModelForm):
         label='Тип турнира',
         queryset=TournamentType.objects.all(),
         empty_label=None,
+        initial=TournamentType.objects.first(),
         widget=forms.Select(
             attrs={'class': 'form-control'}
         )
@@ -67,10 +68,9 @@ class TournamentCreationForm(forms.ModelForm):
 
     team_type = forms.ModelMultipleChoiceField(
         label='Тип команд',
-        queryset=TeamType.objects.all(),
-        widget=forms.CheckboxSelectMultiple(
-            attrs={'class': 'form-control'}
-        )
+        queryset=TeamType.objects,
+        initial=TeamType.objects.first(),
+        widget=forms.CheckboxSelectMultiple
     )
 
     handicap = forms.BooleanField(
@@ -88,7 +88,7 @@ class TournamentCreationForm(forms.ModelForm):
 
     block_type = forms.ModelChoiceField(
         empty_label=None,
-        label='Тип блоков',
+        label='Блоки или этапы',
         queryset=BlockType.objects.all()
     )
 

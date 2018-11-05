@@ -3,7 +3,7 @@
 {% load base_filters %}
 
 {% block title %}
-    Разбиение игроков по командам
+    Распреденение игроков
 {% endblock %}
 
 {% block extrahead %}
@@ -12,25 +12,53 @@
 {% endblock %}
 
 {% block content %}
-    <h3>Добавление игроков в турнир "{{ tournament.name }}"</h3>
-    <form action="" method="post">
-        {% csrf_token %}
-        <div name="mydiv">
-            {% for type in tournament.team_type.all %}
-                {{ type }}
-            {% endfor %}
-            {% for player in players %}
-                <ul>
-                    <li>
-                        {{ player.f_name }} {{ player.i_name }} {{ player.o_name }}
-                        {% for type in tournament.team_type.all %}
-                            <input name="{{ player.id }}_{{ type.id }}" type="text" value="{{ data|index:player.id|index:type.id }}">
+    <h3>Распределение игроков в турнире "{{ tournament.name }}"</h3>
+
+    <div class="row mar-top-25">
+        <div class="col-md-6">
+            <div class="table-responsive">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <table class="table divide-players">
+                        <thead>
+                        <tr>
+                            <th>ФИО игрока</th>
+                            {% for type in tournament.team_type.all %}
+                                <th>
+                                    {{ type }}
+                                </th>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for player in players %}
+                            <tr>
+                                <td>
+                                    {{ player.f_name }} {{ player.i_name }} {{ player.o_name }}
+                                </td>
+                                {% for type in tournament.team_type.all %}
+                                    <td>
+                                        {% if forloop.counter == 1 %}
+                                            <input class="team-number" name="{{ player.id }}_{{ type.id }}" type="text"
+                                                   value={{ forloop.parentloop.counter }}>
+                                        {% else %}
+                                            <input class="team-number" name="{{ player.id }}_{{ type.id }}" type="text"
+                                                   value="{{ data|index:player.id|index:type.id }}">
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
                         {% endfor %}
-                    </li>
-                </ul>
-            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="col-md-6"></div>
+                    <div class="col-md-12">
+                        <button class="btn btn-primary">Продолжить</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <button class="btn btn-primary">Продолжить</button>
-    </form>
+    </div>
 
 {% endblock %}
