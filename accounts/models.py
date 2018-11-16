@@ -119,8 +119,8 @@ class PlayerInfo(models.Model):
         return today.year - self.date_of_birth.year - (
                 (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
 
-    def get_team(self, tournament, count=1):
-        teams = self.team.filter(tournament=tournament, count=count)
+    def get_team(self, tournament, type):
+        teams = self.team.filter(tournament=tournament, type=type)
         for team in teams:
             if self in team.players.all():
                 return team

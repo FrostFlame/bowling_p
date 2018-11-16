@@ -1,5 +1,7 @@
 from django import template
 
+from tournaments.models import TeamType
+
 register = template.Library()
 
 
@@ -12,7 +14,11 @@ def get_game_info(tournament, player, game):
 @register.simple_tag
 def get_team_game_info(tournament, team, game):
     if tournament.is_commercial():
-        return sum(get_game_info(tournament, player, game.info.get(team=player.get_team(tournament, 1))) for player in team.players.all())
+        return sum(get_game_info(tournament, player, game.info.get(
+            team=player.get_team(tournament, type=TeamType.objects.get(name='Один игрок')))) for player in
+                   team.players.all())
+    elif tournament.is_sport():
+        return game.info.get(team=team).point
 
 
 @register.simple_tag

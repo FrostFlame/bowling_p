@@ -13,7 +13,7 @@ from django.views.generic import FormView
 
 from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm, GameCreationForm, TournamentSearchForm, BlockCreationForm
-from tournaments.models import Tournament, Game, GameInfo, Team, TournamentMembership, TeamType, Block
+from tournaments.models import Tournament, Game, GameInfo, Team, TournamentMembership, TeamType, Block, TeamGameInfo
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -215,7 +215,6 @@ class DividePlayersByTeams(View):
         players_ids = tournament.players.all().values_list('id', flat=True)
         types_ids = tournament.team_type.all().values_list('id', flat=True)
 
-        tournament.teams.all().delete()
         for p_id in players_ids:
             for t_id in types_ids:
                 number = request.POST.get(str(p_id) + '_' + str(t_id))
@@ -234,6 +233,11 @@ class DividePlayersByTeams(View):
                 else:
                     team = Team.objects.create(tournament_id=pk, number=number, count=count, type_id=t_id)
                 team.players.add(PlayerInfo.objects.get(id=p_id))
+        game_infos = GameInfo.objects.filter(game__block__tournament=tournament)
+        for game_info in game_infos:
+            game_info.team = Team.objects.get(number=game_info.team.number, count=game_info.team.count,
+                                              type=game_info.team.type, tournament=tournament)
+        tournament.teams.filter(info__exact=None)
         return redirect(reverse('tournaments:tournament_page', kwargs={'pk': pk}))
 
 
@@ -262,14 +266,17 @@ class TournamentGameInfo(View):
         block = get_object_or_404(Block, pk=block_pk)
         game = get_object_or_404(Game, pk=game_pk)
         gameInfo = game.info.all()
-        if tournament.type.name == 'Спортивный':
-            men_game_info = filter(lambda g: g.player.sex == '0', gameInfo)
-            women_game_info = [g for g in gameInfo if g.player.sex == '1']
+        if tournament.is_sport():
+            solo_teams = gameInfo.filter(team__count=1)
+            men_game_info = filter(lambda g: g.team.players.first().sex == '1', solo_teams)
+            women_game_info = [g for g in solo_teams if g.team.players.first().sex == '0']
+            teams_info = game.team_info.all()
             return render(request, 'tournaments/tournament_game_info.html',
                           {'game': game,
                            'mGameInfo': men_game_info,
                            'wGameInfo': women_game_info,
-                           'tournament': tournament})
+                           'tournament': tournament,
+                           'teamsGameInfo': teams_info})
 
         else:
             return render(request, 'tournaments/tournament_game_info.html',
@@ -302,9 +309,23 @@ class GameCreateView(View):
             game = game_form.save()
             if tournament.is_commercial():
                 for bl in block.tournament.blocks.all():
-                    for solo_team in [player.get_team(tournament=tournament, count=1) for player in bl.players.all()]:
+                    for solo_team in [
+                        player.get_team(tournament=tournament, type=TeamType.objects.get(name='Один игрок')) for player
+                        in bl.players.all()]:
                         GameInfo.objects.create(team=solo_team, game=game)
-                    return redirect(reverse('tournaments:block_page', kwargs={'pk': tournament.id, 'block_pk': block.id}))
+                    return redirect(
+                        reverse('tournaments:block_page', kwargs={'pk': tournament.id, 'block_pk': block.id}))
+            elif tournament.is_sport():
+                for solo_team in [player.get_team(tournament=tournament, type=TeamType.objects.get(name='Один игрок'))
+                                  for player in block.players.all()]:
+                    GameInfo.objects.create(team=solo_team, game=game)
+
+                for type in TeamType.objects.exclude(name='Один игрок'):
+                    for team in block.get_teams(type=type):
+                        for player in team.players.all():
+                            TeamGameInfo.objects.create(team=team, game=game, player=player)
+                return redirect(
+                    reverse('tournaments:block_page', kwargs={'pk': tournament.id, 'block_pk': block.id}))
         else:
             return render(request, 'tournaments/game_create.html', {
                 'form': game_form,
@@ -392,7 +413,7 @@ class BlockView(View):
 
         teams = Team.objects.filter(tournament_id=pk)
 
-        if tournament.type.name == 'Спортивный':
+        if tournament.is_sport():
             men_players = players.filter(sex='1')
             women_players = players.filter(sex='0')
 
@@ -403,23 +424,25 @@ class BlockView(View):
             # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
             for game in games:
                 for player in men_players:
-                    try:
-                        men_player_games_dict[player.id].append(game.info.get(player=player))
-                    except GameInfo.DoesNotExist:
-                        # Если игрок не участвовал в данной игре, его результат равен 0.
-                        gi = GameInfo(result=0)
-                        men_player_games_dict[player.id].append(gi)
+                    for team in player.team.filter(tournament=tournament, count=1):
+                        try:
+                            men_player_games_dict[player.id].append(game.info.get(team=team))
+                        except GameInfo.DoesNotExist:
+                            # Если игрок не участвовал в данной игре, его результат равен 0.
+                            gi = GameInfo(point=0, game=game, team=team)
+                            men_player_games_dict[player.id].append(gi)
 
             women_player_games_dict = defaultdict(list)
             # Для каждой игры  турнира создаем словарь с информацией о статистике игрока
             for game in games:
                 for player in women_players:
-                    try:
-                        women_player_games_dict[player.id].append(game.info.get(player=player))
-                    except GameInfo.DoesNotExist:
-                        # Если игрок не участвовал в данной игре, его результат равен 0.
-                        gi = GameInfo(result=0)
-                        women_player_games_dict[player.id].append(gi)
+                    for team in player.team.filter(tournament=tournament, count=1):
+                        try:
+                            women_player_games_dict[player.id].append(game.info.get(team=team))
+                        except GameInfo.DoesNotExist:
+                            # Если игрок не участвовал в данной игре, его результат равен 0.
+                            gi = GameInfo(point=0, game=game, team=team)
+                            women_player_games_dict[player.id].append(gi)
 
             return render(request, 'tournaments/block_page.html',
                           {'tournament': tournament,
@@ -438,7 +461,8 @@ class BlockView(View):
             for game in games:
                 for player in players:
                     try:
-                        player_games_dict[player.id].append(game.info.get(team=player.get_team(tournament, 1)))
+                        player_games_dict[player.id].append(game.info.get(
+                            team=player.get_team(tournament, type=TeamType.objects.get(name='Один игрок'))))
                     except GameInfo.DoesNotExist:
                         # Если игрок не участвовал в данной игре, его результат равен 0.
                         gi = GameInfo(result=0)
