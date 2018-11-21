@@ -6,7 +6,7 @@ from django.db import models
 from django.db.models import Max, Min, Sum
 from django.utils.crypto import get_random_string
 
-from accounts.models import PlayerInfo, City
+from accounts.models import PlayerInfo, City, SEX_CHOICES
 
 
 def filename(instance, filename):
@@ -38,8 +38,6 @@ class Tournament(models.Model):
     photo = models.ImageField(upload_to=filename, blank=True, default=os.path.join('default', 'tournament_avatar.png'))
     # Значение по умолчанию - Казань
     city = models.ForeignKey(City, default=5139)
-    handicap = models.BooleanField(default=False)
-    handicap_size = models.IntegerField(default=8)
     players = models.ManyToManyField(PlayerInfo, related_name='tournament_players', through=TournamentMembership)
     block_type = models.ForeignKey('BlockType', on_delete=models.CASCADE, related_name='block_type')
 
@@ -143,6 +141,18 @@ class Tournament(models.Model):
         else:
             return Tournament.objects.order_by('-start').values('id', 'name', 'photo', 'start')[
                    (page - 1) * amount:page * amount]
+
+
+class Handicap(models.Model):
+    start = models.IntegerField()
+    end = models.IntegerField()
+    gender = models.CharField(max_length=1, choices=SEX_CHOICES, default='0')
+    size = models.IntegerField()
+
+
+class Tournament_Handicap(models.Model):
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='handicaps')
+    handicap = models.ForeignKey(Handicap, on_delete=models.CASCADE)
 
 
 class Team(models.Model):

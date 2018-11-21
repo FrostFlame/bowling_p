@@ -1,17 +1,17 @@
 from dal import autocomplete
 from django import forms
+from django_select2.forms import Select2MultipleWidget
 from file_resubmit.admin import AdminResubmitImageWidget
 
-from accounts.models import City
-from tournaments.models import Tournament, TournamentType, TeamType, Game, BlockType, Block
+from accounts.models import City, SEX_CHOICES
+from tournaments.models import Tournament, TournamentType, TeamType, Game, BlockType, Block, Handicap
 
 
 class TournamentCreationForm(forms.ModelForm):
     class Meta:
         model = Tournament
         fields = (
-            'name', 'start', 'end', 'description', 'type', 'team_type', 'block_type', 'handicap', 'handicap_size',
-            'city', 'photo')
+            'name', 'start', 'end', 'description', 'type', 'team_type', 'block_type', 'handicaps', 'city', 'photo')
 
     photo = forms.ImageField(
         required=False,
@@ -73,17 +73,11 @@ class TournamentCreationForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple
     )
 
-    handicap = forms.BooleanField(
-        required=False,
+    handicaps = forms.ModelMultipleChoiceField(
         label='Гандикап',
-    )
-
-    handicap_size = forms.IntegerField(
-        required=False,
-        label='Размер гандикапа',
-        widget=forms.TextInput(
-            attrs={'value': 8, 'class': 'form-control'}
-        )
+        queryset=Handicap.objects,
+        initial=Handicap.objects.first(),
+        widget=Select2MultipleWidget
     )
 
     block_type = forms.ModelChoiceField(
@@ -103,6 +97,23 @@ class TournamentCreationForm(forms.ModelForm):
     )
 
 
+class HandicapCreationForm(forms.ModelForm):
+    class Meta:
+        model = Handicap
+        fields = ('start', 'end', 'gender', 'size')
+
+    start = forms.IntegerField()
+    end = forms.IntegerField()
+    gender = forms.ChoiceField(
+        label='Пол',
+        choices=SEX_CHOICES,
+        required=True,
+        widget=forms.Select(
+            attrs={'class': 'form-control'}, )
+    )
+    size = forms.IntegerField()
+
+
 class GameCreationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         if 'block' in kwargs:
@@ -115,6 +126,7 @@ class GameCreationForm(forms.ModelForm):
             attrs={'placeholder': 'Название', 'class': 'form-control'}
         )
     )
+
     start = forms.DateTimeField(
         label='Время начала',
         widget=forms.DateTimeInput(
@@ -148,6 +160,7 @@ class BlockCreationForm(forms.ModelForm):
             attrs={'placeholder': 'Название', 'class': 'form-control'}
         )
     )
+
     start_date = forms.DateTimeField(
         label='Начало',
         widget=forms.TextInput(

@@ -30,6 +30,7 @@ urlpatterns = [
                   url(r'^calendar/', views.CalendarView.as_view(), name='calendar'),
                   url(r'rating/', include('rating.urls', namespace='rating')),
                   url(r'^summernote/', include('django_summernote.urls')),
+                  url(r'^select2/', include('django_select2.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

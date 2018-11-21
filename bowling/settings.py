@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'dal',
     'dal_select2',
     'albums',
-    'rating'
+    'rating',
+    'django_select2'
 ]
 
 MIDDLEWARE = [

@@ -20,6 +20,7 @@ urlpatterns = [
         TournamentGameInfo.as_view(), name='tournament_game_info'),
     url(r'^(?P<tournament_pk>\d+)/(?P<block_pk>\d+)/(?P<game_pk>\d+)/edit$',
         GameUpdateView.as_view(), name='game_update'),
+    url(r'^handicap/create$', HandicapCreate.as_view(), name='handicap_create'),
 
     # Ajax
     url(r'^ajax/update_results', GameResultUpdate.as_view(), name='update_game_result'),

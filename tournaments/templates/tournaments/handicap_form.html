@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Создание гандикапа</title>
+</head>
+<body>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{ form.errors }}
+    <div class="form-group mar-top-10">
+        <button class="btn btn-primary">Продолжить</button>
+    </div>
+</form>
+</body>
+</html>

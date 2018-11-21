@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{% static 'css/imageupload.css' %}">
     <link rel="stylesheet" type="text/css"
           href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}"/>
+    <link href="{% static 'css/select2.min.css' %}" rel="stylesheet"/>
+    <script src="{% static 'js/select2.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -29,9 +31,21 @@
                             <div class="form-group">
                                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                                 {% if field.id_for_label == 'id_start' or field.id_for_label == 'id_end' %}
-                                    <input id="{{ field.id_for_label }}" name="{{ field.name }}" type="text" class="form-control"
+                                    <input id="{{ field.id_for_label }}" name="{{ field.name }}" type="text"
+                                           class="form-control"
                                            value="{{ field.value | date:'d.m.Y' }}" autocomplete="off">
-                                    <p hidden class="error" id="{{ field.id_for_label }}_error">Дата начала турнира не может быть позже даты окончания</p>
+                                    <p hidden class="error" id="{{ field.id_for_label }}_error">Дата начала турнира не
+                                        может быть позже даты окончания</p>
+                                {% elif field.id_for_label == 'id_handicaps' %}
+                                    <select name='select' class="select-players" name="states[]" multiple="multiple"
+                                            style="width: 500px; ">
+                                        {% for h in handicaps %}
+                                            <option value={{ h.id }}>{{ h.start }} {{ h.end }} {{ h.gender }} {{ h.size }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <a href="tournaments/handicap.html"
+                                       onclick="return popitup('{% url 'tournaments:handicap_create' %}')">Создать новый
+                                        гандикап</a>
                                 {% else %}
                                     {{ field }}
                                 {% endif %}
@@ -85,6 +99,16 @@
 {% endblock %}
 
 {% block scripts %}
+    <script language="javascript" type="text/javascript">
+        function popitup(url) {
+            newwindow = window.open(url, '{{title}}', 'height=200,width=150');
+            if (window.focus) {
+                newwindow.focus()
+            }
+            return false;
+        }
+    </script>
+
     <script>
         $(document).ready(function () {
             $(document).on('change', '.btn-file :file', function () {
@@ -169,5 +193,10 @@
             });
 
         });
+    </script>
+
+    <script>$(document).ready(function () {
+        $('.select-players').select2();
+    });
     </script>
 {% endblock %}

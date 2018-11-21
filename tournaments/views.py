@@ -12,8 +12,10 @@ from django.views.generic import CreateView, UpdateView, ListView, DeleteView
 from django.views.generic import FormView
 
 from accounts.models import PlayerInfo
-from tournaments.forms import TournamentCreationForm, GameCreationForm, TournamentSearchForm, BlockCreationForm
-from tournaments.models import Tournament, Game, GameInfo, Team, TournamentMembership, TeamType, Block, TeamGameInfo
+from tournaments.forms import TournamentCreationForm, GameCreationForm, TournamentSearchForm, BlockCreationForm, \
+    HandicapCreationForm
+from tournaments.models import Tournament, Game, GameInfo, Team, TournamentMembership, TeamType, Block, TeamGameInfo, \
+    Handicap
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -30,6 +32,22 @@ class TournamentCreate(CreateView):
     template_name = 'tournaments/tournament_form.html'
     success_url = get_success_url
     form_class = TournamentCreationForm
+
+    def get_context_data(self, **kwargs):
+        context = super(TournamentCreate, self).get_context_data(**kwargs)
+        context['handicaps'] = Handicap.objects.all()
+        return context
+
+
+@method_decorator(staff_member_required(), name='dispatch')
+class HandicapCreate(CreateView):
+    def get_success_url(self):
+        return reverse('tournaments:tournaments_create')
+
+    model = Handicap
+    template_name = 'tournaments/handicap_form.html'
+    form_class = HandicapCreationForm
+    success_url = get_success_url
 
 
 @method_decorator(staff_member_required(), name='dispatch')
