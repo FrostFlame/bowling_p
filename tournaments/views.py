@@ -15,7 +15,7 @@ from accounts.models import PlayerInfo
 from tournaments.forms import TournamentCreationForm, GameCreationForm, TournamentSearchForm, BlockCreationForm, \
     HandicapCreationForm
 from tournaments.models import Tournament, Game, GameInfo, Team, TournamentMembership, TeamType, Block, TeamGameInfo, \
-    Handicap
+    Handicap, Tournament_Handicap
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -38,6 +38,47 @@ class TournamentCreate(CreateView):
         context['handicaps'] = Handicap.objects.all()
         return context
 
+    def post(self, request, *args, **kwargs):
+        form = TournamentCreationForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            start = form.cleaned_data['start']
+            end = form.cleaned_data['end']
+            description = form.cleaned_data['description']
+            type = form.cleaned_data['type']
+            team_type = form.cleaned_data['team_type']
+            block_type = form.cleaned_data['block_type']
+            city = form.cleaned_data['city']
+            photo = form.cleaned_data['photo']
+
+            tournament = Tournament.objects.create(name=name, start=start, end=end, description=description, type=type,
+                                                   block_type=block_type, city=city, photo=photo)
+            for type in team_type:
+                tournament.team_type.add(type)
+            tournament.save()
+            self.object = tournament
+            for h in request.POST.getlist('select'):
+                Tournament_Handicap.objects.create(tournament=tournament, handicap_id=h).save()
+        else:
+            name = form.cleaned_data['name']
+            start = form.cleaned_data['start']
+            end = form.cleaned_data['end']
+            description = form.cleaned_data['description']
+            type = form.cleaned_data['type']
+            team_type = form.cleaned_data['team_type']
+            block_type = form.cleaned_data['block_type']
+            city = form.cleaned_data['city']
+            photo = form.cleaned_data['photo']
+
+            tournament = Tournament.objects.create(name=name, start=start, end=end, description=description, type=type,
+                                                   block_type=block_type, city=city, photo=photo)
+            for type in team_type:
+                tournament.team_type.add(type)
+            tournament.save()
+            self.object = tournament
+            for h in request.POST.getlist('select'):
+                Tournament_Handicap.objects.create(tournament=tournament, handicap_id=h).save()
+        return redirect(self.get_success_url())
 
 @method_decorator(staff_member_required(), name='dispatch')
 class HandicapCreate(CreateView):
